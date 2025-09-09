@@ -206,12 +206,6 @@ function editBubble(bubble) {
 // Print/Download functionality
 function printPage() {
     const wrapper = document.querySelector('.wrapper');
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Set canvas size to 800x1080
-    canvas.width = 800;
-    canvas.height = 1080;
     
     // Create a temporary container with the page content
     const tempContainer = document.createElement('div');
@@ -220,6 +214,7 @@ function printPage() {
     tempContainer.style.position = 'absolute';
     tempContainer.style.left = '-9999px';
     tempContainer.style.top = '0';
+    tempContainer.style.backgroundColor = 'white';
     tempContainer.innerHTML = wrapper.innerHTML;
     document.body.appendChild(tempContainer);
     
@@ -229,15 +224,20 @@ function printPage() {
         height: 1080,
         scale: 1,
         useCORS: true,
-        allowTaint: true
+        allowTaint: true,
+        backgroundColor: '#ffffff'
     }).then(canvas => {
         // Download the canvas as PNG
         const link = document.createElement('a');
-        link.download = `comic_page_${current_page + 1}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.download = `comic_page_${current_page + 1}_800x1080.png`;
+        link.href = canvas.toDataURL('image/png', 1.0);
         link.click();
         
         // Clean up
+        document.body.removeChild(tempContainer);
+    }).catch(error => {
+        console.error('Error generating image:', error);
+        alert('Error generating image. Please try again.');
         document.body.removeChild(tempContainer);
     });
 }
