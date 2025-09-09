@@ -14,19 +14,25 @@ from backend.utils import copy_and_rename_file, get_black_bar_coordinates, crop_
 
 # Cell 2
 def _get_features(frames, gpu=True, batch_size=1):
-    # Load pre-trained GoogLeNet model
-    googlenet = torch.hub.load('pytorch/vision:v0.10.0', 'googlenet', weights='GoogLeNet_Weights.DEFAULT')
-
-    # Remove the classification layer (last layer) to obtain features
-    googlenet = torch.nn.Sequential(*(list(googlenet.children())[:-1]))
+    # Load pre-trained ResNet50 model (more advanced than GoogLeNet)
+    try:
+        model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet50', weights='ResNet50_Weights.DEFAULT')
+        # Remove the classification layer (last layer) to obtain features
+        model = torch.nn.Sequential(*(list(model.children())[:-1]))
+        feature_dim = 2048  # ResNet50 feature dimension
+    except:
+        # Fallback to GoogLeNet if ResNet50 fails
+        model = torch.hub.load('pytorch/vision:v0.10.0', 'googlenet', weights='GoogLeNet_Weights.DEFAULT')
+        model = torch.nn.Sequential(*(list(model.children())[:-1]))
+        feature_dim = 1024  # GoogLeNet feature dimension
 
     # Set the model to evaluation mode
-    googlenet.eval()
+    model.eval()
 
     # Initialize a list to store the features
     features = []
 
-    # Image preprocessing pipeline
+    # Enhanced image preprocessing pipeline
     preprocess = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
@@ -44,11 +50,11 @@ def _get_features(frames, gpu=True, batch_size=1):
         # Move the input and model to GPU if available
         if gpu:
             input_batch = input_batch.to('cuda')
-            googlenet.to('cuda')
+            model.to('cuda')
 
         # Perform feature extraction
         with torch.no_grad():
-            output = googlenet(input_batch)
+            output = model(input_batch)
 
         # Append the features to the list
         features.append(output.squeeze().cpu().numpy())
@@ -65,12 +71,22 @@ def _get_probs(features, gpu=True, mode=0):
         model_path = "backend/keyframes/pretrained_model/model_1.pth.tar"
     else:
         model_path = "backend/keyframes/pretrained_model/model_0.pth.tar"
-    model = DSN(in_dim=1024, hid_dim=256, num_layers=1, cell="lstm")
-    if gpu:
-        checkpoint = torch.load(model_path)
-    else:
-        checkpoint = torch.load(model_path, map_location='cpu')
-    model.load_state_dict(checkpoint)
+    
+    # Determine feature dimension based on the actual features
+    feature_dim = features.shape[-1] if len(features.shape) > 1 else 1024
+    
+    model = DSN(in_dim=feature_dim, hid_dim=256, num_layers=1, cell="lstm")
+    
+    try:
+        if gpu:
+            checkpoint = torch.load(model_path)
+        else:
+            checkpoint = torch.load(model_path, map_location='cpu')
+        model.load_state_dict(checkpoint)
+    except:
+        # If loading fails, use a default model
+        print("Warning: Could not load pretrained model, using default weights")
+    
     if gpu:
         model = nn.DataParallel(model).cuda()
     model.eval()

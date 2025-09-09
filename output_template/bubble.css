@@ -9,9 +9,10 @@
 
 .bubble{
     width: 200px;
-    height: 94px;
+    min-height: 60px;
     background-color: white;
-    border-radius: 50%;
+    border-radius: 15px;
+    border: 2px solid #333;
     font-family: 'adam_warren_proregular';
     font-size: 1em;
     display: flex;
@@ -21,7 +22,11 @@
     align-items: center;
     z-index: 2;
     box-sizing: border-box; /* Ensure padding is included in the bubble's total size */
-
+    padding: 10px;
+    cursor: grab;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    word-wrap: break-word;
+    max-width: 250px;
 }
 
 .tail{
