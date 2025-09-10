@@ -92,6 +92,16 @@ def create_test_comic_data():
 def index():
     return render_template('index.html')
 
+@app.route('/comic')
+def comic():
+    """Serve the comic page using Flask template"""
+    # Check if comic data exists
+    comic_data_path = os.path.join(os.getcwd(), 'static', 'comic', 'page.js')
+    if os.path.exists(comic_data_path):
+        return render_template('comic.html')
+    else:
+        return "Comic not found. Please generate a comic first.", 404
+
 
 def create_comic():
     start_time = time.time()

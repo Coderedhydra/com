@@ -1,4 +1,4 @@
-path = '../frames/final/'
+path = '/static/comic/frames/final/'
 current_page = 0
 
 function placeDialogs(page) {
@@ -34,7 +34,7 @@ function placeDialogs(page) {
             const emotion = page['bubbles'][index]['emotion'];
 
             if (emotion == 'jagged') {
-                bubble_temp.style.backgroundImage = `url("assets/jagged.png")`;
+                bubble_temp.style.backgroundImage = `url("/static/comic/assets/jagged.png")`;
                 bubble_temp.style.backgroundPosition = 'center center';
                 bubble_temp.style.backgroundRepeat = 'no-repeat';
                 bubble_temp.style.backgroundSize = 'cover';
@@ -75,15 +75,8 @@ function placeDialogs(page) {
 document.addEventListener('DOMContentLoaded', function() {
     placeDialogs(pages[current_page]);
     
-    // Make existing panels draggable
-    setTimeout(() => {
-        const panels = document.querySelectorAll('.grid-item');
-        panels.forEach(panel => {
-            if (panel.style.backgroundImage && panel.style.backgroundImage !== 'none') {
-                makePanelDraggable(panel);
-            }
-        });
-    }, 1000);
+    // Only bubbles should be draggable, not panels
+    // Template should remain fixed at 800x540
 });
 
 function prevPage(){
@@ -435,8 +428,7 @@ function addImageControls(panel, imageUrl) {
     
     panel.appendChild(controls);
     
-    // Make panel draggable
-    makePanelDraggable(panel);
+    // Panel should not be draggable - only bubbles should be draggable
 }
 
 function zoomImage(panel, factor) {
@@ -460,82 +452,8 @@ function resetImage(panel) {
     panel.style.transform = 'translate(0px, 0px)';
 }
 
-function makePanelDraggable(panel) {
-    let isDragging = false;
-    let startX, startY, initialX, initialY;
-    
-    panel.addEventListener('mousedown', function(e) {
-        if (e.target.tagName === 'BUTTON') return; // Don't drag when clicking buttons
-        
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        
-        const transform = panel.style.transform;
-        const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
-        if (matches) {
-            initialX = parseFloat(matches[1]);
-            initialY = parseFloat(matches[2]);
-        } else {
-            initialX = 0;
-            initialY = 0;
-        }
-        
-        panel.style.cursor = 'grabbing';
-        e.preventDefault();
-    });
-    
-    document.addEventListener('mousemove', function(e) {
-        if (!isDragging) return;
-        
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-        
-        panel.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
-    });
-    
-    document.addEventListener('mouseup', function() {
-        if (isDragging) {
-            isDragging = false;
-            panel.style.cursor = 'grab';
-        }
-    });
-    
-    // Touch events for mobile
-    panel.addEventListener('touchstart', function(e) {
-        if (e.target.tagName === 'BUTTON') return;
-        
-        isDragging = true;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        
-        const transform = panel.style.transform;
-        const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
-        if (matches) {
-            initialX = parseFloat(matches[1]);
-            initialY = parseFloat(matches[2]);
-        } else {
-            initialX = 0;
-            initialY = 0;
-        }
-        
-        e.preventDefault();
-    });
-    
-    document.addEventListener('touchmove', function(e) {
-        if (!isDragging) return;
-        
-        const deltaX = e.touches[0].clientX - startX;
-        const deltaY = e.touches[0].clientY - startY;
-        
-        panel.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
-        e.preventDefault();
-    });
-    
-    document.addEventListener('touchend', function() {
-        isDragging = false;
-    });
-}
+// Panel dragging removed - only bubbles should be draggable
+// Template should remain fixed at 800x540 dimensions
 
 
 
@@ -627,16 +545,22 @@ function makeBubbleDraggable(bubble, bubbleIndex) {
     });
 }
 
-// Function to ensure perfect image fitting
+// Function to ensure perfect image fitting with 0% gap
 function ensurePerfectImageFit() {
     const gridItems = document.querySelectorAll('.grid-item');
     gridItems.forEach(function(item) {
-        // Ensure the image fits perfectly without cropping
-        item.style.backgroundSize = 'contain';
+        // Ensure the image fills the entire 800x540 template with 0% gap
+        item.style.backgroundSize = 'cover';
         item.style.backgroundPosition = 'center center';
         item.style.backgroundRepeat = 'no-repeat';
         
+        // Ensure the container dimensions are exactly 800x540
+        item.style.width = '800px';
+        item.style.height = '540px';
+        item.style.overflow = 'hidden';
+        
         // Add a fallback background color
+        if (!item.style.backgroundImage || item.style.backgroundImage === 'none') {
             item.style.backgroundColor = '#f0f0f0';
         }
     });
