@@ -111,13 +111,30 @@ def _get_probs(features, gpu=True, mode=0):
 
    
 def generate_keyframes(video):
+    print(f"=== KEYFRAME GENERATION STARTED ===")
+    print(f"Video file: {video}")
+    
     data=""
     with open("test1.srt") as f:
         data = f.read()
 
     subs = srt.parse(data)
+    subs_list = list(subs)
+    print(f"Processing {len(subs_list)} subtitles for keyframe generation")
+    
+    # Check if frames/final directory exists
+    if not os.path.exists("frames/final"):
+        print("Creating frames/final directory...")
+        os.makedirs("frames/final")
+    else:
+        print("frames/final directory already exists")
 
-    for sub in subs:
+    for sub in subs_list:
+        # Skip invalid subtitle indices
+        if sub.index < 1 or sub.index > 1000:  # Reasonable range check
+            print(f"Skipping invalid subtitle index: {sub.index}")
+            continue
+            
         frames = []
         if not os.path.exists(f"frames/sub{sub.index}"):
             os.makedirs(f"frames/sub{sub.index}")
@@ -126,6 +143,7 @@ def generate_keyframes(video):
         frames = extract_frames(video, os.path.join("frames",f"sub{sub.index}"), sub.start.total_seconds(), sub.end.total_seconds(), 1)
         
         if not frames:
+            print(f"No frames extracted for subtitle {sub.index}")
             continue
             
         # Simple selection - just take the middle frame for speed
@@ -136,6 +154,9 @@ def generate_keyframes(video):
             
         copy_and_rename_file(selected_frame, os.path.join("frames","final"), f"frame{sub.index:03}.png")
         print(f"Selected frame {sub.index} from {len(frames)} frames")
+    
+    print(f"=== KEYFRAME GENERATION COMPLETED ===")
+    print(f"Generated frames in frames/final directory")
     
 
 def black_bar_crop():

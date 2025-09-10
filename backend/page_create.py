@@ -4,12 +4,33 @@ import json
 def page_create(page_templates,panels,bubbles):
     count = 0
     pages = []
-    for page_template in page_templates:
-
-        new_page = Page(panels[count:count+len(page_template)],bubbles[count:count+len(page_template)])
-        pages.append(new_page)
-        count = count +len(page_template)
-        print(new_page.__dict__)        
+    print(f"Creating pages: {len(page_templates)} templates, {len(panels)} panels, {len(bubbles)} bubbles")
+    
+    for i, page_template in enumerate(page_templates):
+        try:
+            # Ensure we don't go out of bounds
+            end_idx = min(count + len(page_template), len(panels))
+            panel_slice = panels[count:end_idx]
+            bubble_slice = bubbles[count:end_idx] if count < len(bubbles) else []
+            
+            # Pad with empty panels/bubbles if needed
+            while len(panel_slice) < len(page_template):
+                panel_slice.append(panel("test1", 1, 1))  # Default panel
+            while len(bubble_slice) < len(page_template):
+                bubble_slice.append(bubble(0, 0, -1, -1, "", "normal"))  # Default bubble
+            
+            new_page = Page(panel_slice, bubble_slice)
+            pages.append(new_page)
+            count = end_idx
+            print(f"Page {i+1}: {len(panel_slice)} panels, {len(bubble_slice)} bubbles")
+            
+        except Exception as e:
+            print(f"Error creating page {i+1}: {e}")
+            # Create a default page
+            default_panels = [panel("test1", 1, 1) for _ in range(len(page_template))]
+            default_bubbles = [bubble(0, 0, -1, -1, "", "normal") for _ in range(len(page_template))]
+            new_page = Page(default_panels, default_bubbles)
+            pages.append(new_page)
 
     return pages
 

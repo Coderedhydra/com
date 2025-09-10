@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link id="pageStyle" rel="stylesheet" href="page.css">
+    <link rel="stylesheet" href="bubble.css">
+
+    <script src="page.js"></script>
+    <!-- <script src="backend/speech_bubble/data.json" id="jsonData" type="application/json"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="page_place.js"></script>
+
+</head>
+
+<body>
+    <div class="button">
+        <button onclick="prevPage()"><img src="assets/backward.png" alt=""></button>
+        <button onclick="printPage()" style="margin: 0 10px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Print Page</button>
+        <button onclick="printAllPages()" style="margin: 0 10px; padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Print All</button>
+        <button onclick="uploadImage()" style="margin: 0 10px; padding: 10px 20px; background-color: #ffc107; color: black; border: none; border-radius: 5px; cursor: pointer;">Upload Image</button>
+    </div>
+    
+    <!-- Hidden file input for image upload -->
+    <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+
+    <div class="wrapper">
+        <div class="grid-container">
+            <div class="grid-item" id="_1"></div>
+            <div class="grid-item" id="_2"></div>
+        </div>
+    </div>
+
+
+    <div class="button">
+        <button onclick="nextPage()"><img src="assets/forward.png" alt=""></button>
+    </div>
+
+</body>
+
+</html>

@@ -41,18 +41,34 @@ def bubble_create(video, crop_coords, black_x, black_y):
 
 
     for sub in subs:
-        lip_x = lips[sub.index][0]
-        lip_y = lips[sub.index][1]
+        try:
+            # Check if we have lip data for this subtitle
+            if sub.index < len(lips) and lips[sub.index] is not None and len(lips[sub.index]) >= 2:
+                lip_x = lips[sub.index][0]
+                lip_y = lips[sub.index][1]
+            else:
+                lip_x = -1
+                lip_y = -1
 
-        bubble_x, bubble_y = get_bubble_position(crop_coords[sub.index-1], CAM_data[sub.index-1])
+            # Check if we have crop coordinates and CAM data for this subtitle
+            if sub.index-1 < len(crop_coords) and sub.index-1 < len(CAM_data):
+                bubble_x, bubble_y = get_bubble_position(crop_coords[sub.index-1], CAM_data[sub.index-1])
+            else:
+                bubble_x = 0
+                bubble_y = 0
 
-        dialogue = sub.content
-        emotion = get_bubble_type(dialogue)
-        print(f'||emotion:{emotion}||')
+            dialogue = sub.content
+            emotion = get_bubble_type(dialogue)
+            print(f'||emotion:{emotion}||')
 
-
-        temp = bubble(bubble_x, bubble_y,lip_x,lip_y,sub.content,emotion)
-        bubbles.append(temp)
+            temp = bubble(bubble_x, bubble_y,lip_x,lip_y,sub.content,emotion)
+            bubbles.append(temp)
+            
+        except Exception as e:
+            print(f"Error processing subtitle {sub.index}: {e}")
+            # Create a default bubble
+            temp = bubble(0, 0, -1, -1, sub.content, "normal")
+            bubbles.append(temp)
 
     return bubbles
 

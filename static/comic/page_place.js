@@ -26,7 +26,10 @@ function placeDialogs(page) {
             bubble_temp.classList.add('bubble');
             bubble_temp.innerHTML = page['bubbles'][index]['dialog'];
             bubble_temp.setAttribute('data-editable', 'true');
-            bubble_temp.setAttribute('draggable', 'true');
+            bubble_temp.setAttribute('data-bubble-index', index);
+            
+            // Add dragging functionality
+            makeBubbleDraggable(bubble_temp, index);
 
             const emotion = page['bubbles'][index]['emotion'];
 
@@ -64,6 +67,9 @@ function placeDialogs(page) {
     for (var i = page.panels.length; i < gridItems.length; i++) {
         gridItems[i].style.display = 'none';
     }
+    
+    // Ensure perfect image fitting after placing dialogs
+    ensurePerfectImageFit();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -357,9 +363,17 @@ function replacePanelImage(panelNumber, imageUrl) {
     const panel = document.getElementById(`_${panelNumber}`);
     if (panel) {
         panel.style.backgroundImage = `url("${imageUrl}")`;
-        panel.style.backgroundSize = 'contain';
-        panel.style.backgroundPosition = 'center';
+        panel.style.backgroundSize = 'cover';
+        panel.style.backgroundPosition = 'center center';
         panel.style.backgroundRepeat = 'no-repeat';
+        panel.style.objectFit = 'cover';
+        
+        // Ensure perfect fitting with 0% gap for any image size
+        panel.style.display = 'flex';
+        panel.style.alignItems = 'center';
+        panel.style.justifyContent = 'center';
+        panel.style.width = '800px';
+        panel.style.height = '540px';
         
         // Add image controls
         addImageControls(panel, imageUrl);
@@ -441,8 +455,8 @@ function zoomImage(panel, factor) {
 }
 
 function resetImage(panel) {
-    panel.style.backgroundSize = 'contain';
-    panel.style.backgroundPosition = 'center';
+    panel.style.backgroundSize = 'cover';
+    panel.style.backgroundPosition = 'center center';
     panel.style.transform = 'translate(0px, 0px)';
 }
 
@@ -523,3 +537,220 @@ function makePanelDraggable(panel) {
     });
 }
 
+
+
+// Function to make bubbles draggable
+function makeBubbleDraggable(bubble, bubbleIndex) {
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+    
+    bubble.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        // Get current position
+        const transform = bubble.style.transform;
+        const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+        if (matches) {
+            initialX = parseFloat(matches[1]);
+            initialY = parseFloat(matches[2]);
+        } else {
+            initialX = 0;
+            initialY = 0;
+        }
+        
+        e.preventDefault();
+        bubble.style.cursor = 'grabbing';
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+        
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+        
+        bubble.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mouseup', function() {
+        if (isDragging) {
+            isDragging = false;
+            bubble.style.cursor = 'move';
+            
+            // Update the bubble position in the pages data
+            if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.clientX - startX);
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.clientY - startY);
+            }
+        }
+    });
+    
+    // Touch support
+    bubble.addEventListener('touchstart', function(e) {
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        
+        const transform = bubble.style.transform;
+        const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+        if (matches) {
+            initialX = parseFloat(matches[1]);
+            initialY = parseFloat(matches[2]);
+        } else {
+            initialX = 0;
+            initialY = 0;
+        }
+        
+        e.preventDefault();
+    });
+    
+    document.addEventListener('touchmove', function(e) {
+        
+        const deltaX = e.touches[0].clientX - startX;
+        const deltaY = e.touches[0].clientY - startY;
+        
+        bubble.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
+        e.preventDefault();
+    });
+    
+    document.addEventListener('touchend', function() {
+        if (isDragging) {
+            isDragging = false;
+            
+            // Update the bubble position in the pages data
+            if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.changedTouches[0].clientX - startX);
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.changedTouches[0].clientY - startY);
+            }
+        }
+    });
+}
+
+// Function to ensure perfect image fitting
+function ensurePerfectImageFit() {
+    const gridItems = document.querySelectorAll('.grid-item');
+    gridItems.forEach(function(item) {
+        // Ensure the image fits perfectly without cropping
+        item.style.backgroundSize = 'contain';
+        item.style.backgroundPosition = 'center center';
+        item.style.backgroundRepeat = 'no-repeat';
+        
+        // Add a fallback background color
+            item.style.backgroundColor = '#f0f0f0';
+        }
+    });
+}
+// Function to make bubbles draggable
+function makeBubbleDraggable(bubble, bubbleIndex) {
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+    
+    bubble.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        // Get current position
+        const transform = bubble.style.transform;
+        const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+        if (matches) {
+            initialX = parseFloat(matches[1]);
+            initialY = parseFloat(matches[2]);
+        } else {
+            initialX = 0;
+            initialY = 0;
+        }
+        
+        e.preventDefault();
+        bubble.style.cursor = 'grabbing';
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+        
+        bubble.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mouseup', function() {
+        if (isDragging) {
+            isDragging = false;
+            bubble.style.cursor = 'move';
+            
+            // Update the bubble position in the pages data
+            if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.clientX - startX);
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.clientY - startY);
+            }
+        }
+    });
+    
+    // Touch support
+    bubble.addEventListener('touchstart', function(e) {
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        
+        const transform = bubble.style.transform;
+        const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+        if (matches) {
+            initialX = parseFloat(matches[1]);
+            initialY = parseFloat(matches[2]);
+        } else {
+            initialX = 0;
+            initialY = 0;
+        }
+        
+        e.preventDefault();
+    });
+    
+    document.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
+        
+        const deltaX = e.touches[0].clientX - startX;
+        const deltaY = e.touches[0].clientY - startY;
+        
+        bubble.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
+        e.preventDefault();
+    });
+    
+    document.addEventListener('touchend', function() {
+        if (isDragging) {
+            isDragging = false;
+            
+            // Update the bubble position in the pages data
+            if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.changedTouches[0].clientX - startX);
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.changedTouches[0].clientY - startY);
+            }
+        }
+    });
+}
+
+// Function to ensure perfect image fitting with 0% gap
+function ensurePerfectImageFit() {
+    const gridItems = document.querySelectorAll('.grid-item');
+    gridItems.forEach(function(item) {
+        // Ensure the image fills the entire 800x540 template with 0% gap
+        item.style.backgroundSize = 'cover';
+        item.style.backgroundPosition = 'center center';
+        item.style.backgroundRepeat = 'no-repeat';
+        item.style.objectFit = 'cover';
+        
+        // Add a fallback background color
+        if (!item.style.backgroundImage || item.style.backgroundImage === 'none') {
+            item.style.backgroundColor = '#f0f0f0';
+        }
+        
+        // Ensure the container fills completely
+        item.style.display = 'flex';
+        item.style.alignItems = 'center';
+        item.style.justifyContent = 'center';
+        item.style.width = '800px';
+        item.style.height = '540px';
+    });
+}
