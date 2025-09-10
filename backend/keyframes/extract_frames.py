@@ -23,7 +23,8 @@ def extract_frames(input_video, output_path, start_time, end_time, frame_rate):
             frame_filename = f"frame_{frame_count}.png"
             frame_path = os.path.join(output_path, frame_filename)
             frames.append(frame_path)
-            cv2.imwrite(frame_name, frame)
+            # Save with maximum quality PNG settings
+            cv2.imwrite(frame_name, frame, [cv2.IMWRITE_PNG_COMPRESSION, 0])
             frame_count+=1
 
         current_frame += 1
@@ -36,7 +37,8 @@ def extract_frames(input_video, output_path, start_time, end_time, frame_rate):
         frame_filename = f"frame_0.png"
         frame_path = os.path.join(output_path, frame_filename)
         frames.append(frame_path)
-        cv2.imwrite(frame_name, frame)
+        # Save with maximum quality PNG settings
+        cv2.imwrite(frame_name, frame, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
     cap.release()
     return frames

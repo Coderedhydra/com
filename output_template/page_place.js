@@ -1,4 +1,4 @@
-path = '../frames/final/'
+path = '/static/comic/frames/final/'
 current_page = 0
 
 function placeDialogs(page) {
@@ -31,7 +31,7 @@ function placeDialogs(page) {
             const emotion = page['bubbles'][index]['emotion'];
 
             if (emotion == 'jagged') {
-                bubble_temp.style.backgroundImage = `url("assets/jagged.png")`;
+                bubble_temp.style.backgroundImage = `url("/static/comic/assets/jagged.png")`;
                 bubble_temp.style.backgroundPosition = 'center center';
                 bubble_temp.style.backgroundRepeat = 'no-repeat';
                 bubble_temp.style.backgroundSize = 'cover';
