@@ -279,8 +279,20 @@ def upload_file():
         f.save("video/uploaded.mp4")
         create_comic()
         copy_template()
-        webbrowser.open('file:///'+os.getcwd()+'/' + 'output/page.html')
-        return "Comic created Successfully"
+        # Redirect to the comic page instead of opening local file
+        return '''
+        <html>
+        <body>
+        <h2>Comic created successfully!</h2>
+        <p>Your comic is ready. <a href="/comic" target="_blank">Click here to view your comic</a></p>
+        <script>
+        setTimeout(function() {
+            window.open('/comic', '_blank');
+        }, 1000);
+        </script>
+        </body>
+        </html>
+        '''
     
 
 @app.route('/handle_link', methods=['GET', 'POST'])
@@ -292,8 +304,20 @@ def handle_link():
         download_video(link)
         create_comic()
         copy_template()
-        webbrowser.open('file:///'+os.getcwd()+'/' + 'output/page.html')
-        return "Comic created Successfully"
+        # Redirect to the comic page instead of opening local file
+        return '''
+        <html>
+        <body>
+        <h2>Comic created successfully!</h2>
+        <p>Your comic is ready. <a href="/comic" target="_blank">Click here to view your comic</a></p>
+        <script>
+        setTimeout(function() {
+            window.open('/comic', '_blank');
+        }, 1000);
+        </script>
+        </body>
+        </html>
+        '''
     
 
 if __name__ == '__main__':
