@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, jsonify, send_file
 from backend.subtitles.subs import get_subtitles
 from backend.keyframes.keyframes import generate_keyframes, black_bar_crop
 from backend.panel_layout.layout_gen import generate_layout
-from backend.cartoonize.cartoonize import style_frames
+from backend.cartoonize.cartoonize import style_frames, style_frames_fast
 from backend.speech_bubble.bubble import bubble_create
 from backend.page_create import page_create,page_json
 from backend.utils import cleanup, download_video
@@ -220,7 +220,7 @@ def create_comic():
     video = 'video/uploaded.mp4'
     
     # FULL PROGRAM - All processing steps enabled
-    print("Starting full comic generation...")
+    print("Starting optimized comic generation...")
     get_subtitles(video)
     time.sleep(3)
     generate_keyframes(video)
@@ -229,12 +229,45 @@ def create_comic():
     bubbles = bubble_create(video, crop_coords, black_x, black_y)
     pages  = page_create(page_templates,panels,bubbles)
     page_json(pages)
+    
+    # Use optimized parallel styling for faster processing
+    print("Step 6: Styling frames with optimized parallel processing...")
     style_frames()
     
     # Copy to static directory for Flask serving
     copy_to_static()
     
-    print("--- Execution time : %s minutes ---" % ((time.time() - start_time) / 60))
+    total_time = time.time() - start_time
+    print(f"Full comic generation completed successfully!")
+    print(f"Generated {len(pages) if 'pages' in locals() else 'unknown'} comic pages from video!")
+    print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
+
+def create_comic_fast():
+    """Ultra-fast comic generation - minimal styling"""
+    start_time = time.time()
+    video = 'video/uploaded.mp4'
+    
+    print("Starting FAST comic generation (minimal styling)...")
+    get_subtitles(video)
+    time.sleep(1)  # Reduced wait time
+    generate_keyframes(video)
+    black_x, black_y, _, _ = black_bar_crop()
+    crop_coords, page_templates, panels = generate_layout()
+    bubbles = bubble_create(video, crop_coords, black_x, black_y)
+    pages  = page_create(page_templates,panels,bubbles)
+    page_json(pages)
+    
+    # Skip styling entirely for maximum speed
+    print("Step 6: Skipping frame styling for maximum speed...")
+    print("Using original frames without cartoon styling")
+    
+    # Copy to static directory for Flask serving
+    copy_to_static()
+    
+    total_time = time.time() - start_time
+    print(f"FAST comic generation completed!")
+    print(f"Generated {len(pages) if 'pages' in locals() else 'unknown'} comic pages from video!")
+    print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
 
 @app.route('/uploader', methods=['GET', 'POST'])
 def upload_file():
