@@ -118,23 +118,38 @@ def panel_create(page_templates):
 
     images = get_files_in_folder(folder_path)
     print(images)
-    count_images = 1
+    
+    # Get list of actual frame files
+    frame_files = []
+    for image in images:
+        if image['name'].startswith('frame') and image['name'].endswith('.png'):
+            frame_files.append(image['name'])
+    
+    frame_files.sort()  # Sort to ensure proper order
+    print(f"Available frames: {len(frame_files)}")
+    
+    frame_index = 0
 
     for page_template in page_templates:
 
-
         if(len(page_template)<min_length): #To handle last page 
-            panels = last_page(panels,count_images,len(page_template))
+            panels = last_page(panels, frame_index, len(page_template))
             break
 
         count = 1
         
         for i in page_template:
-            # For 2-frame layout, each panel takes half the page
-            new = panel(f'frame{count_images:03d}', 1, 1)
-            panels.append(new)
+            # Use actual available frame files
+            if frame_index < len(frame_files):
+                frame_name = frame_files[frame_index].replace('.png', '')  # Remove .png extension
+                new = panel(frame_name, 1, 1)
+                panels.append(new)
+                frame_index += 1
+            else:
+                # Fallback to test images if we run out of frames
+                new = panel('test1', 1, 1)
+                panels.append(new)
             count = count+1
-            count_images+=1
 
         
     
