@@ -111,6 +111,9 @@ def _get_probs(features, gpu=True, mode=0):
 
    
 def generate_keyframes(video):
+    print(f"=== KEYFRAME GENERATION STARTED ===")
+    print(f"Video file: {video}")
+    
     data=""
     with open("test1.srt") as f:
         data = f.read()
@@ -118,6 +121,13 @@ def generate_keyframes(video):
     subs = srt.parse(data)
     subs_list = list(subs)
     print(f"Processing {len(subs_list)} subtitles for keyframe generation")
+    
+    # Check if frames/final directory exists
+    if not os.path.exists("frames/final"):
+        print("Creating frames/final directory...")
+        os.makedirs("frames/final")
+    else:
+        print("frames/final directory already exists")
 
     for sub in subs_list:
         # Skip invalid subtitle indices
@@ -144,6 +154,9 @@ def generate_keyframes(video):
             
         copy_and_rename_file(selected_frame, os.path.join("frames","final"), f"frame{sub.index:03}.png")
         print(f"Selected frame {sub.index} from {len(frames)} frames")
+    
+    print(f"=== KEYFRAME GENERATION COMPLETED ===")
+    print(f"Generated frames in frames/final directory")
     
 
 def black_bar_crop():
