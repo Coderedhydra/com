@@ -363,15 +363,17 @@ function replacePanelImage(panelNumber, imageUrl) {
     const panel = document.getElementById(`_${panelNumber}`);
     if (panel) {
         panel.style.backgroundImage = `url("${imageUrl}")`;
-        panel.style.backgroundSize = 'contain';
+        panel.style.backgroundSize = 'cover';
         panel.style.backgroundPosition = 'center center';
         panel.style.backgroundRepeat = 'no-repeat';
-        panel.style.objectFit = 'contain';
+        panel.style.objectFit = 'cover';
         
-        // Ensure perfect fitting for any image size
+        // Ensure perfect fitting with 0% gap for any image size
         panel.style.display = 'flex';
         panel.style.alignItems = 'center';
         panel.style.justifyContent = 'center';
+        panel.style.width = '800px';
+        panel.style.height = '540px';
         
         // Add image controls
         addImageControls(panel, imageUrl);
@@ -453,8 +455,8 @@ function zoomImage(panel, factor) {
 }
 
 function resetImage(panel) {
-    panel.style.backgroundSize = 'contain';
-    panel.style.backgroundPosition = 'center';
+    panel.style.backgroundSize = 'cover';
+    panel.style.backgroundPosition = 'center center';
     panel.style.transform = 'translate(0px, 0px)';
 }
 
@@ -729,24 +731,26 @@ function makeBubbleDraggable(bubble, bubbleIndex) {
     });
 }
 
-// Function to ensure perfect image fitting
+// Function to ensure perfect image fitting with 0% gap
 function ensurePerfectImageFit() {
     const gridItems = document.querySelectorAll('.grid-item');
     gridItems.forEach(function(item) {
-        // Ensure the image fits perfectly without cropping
-        item.style.backgroundSize = 'contain';
+        // Ensure the image fills the entire 800x540 template with 0% gap
+        item.style.backgroundSize = 'cover';
         item.style.backgroundPosition = 'center center';
         item.style.backgroundRepeat = 'no-repeat';
-        item.style.objectFit = 'contain';
+        item.style.objectFit = 'cover';
         
         // Add a fallback background color
         if (!item.style.backgroundImage || item.style.backgroundImage === 'none') {
             item.style.backgroundColor = '#f0f0f0';
         }
         
-        // Ensure the container maintains aspect ratio
+        // Ensure the container fills completely
         item.style.display = 'flex';
         item.style.alignItems = 'center';
         item.style.justifyContent = 'center';
+        item.style.width = '800px';
+        item.style.height = '540px';
     });
 }
