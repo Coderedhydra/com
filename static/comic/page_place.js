@@ -302,12 +302,17 @@ function printAllPages() {
             setTimeout(() => {
                 printPage();
                 pageIndex++;
-                setTimeout(printNextPage, 1000); // Wait 1 second between pages
-            }, 500); // Wait for page to render
-        } else {
-            // Restore original page
-            current_page = originalPage;
-            placeDialogs(pages[current_page]);
+                if (pageIndex < pages.length) {
+                    setTimeout(printNextPage, 2000); // Wait 2 seconds between pages
+                } else {
+                    // Restore original page after all pages are printed
+                    setTimeout(() => {
+                        current_page = originalPage;
+                        placeDialogs(pages[current_page]);
+                        console.log(`All pages printed! Restored to page ${originalPage + 1}`);
+                    }, 1000);
+                }
+            }, 1000); // Wait for page to render
         }
     }
     

@@ -12,8 +12,34 @@ from backend.page_create import page_create,page_json
 from backend.utils import cleanup, download_video
 from backend.utils import copy_template
 import json
+import shutil
 
 app = Flask(__name__)
+
+def copy_to_static():
+    """Copy generated comic files to static directory for Flask serving"""
+    # Create static/comic directory if it doesn't exist
+    os.makedirs('static/comic', exist_ok=True)
+    
+    # Copy all files from output_template to static/comic
+    if os.path.exists('output_template'):
+        for item in os.listdir('output_template'):
+            src = os.path.join('output_template', item)
+            dst = os.path.join('static/comic', item)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst, dirs_exist_ok=True)
+            else:
+                shutil.copy2(src, dst)
+    
+    # Copy frames to static directory
+    if os.path.exists('frames/final'):
+        os.makedirs('static/comic/frames/final', exist_ok=True)
+        for item in os.listdir('frames/final'):
+            src = os.path.join('frames/final', item)
+            dst = os.path.join('static/comic/frames/final', item)
+            shutil.copy2(src, dst)
+    
+    print("Comic files copied to static directory for Flask serving!")
 
 def create_test_comic_data():
     """Create test comic data for testing purposes"""
@@ -71,20 +97,20 @@ def create_comic():
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    # COMMENTED OUT FOR TESTING - Heavy processing steps
-    # get_subtitles(video)
-    # time.sleep(3)
-    # generate_keyframes(video)
-    # black_x, black_y, _, _ = black_bar_crop()
-    # crop_coords, page_templates, panels = generate_layout()
-    # bubbles = bubble_create(video, crop_coords, black_x, black_y)
-    # pages  = page_create(page_templates,panels,bubbles)
-    # page_json(pages)
-    # style_frames()
+    # FULL PROGRAM - All processing steps enabled
+    print("Starting full comic generation...")
+    get_subtitles(video)
+    time.sleep(3)
+    generate_keyframes(video)
+    black_x, black_y, _, _ = black_bar_crop()
+    crop_coords, page_templates, panels = generate_layout()
+    bubbles = bubble_create(video, crop_coords, black_x, black_y)
+    pages  = page_create(page_templates,panels,bubbles)
+    page_json(pages)
+    style_frames()
     
-    # SIMPLIFIED FOR TESTING - Create basic test data
-    print("Creating test comic data...")
-    create_test_comic_data()
+    # Copy to static directory for Flask serving
+    copy_to_static()
     
     print("--- Execution time : %s minutes ---" % ((time.time() - start_time) / 60))
 
