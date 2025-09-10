@@ -17,7 +17,8 @@
 <body>
     <div class="button">
         <button onclick="prevPage()"><img src="{{ url_for('static', filename='comic/assets/backward.png') }}" alt="Previous"></button>
-        <button onclick="printPage()" style="margin: 0 10px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Print Page</button>
+        <button onclick="printPage()" style="margin: 0 10px; padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Print Page (HQ)</button>
+        <button onclick="exportServerSideHQ()" style="margin: 0 10px; padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">Export Ultra HQ</button>
         <button onclick="printAllPages()" style="margin: 0 10px; padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Print All</button>
         <button onclick="uploadImage()" style="margin: 0 10px; padding: 10px 20px; background-color: #ffc107; color: black; border: none; border-radius: 5px; cursor: pointer;">Upload Image</button>
         <button onclick="nextPage()"><img src="{{ url_for('static', filename='comic/assets/forward.png') }}" alt="Next"></button>

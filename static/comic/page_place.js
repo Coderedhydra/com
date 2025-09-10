@@ -212,16 +212,14 @@ function editBubble(bubble) {
     });
 }
 
-// Print/Download functionality
+// High-Quality Print/Download functionality
 function printPage() {
-    console.log('Starting print function...');
+    console.log('Starting high-quality print function...');
     
     // Check if html2canvas is loaded
     if (typeof html2canvas === 'undefined') {
-        // Fallback to browser print
-        console.log('html2canvas not available, using browser print...');
-        alert('Using browser print function. Make sure to select "Save as PDF" or print to file.');
-        window.print();
+        console.log('html2canvas not available, loading dynamically...');
+        loadHtml2Canvas().then(() => printPage());
         return;
     }
     
@@ -231,61 +229,165 @@ function printPage() {
         return;
     }
     
-    // Create a temporary container with the page content
+    // Create a high-quality temporary container
     const tempContainer = document.createElement('div');
     tempContainer.style.width = '800px';
     tempContainer.style.height = '1080px';
     tempContainer.style.position = 'absolute';
     tempContainer.style.left = '-9999px';
     tempContainer.style.top = '0';
-    tempContainer.style.backgroundColor = 'white';
+    tempContainer.style.backgroundColor = '#ffffff';
     tempContainer.style.overflow = 'hidden';
+    tempContainer.style.transform = 'scale(1)';
+    tempContainer.style.transformOrigin = 'top left';
     
-    // Clone the wrapper content
+    // Clone the wrapper content with high fidelity
     const clonedContent = wrapper.cloneNode(true);
     clonedContent.style.width = '800px';
     clonedContent.style.height = '1080px';
     clonedContent.style.margin = '0';
     clonedContent.style.padding = '0';
+    clonedContent.style.borderRadius = '0';
+    clonedContent.style.boxShadow = 'none';
+    
+    // Ensure all images are loaded and high quality
+    const images = clonedContent.querySelectorAll('*');
+    images.forEach(element => {
+        if (element.style.backgroundImage) {
+            element.style.imageRendering = 'high-quality';
+            element.style.imageRendering = '-webkit-optimize-contrast';
+            element.style.imageRendering = 'crisp-edges';
+        }
+    });
     
     tempContainer.appendChild(clonedContent);
     document.body.appendChild(tempContainer);
     
-    console.log('Capturing page with html2canvas...');
+    console.log('Capturing page with high-quality settings...');
     
-    // Use html2canvas to capture the page
+    // Use html2canvas with maximum quality settings
     html2canvas(tempContainer, {
         width: 800,
         height: 1080,
-        scale: 1,
+        scale: 3, // 3x scaling for ultra-high quality
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        logging: true,
+        logging: false,
+        imageTimeout: 30000,
+        removeContainer: false,
+        foreignObjectRendering: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 800,
+        windowHeight: 1080,
         onclone: function(clonedDoc) {
-            console.log('Canvas cloned successfully');
+            console.log('High-quality canvas cloned successfully');
+            // Enhance image quality in cloned document
+            const clonedImages = clonedDoc.querySelectorAll('*');
+            clonedImages.forEach(element => {
+                if (element.style && element.style.backgroundImage) {
+                    element.style.imageRendering = 'high-quality';
+                    element.style.imageRendering = '-webkit-optimize-contrast';
+                }
+            });
         }
     }).then(canvas => {
-        console.log('Canvas created, downloading...');
+        console.log('High-quality canvas created, processing...');
         
-        // Download the canvas as PNG
+        // Create high-quality PNG with maximum settings
+        const highQualityDataURL = canvas.toDataURL('image/png', 1.0);
+        
+        // Download the high-quality image
         const link = document.createElement('a');
-        link.download = `comic_page_${current_page + 1}_800x1080.png`;
-        link.href = canvas.toDataURL('image/png', 1.0);
+        link.download = `comic_page_${current_page + 1}_HQ_${canvas.width}x${canvas.height}.png`;
+        link.href = highQualityDataURL;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
-        console.log('Download started');
+        console.log(`High-quality download started: ${canvas.width}x${canvas.height}px`);
         
         // Clean up
         document.body.removeChild(tempContainer);
     }).catch(error => {
-        console.error('Error generating image:', error);
-        alert('Error generating image: ' + error.message);
+        console.error('Error generating high-quality image:', error);
+        alert('Error generating high-quality image: ' + error.message + '\nTrying fallback method...');
+        
+        // Fallback to browser print
+        window.print();
+        
         if (document.body.contains(tempContainer)) {
             document.body.removeChild(tempContainer);
         }
+    });
+}
+
+// Function to dynamically load html2canvas if not available
+function loadHtml2Canvas() {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
+
+// Server-side ultra high-quality export
+function exportServerSideHQ() {
+    console.log('Starting server-side ultra high-quality export...');
+    
+    const exportButton = document.querySelector('button[onclick="exportServerSideHQ()"]');
+    const originalText = exportButton.innerHTML;
+    exportButton.innerHTML = 'Exporting...';
+    exportButton.disabled = true;
+    
+    fetch('/export_hq_png', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            page: current_page
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            // Server-side export successful - download the file
+            return response.blob();
+        } else {
+            // Fallback to client-side
+            return response.json().then(data => {
+                console.log('Server-side export not available, using enhanced client-side method');
+                printPage(); // Use the enhanced client-side method
+                throw new Error('Fallback to client-side');
+            });
+        }
+    })
+    .then(blob => {
+        if (blob) {
+            // Download the server-generated high-quality PNG
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `comic_page_${current_page + 1}_ULTRA_HQ.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            console.log('Ultra high-quality server-side export completed');
+        }
+    })
+    .catch(error => {
+        console.log('Using client-side high-quality export as fallback');
+        // The client-side method is already called above
+    })
+    .finally(() => {
+        // Reset button
+        exportButton.innerHTML = originalText;
+        exportButton.disabled = false;
     });
 }
 

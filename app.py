@@ -1,8 +1,10 @@
 import os
 import webbrowser
 import time
+import subprocess
+import base64
 
-from flask import Flask, render_template,request
+from flask import Flask, render_template, request, jsonify, send_file
 from backend.subtitles.subs import get_subtitles
 from backend.keyframes.keyframes import generate_keyframes, black_bar_crop
 from backend.panel_layout.layout_gen import generate_layout
@@ -101,6 +103,116 @@ def comic():
         return render_template('comic.html')
     else:
         return "Comic not found. Please generate a comic first.", 404
+
+@app.route('/export_hq_png', methods=['POST'])
+def export_hq_png():
+    """Export high-quality PNG using server-side rendering"""
+    try:
+        data = request.get_json()
+        page_number = data.get('page', 0)
+        
+        # Create a high-quality export using wkhtmltopdf/wkhtmltoimage
+        # This is a server-side alternative that produces better quality
+        
+        # Generate the HTML content for the specific page
+        html_content = f'''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <link rel="stylesheet" href="static/comic/page.css">
+            <link rel="stylesheet" href="static/comic/bubble.css">
+            <style>
+                body {{ 
+                    margin: 0; 
+                    padding: 0; 
+                    background: white;
+                    width: 800px;
+                    height: 1080px;
+                }}
+                .wrapper {{
+                    border-radius: 0 !important;
+                    box-shadow: none !important;
+                }}
+                .grid-item {{
+                    image-rendering: -webkit-optimize-contrast;
+                    image-rendering: crisp-edges;
+                }}
+            </style>
+            <script src="static/comic/page.js"></script>
+        </head>
+        <body>
+            <div class="wrapper">
+                <div class="grid-container">
+                    <div class="grid-item" id="_1"></div>
+                    <div class="grid-item" id="_2"></div>
+                </div>
+            </div>
+            <script>
+                // Load specific page content
+                if (typeof pages !== 'undefined' && pages[{page_number}]) {{
+                    // Simplified version of placeDialogs for server-side rendering
+                    const page = pages[{page_number}];
+                    const gridItems = document.querySelectorAll('.grid-item');
+                    
+                    page.panels.forEach(function (panel, index) {{
+                        if (gridItems[index]) {{
+                            const gridItem = gridItems[index];
+                            gridItem.style.backgroundImage = `url("static/comic/frames/final/${{panel.image}}.png")`;
+                            
+                            if (page.bubbles[index] && page.bubbles[index].dialog !== "((action-scene))") {{
+                                const bubble = document.createElement('div');
+                                bubble.className = 'bubble';
+                                bubble.innerHTML = page.bubbles[index].dialog;
+                                bubble.style.transform = `translate(${{page.bubbles[index].bubble_offset_x}}px, ${{page.bubbles[index].bubble_offset_y}}px)`;
+                                gridItem.appendChild(bubble);
+                            }}
+                        }}
+                    }});
+                }}
+            </script>
+        </body>
+        </html>
+        '''
+        
+        # Save temporary HTML file
+        temp_html_path = f'/tmp/comic_page_{page_number}.html'
+        with open(temp_html_path, 'w') as f:
+            f.write(html_content)
+        
+        # Use wkhtmltoimage for high-quality PNG export
+        output_path = f'/tmp/comic_page_{page_number}_HQ.png'
+        
+        # Command for high-quality image generation
+        cmd = [
+            'wkhtmltoimage',
+            '--width', '800',
+            '--height', '1080',
+            '--format', 'png',
+            '--quality', '100',
+            '--disable-smart-width',
+            '--enable-local-file-access',
+            temp_html_path,
+            output_path
+        ]
+        
+        # Try to run wkhtmltoimage
+        try:
+            subprocess.run(cmd, check=True, capture_output=True)
+            
+            # Send the high-quality PNG file
+            return send_file(output_path, as_attachment=True, download_name=f'comic_page_{page_number + 1}_HQ.png')
+            
+        except subprocess.CalledProcessError:
+            # Fallback: Return JSON response for client-side processing
+            return jsonify({
+                'status': 'fallback',
+                'message': 'Server-side rendering not available. Using client-side method.',
+                'html_content': html_content
+            })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 def create_comic():
