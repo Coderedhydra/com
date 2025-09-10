@@ -47,8 +47,13 @@ def create_test_comic_data():
         }
     ]
     
-    # Write test data to page.js
+    # Write test data to page.js in both locations
     with open('output_template/page.js', 'w') as f:
+        f.write(f'var pages = ')
+        json.dump(test_pages, f, indent=4)
+    
+    # Also write to static directory for Flask serving
+    with open('static/comic/page.js', 'w') as f:
         f.write(f'var pages = ')
         json.dump(test_pages, f, indent=4)
     
@@ -78,12 +83,11 @@ def index():
 
 @app.route('/comic')
 def comic():
-    """Serve the comic page directly"""
-    comic_path = os.path.join(os.getcwd(), 'output', 'page.html')
-    if os.path.exists(comic_path):
-        with open(comic_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return content
+    """Serve the comic page using Flask template"""
+    # Check if comic data exists
+    comic_data_path = os.path.join(os.getcwd(), 'static', 'comic', 'page.js')
+    if os.path.exists(comic_data_path):
+        return render_template('comic.html')
     else:
         return "Comic not found. Please generate a comic first.", 404
 
