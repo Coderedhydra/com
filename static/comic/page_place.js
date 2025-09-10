@@ -362,7 +362,7 @@ function replacePanelImage(panelNumber, imageUrl) {
     const panel = document.getElementById(`_${panelNumber}`);
     if (panel) {
         panel.style.backgroundImage = `url("${imageUrl}")`;
-        panel.style.backgroundSize = 'cover'; // Changed to cover for better fitting
+        panel.style.backgroundSize = 'contain'; // Changed to contain for perfect fit without cropping
         panel.style.backgroundPosition = 'center';
         panel.style.backgroundRepeat = 'no-repeat';
         
@@ -442,7 +442,7 @@ function addImageControls(panel, imageUrl) {
 }
 
 function zoomImage(panel, factor) {
-    const currentSize = panel.style.backgroundSize || 'cover';
+    const currentSize = panel.style.backgroundSize || 'contain';
     let currentScale = 1;
     
     if (currentSize.includes('scale')) {
@@ -457,18 +457,18 @@ function zoomImage(panel, factor) {
 }
 
 function resetImage(panel) {
-    panel.style.backgroundSize = 'cover'; // Changed to cover for consistency
+    panel.style.backgroundSize = 'contain'; // Changed to contain for perfect fit
     panel.style.backgroundPosition = 'center';
     panel.style.transform = 'translate(0px, 0px)';
 }
 
 function fitImage(panel) {
     // Toggle between cover and contain for different fitting options
-    const currentSize = panel.style.backgroundSize || 'cover';
-    if (currentSize.includes('cover')) {
-        panel.style.backgroundSize = 'contain';
-    } else {
+    const currentSize = panel.style.backgroundSize || 'contain';
+    if (currentSize.includes('contain')) {
         panel.style.backgroundSize = 'cover';
+    } else {
+        panel.style.backgroundSize = 'contain';
     }
     panel.style.backgroundPosition = 'center';
 }

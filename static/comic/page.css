@@ -42,7 +42,7 @@ body {
 .grid-item {
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: cover; /* Changed from contain to cover for better fitting */
+    background-size: contain; /* Changed back to contain for perfect fit without cropping */
     border: 3px solid black;
     position: relative;
     width: 800px;
