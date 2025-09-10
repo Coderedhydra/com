@@ -89,9 +89,17 @@ def create_comic():
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
+    # Check if video file exists
+    if not os.path.exists(video):
+        print(f"Video file {video} not found. Using test data...")
+        create_test_comic_data()
+        copy_to_static()
+        return
+    
     try:
-        # Try to run the full program
-        print("Starting full comic generation...")
+        # Run the full program - all dependencies are now available
+        print("Starting full comic generation from video...")
+        print("This will generate real comic pages from video frames...")
         
         # Import and run the full processing pipeline
         from backend.subtitles.subs import get_subtitles
@@ -101,26 +109,33 @@ def create_comic():
         from backend.speech_bubble.bubble import bubble_create
         from backend.page_create import page_create, page_json
         
+        print("Step 1: Generating subtitles...")
         get_subtitles(video)
         time.sleep(3)
+        
+        print("Step 2: Generating keyframes...")
         generate_keyframes(video)
+        
+        print("Step 3: Processing layout...")
         black_x, black_y, _, _ = black_bar_crop()
         crop_coords, page_templates, panels = generate_layout()
+        
+        print("Step 4: Creating speech bubbles...")
         bubbles = bubble_create(video, crop_coords, black_x, black_y)
+        
+        print("Step 5: Creating comic pages...")
         pages = page_create(page_templates, panels, bubbles)
         page_json(pages)
+        
+        print("Step 6: Styling frames...")
         style_frames()
         
         print("Full comic generation completed successfully!")
-        
-    except ImportError as e:
-        print(f"Full program dependencies not available: {e}")
-        print("Using test data instead...")
-        create_test_comic_data()
+        print(f"Generated {len(pages)} comic pages from video!")
         
     except Exception as e:
         print(f"Error in full program: {e}")
-        print("Using test data instead...")
+        print("Falling back to test data...")
         create_test_comic_data()
     
     # Copy to static directory for Flask serving
@@ -172,14 +187,14 @@ def handle_link():
         print(f"Processing link: {link}")
         
         try:
-            # Try to download video from link
+            # Download video from link
             from backend.utils import download_video
+            print(f"Downloading video from: {link}")
             download_video(link)
             print("Video downloaded successfully!")
-        except ImportError:
-            print("Video download not available, using test data...")
         except Exception as e:
-            print(f"Error downloading video: {e}, using test data...")
+            print(f"Error downloading video: {e}")
+            return f"Error downloading video: {e}"
         
         # Create comic
         create_comic()

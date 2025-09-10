@@ -1,4 +1,4 @@
-path = '/static/comic/frames/final/'
+path = '../frames/final/'
 current_page = 0
 
 function placeDialogs(page) {
@@ -302,17 +302,12 @@ function printAllPages() {
             setTimeout(() => {
                 printPage();
                 pageIndex++;
-                if (pageIndex < pages.length) {
-                    setTimeout(printNextPage, 2000); // Wait 2 seconds between pages
-                } else {
-                    // Restore original page after all pages are printed
-                    setTimeout(() => {
-                        current_page = originalPage;
-                        placeDialogs(pages[current_page]);
-                        console.log(`All pages printed! Restored to page ${originalPage + 1}`);
-                    }, 1000);
-                }
-            }, 1000); // Wait for page to render
+                setTimeout(printNextPage, 1000); // Wait 1 second between pages
+            }, 500); // Wait for page to render
+        } else {
+            // Restore original page
+            current_page = originalPage;
+            placeDialogs(pages[current_page]);
         }
     }
     
@@ -362,7 +357,7 @@ function replacePanelImage(panelNumber, imageUrl) {
     const panel = document.getElementById(`_${panelNumber}`);
     if (panel) {
         panel.style.backgroundImage = `url("${imageUrl}")`;
-        panel.style.backgroundSize = 'contain'; // Changed to contain for perfect fit without cropping
+        panel.style.backgroundSize = 'contain';
         panel.style.backgroundPosition = 'center';
         panel.style.backgroundRepeat = 'no-repeat';
         
@@ -420,19 +415,8 @@ function addImageControls(panel, imageUrl) {
     resetBtn.style.cursor = 'pointer';
     resetBtn.onclick = () => resetImage(panel);
     
-    const fitBtn = document.createElement('button');
-    fitBtn.innerHTML = 'Fit';
-    fitBtn.style.margin = '2px';
-    fitBtn.style.padding = '2px 6px';
-    fitBtn.style.backgroundColor = 'white';
-    fitBtn.style.border = '1px solid #ccc';
-    fitBtn.style.borderRadius = '2px';
-    fitBtn.style.cursor = 'pointer';
-    fitBtn.onclick = () => fitImage(panel);
-    
     controls.appendChild(zoomInBtn);
     controls.appendChild(zoomOutBtn);
-    controls.appendChild(fitBtn);
     controls.appendChild(resetBtn);
     
     panel.appendChild(controls);
@@ -452,25 +436,14 @@ function zoomImage(panel, factor) {
         }
     }
     
-    const newScale = Math.max(0.5, Math.min(3.0, currentScale * factor)); // Limit zoom range
+    const newScale = currentScale * factor;
     panel.style.backgroundSize = `scale(${newScale})`;
 }
 
 function resetImage(panel) {
-    panel.style.backgroundSize = 'contain'; // Changed to contain for perfect fit
+    panel.style.backgroundSize = 'contain';
     panel.style.backgroundPosition = 'center';
     panel.style.transform = 'translate(0px, 0px)';
-}
-
-function fitImage(panel) {
-    // Toggle between cover and contain for different fitting options
-    const currentSize = panel.style.backgroundSize || 'contain';
-    if (currentSize.includes('contain')) {
-        panel.style.backgroundSize = 'cover';
-    } else {
-        panel.style.backgroundSize = 'contain';
-    }
-    panel.style.backgroundPosition = 'center';
 }
 
 function makePanelDraggable(panel) {
