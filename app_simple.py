@@ -76,6 +76,17 @@ def copy_template():
 def index():
     return render_template('index.html')
 
+@app.route('/comic')
+def comic():
+    """Serve the comic page directly"""
+    comic_path = os.path.join(os.getcwd(), 'output', 'page.html')
+    if os.path.exists(comic_path):
+        with open(comic_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return content
+    else:
+        return "Comic not found. Please generate a comic first.", 404
+
 def create_comic():
     start_time = time.time()
     print("Creating test comic data...")
@@ -101,13 +112,8 @@ def upload_file():
         # Create comic
         create_comic()
         
-        # Open the comic page
-        comic_path = os.path.join(os.getcwd(), 'output', 'page.html')
-        if os.path.exists(comic_path):
-            webbrowser.open(f'file:///{comic_path}')
-            return "Comic created Successfully! Check your browser for the comic page."
-        else:
-            return "Comic created but page not found. Please check the output directory."
+        # Redirect to comic page
+        return "Comic created Successfully! <a href='/comic'>Click here to view your comic</a>"
 
 @app.route('/handle_link', methods=['GET', 'POST'])
 def handle_link():
@@ -120,16 +126,12 @@ def handle_link():
         # For testing, just create a test comic
         create_comic()
         
-        # Open the comic page
-        comic_path = os.path.join(os.getcwd(), 'output', 'page.html')
-        if os.path.exists(comic_path):
-            webbrowser.open(f'file:///{comic_path}')
-            return "Comic created Successfully! Check your browser for the comic page."
-        else:
-            return "Comic created but page not found. Please check the output directory."
+        # Redirect to comic page
+        return "Comic created Successfully! <a href='/comic'>Click here to view your comic</a>"
 
 if __name__ == '__main__':
     print("Starting CineComic Flask application...")
-    print("Open your browser and go to: http://localhost:5001")
+    print("Open your browser and go to: http://localhost:5000")
+    print("Comic will be available at: http://localhost:5000/comic")
     print("This is a simplified version for testing the UI functionality.")
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5000)
