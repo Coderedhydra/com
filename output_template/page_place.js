@@ -221,6 +221,7 @@ function printPage() {
     if (typeof html2canvas === 'undefined') {
         // Fallback to browser print
         console.log('html2canvas not available, using browser print...');
+        alert('Using browser print function. Make sure to select "Save as PDF" or print to file.');
         window.print();
         return;
     }
@@ -321,14 +322,32 @@ function uploadImage() {
 function handleImageUpload(event) {
     const file = event.target.files[0];
     if (file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file.');
+            return;
+        }
+        
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('File size too large. Please select an image smaller than 10MB.');
+            return;
+        }
+        
         const reader = new FileReader();
         reader.onload = function(e) {
             const imageUrl = e.target.result;
-            // Ask user which panel to replace
-            const panelChoice = prompt('Which panel to replace? (1 or 2)');
+            // Ask user which panel to replace with better UI
+            const panelChoice = prompt('Which panel to replace?\n\n1 - Top panel\n2 - Bottom panel\n\nEnter 1 or 2:');
             if (panelChoice === '1' || panelChoice === '2') {
                 replacePanelImage(panelChoice, imageUrl);
+                alert(`Panel ${panelChoice} image updated successfully!`);
+            } else if (panelChoice !== null) {
+                alert('Invalid choice. Please enter 1 or 2.');
             }
+        };
+        reader.onerror = function() {
+            alert('Error reading file. Please try again.');
         };
         reader.readAsDataURL(file);
     }

@@ -11,8 +11,56 @@ from backend.speech_bubble.bubble import bubble_create
 from backend.page_create import page_create,page_json
 from backend.utils import cleanup, download_video
 from backend.utils import copy_template
+import json
 
 app = Flask(__name__)
+
+def create_test_comic_data():
+    """Create test comic data for testing purposes"""
+    # Create test pages data
+    test_pages = [
+        {
+            "panels": [
+                {
+                    "image": "test1",
+                    "row_span": 1,
+                    "col_span": 1
+                },
+                {
+                    "image": "test2", 
+                    "row_span": 1,
+                    "col_span": 1
+                }
+            ],
+            "bubbles": [
+                {
+                    "dialog": "Hello! This is a test bubble with normal text.",
+                    "emotion": "normal",
+                    "bubble_offset_x": 50,
+                    "bubble_offset_y": 50,
+                    "tail_offset_x": 20,
+                    "tail_offset_y": 30,
+                    "tail_deg": 45
+                },
+                {
+                    "dialog": "This is another test bubble!",
+                    "emotion": "normal",
+                    "bubble_offset_x": 100,
+                    "bubble_offset_y": 100,
+                    "tail_offset_x": 30,
+                    "tail_offset_y": 40,
+                    "tail_deg": 60
+                }
+            ]
+        }
+    ]
+    
+    # Write test data to page.js
+    with open('output_template/page.js', 'w') as f:
+        f.write(f'var pages = ')
+        json.dump(test_pages, f, indent=4)
+    
+    print("Test comic data created successfully!")
 
 @app.route('/')
 def index():
@@ -22,15 +70,22 @@ def index():
 def create_comic():
     start_time = time.time()
     video = 'video/uploaded.mp4'
-    get_subtitles(video)
-    time.sleep(3)
-    generate_keyframes(video)
-    black_x, black_y, _, _ = black_bar_crop()
-    crop_coords, page_templates, panels = generate_layout()
-    bubbles = bubble_create(video, crop_coords, black_x, black_y)
-    pages  = page_create(page_templates,panels,bubbles)
-    page_json(pages)
-    style_frames()
+    
+    # COMMENTED OUT FOR TESTING - Heavy processing steps
+    # get_subtitles(video)
+    # time.sleep(3)
+    # generate_keyframes(video)
+    # black_x, black_y, _, _ = black_bar_crop()
+    # crop_coords, page_templates, panels = generate_layout()
+    # bubbles = bubble_create(video, crop_coords, black_x, black_y)
+    # pages  = page_create(page_templates,panels,bubbles)
+    # page_json(pages)
+    # style_frames()
+    
+    # SIMPLIFIED FOR TESTING - Create basic test data
+    print("Creating test comic data...")
+    create_test_comic_data()
+    
     print("--- Execution time : %s minutes ---" % ((time.time() - start_time) / 60))
 
 @app.route('/uploader', methods=['GET', 'POST'])
