@@ -116,8 +116,15 @@ def generate_keyframes(video):
         data = f.read()
 
     subs = srt.parse(data)
+    subs_list = list(subs)
+    print(f"Processing {len(subs_list)} subtitles for keyframe generation")
 
-    for sub in subs:
+    for sub in subs_list:
+        # Skip invalid subtitle indices
+        if sub.index < 1 or sub.index > 1000:  # Reasonable range check
+            print(f"Skipping invalid subtitle index: {sub.index}")
+            continue
+            
         frames = []
         if not os.path.exists(f"frames/sub{sub.index}"):
             os.makedirs(f"frames/sub{sub.index}")
@@ -126,6 +133,7 @@ def generate_keyframes(video):
         frames = extract_frames(video, os.path.join("frames",f"sub{sub.index}"), sub.start.total_seconds(), sub.end.total_seconds(), 1)
         
         if not frames:
+            print(f"No frames extracted for subtitle {sub.index}")
             continue
             
         # Simple selection - just take the middle frame for speed
