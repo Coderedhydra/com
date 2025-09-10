@@ -14,7 +14,7 @@ template_specs = {
         "direction": "row"
     },
     "3" : {
-        "span" : 3,
+        "span" : 1,
         "direction": "column"
     },
      "4" : {
@@ -48,10 +48,9 @@ def get_files_in_folder(folder_path):
             file_dicts.append({"name": file , 'rank' :  rank})
     return file_dicts
 
-templates = ['14124114','312341' , '4432111' , '21411241' , '3241141' , '13411141' , '12411131' ,'1321113', '131423' , 
-'142344' , '234241','2411413','3141214','42111131']
+templates = ['12', '21', '11', '22']
 
-min_length = 6
+min_length = 2
 folder_path = 'frames/final' # Specify the folder path
 
 
@@ -97,47 +96,17 @@ def get_templates(input):
 
 def last_page(panels,count_images, length):
     count = 1
-    # new = copy.deepcopy(css_dict)
-    # for i in range(length + 1, 13):
-    #     new[f'#_{i}']['display'] = 'none'
     
     if length == 1:
-        new_panel = panel(f'frame{count_images:03d}', 3, 4)
+        new_panel = panel(f'frame{count_images:03d}', 1, 1)
         panels.append(new_panel)
     elif length == 2:
-        new_panel = panel(f'frame{count_images:03d}', 1, 4)
+        new_panel = panel(f'frame{count_images:03d}', 1, 1)
         panels.append(new_panel)
         count += 1
         count_images += 1
-        new_panel = panel(f'frame{count_images:03d}', 2, 4)
+        new_panel = panel(f'frame{count_images:03d}', 1, 1)
         panels.append(new_panel)
-    elif length == 3:
-        for i in range(0, 3):
-            new_panel = panel(f'frame{count_images:03d}', 1, 4)
-            panels.append(new_panel)
-            count += 1
-            count_images += 1
-    elif length == 4:
-        for i in range(0, 2):
-            new_panel = panel(f'frame{count_images:03d}', 1, 2)
-            panels.append(new_panel)
-            count += 1
-            count_images += 1
-        for i in range(2, 4):
-            new_panel = panel(f'frame{count_images:03d}', 2, 2)
-            panels.append(new_panel)
-            count += 1
-            count_images += 1
-    elif length == 5:
-        for i in range(0, 4):
-            new_panel = panel(f'frame{count_images:03d}', 1, 2)
-            panels.append(new_panel)
-            count += 1
-            count_images += 1
-        new_panel = panel(f'frame{count_images:03d}', 1, 4)
-        panels.append(new_panel)
-        count += 1
-        count_images += 1
 
     return panels
 
@@ -158,15 +127,11 @@ def panel_create(page_templates):
             panels = last_page(panels,count_images,len(page_template))
             break
 
-
         count = 1
         
         for i in page_template:
-
-            if(template_specs[i]['direction'] == 'row'):
-                new = panel(f'frame{count_images:03d}',template_specs[i]['span'] , 1)
-            else:
-                new = panel(f'frame{count_images:03d}', 1 ,template_specs[i]['span'])
+            # For 2-frame layout, each panel takes half the page
+            new = panel(f'frame{count_images:03d}', 1, 1)
             panels.append(new)
             count = count+1
             count_images+=1
