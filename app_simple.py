@@ -1,17 +1,9 @@
 import os
 import webbrowser
 import time
-
-from flask import Flask, render_template,request
-from backend.subtitles.subs import get_subtitles
-from backend.keyframes.keyframes import generate_keyframes, black_bar_crop
-from backend.panel_layout.layout_gen import generate_layout
-from backend.cartoonize.cartoonize import style_frames
-from backend.speech_bubble.bubble import bubble_create
-from backend.page_create import page_create,page_json
-from backend.utils import cleanup, download_video
-from backend.utils import copy_template
 import json
+
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -62,60 +54,82 @@ def create_test_comic_data():
     
     print("Test comic data created successfully!")
 
+def copy_template():
+    """Copy template files to output directory"""
+    import shutil
+    
+    # Create output directory if it doesn't exist
+    os.makedirs('output', exist_ok=True)
+    
+    # Copy all files from output_template to output
+    if os.path.exists('output_template'):
+        for item in os.listdir('output_template'):
+            src = os.path.join('output_template', item)
+            dst = os.path.join('output', item)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst, dirs_exist_ok=True)
+            else:
+                shutil.copy2(src, dst)
+        print("Template files copied to output directory!")
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
 def create_comic():
     start_time = time.time()
-    video = 'video/uploaded.mp4'
-    
-    # COMMENTED OUT FOR TESTING - Heavy processing steps
-    # get_subtitles(video)
-    # time.sleep(3)
-    # generate_keyframes(video)
-    # black_x, black_y, _, _ = black_bar_crop()
-    # crop_coords, page_templates, panels = generate_layout()
-    # bubbles = bubble_create(video, crop_coords, black_x, black_y)
-    # pages  = page_create(page_templates,panels,bubbles)
-    # page_json(pages)
-    # style_frames()
-    
-    # SIMPLIFIED FOR TESTING - Create basic test data
     print("Creating test comic data...")
     create_test_comic_data()
-    
-    print("--- Execution time : %s minutes ---" % ((time.time() - start_time) / 60))
+    copy_template()
+    print("--- Execution time : %s seconds ---" % (time.time() - start_time))
 
 @app.route('/uploader', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+        print("File upload request received")
         print(dict(request.form))  
-        f = request.files['file']  #we got the file as file storage object from frontend
-        print(type(f))
-        cleanup()
+        f = request.files['file']
+        print(f"File type: {type(f)}")
+        
+        # Create video directory if it doesn't exist
+        os.makedirs('video', exist_ok=True)
+        
+        # Save the uploaded file
         f.save("video/uploaded.mp4")
+        print("File saved successfully!")
+        
+        # Create comic
         create_comic()
-        copy_template()
-        webbrowser.open('file:///'+os.getcwd()+'/' + 'output/page.html')
-        return "Comic created Successfully"
-    
+        
+        # Open the comic page
+        comic_path = os.path.join(os.getcwd(), 'output', 'page.html')
+        if os.path.exists(comic_path):
+            webbrowser.open(f'file:///{comic_path}')
+            return "Comic created Successfully! Check your browser for the comic page."
+        else:
+            return "Comic created but page not found. Please check the output directory."
 
 @app.route('/handle_link', methods=['GET', 'POST'])
 def handle_link():
     if request.method == 'POST':
+        print("Link request received")
         print(dict(request.form))  
         link = request.form['link']
-        cleanup()
-        download_video(link)
+        print(f"Processing link: {link}")
+        
+        # For testing, just create a test comic
         create_comic()
-        copy_template()
-        webbrowser.open('file:///'+os.getcwd()+'/' + 'output/page.html')
-        return "Comic created Successfully"
-    
+        
+        # Open the comic page
+        comic_path = os.path.join(os.getcwd(), 'output', 'page.html')
+        if os.path.exists(comic_path):
+            webbrowser.open(f'file:///{comic_path}')
+            return "Comic created Successfully! Check your browser for the comic page."
+        else:
+            return "Comic created but page not found. Please check the output directory."
 
 if __name__ == '__main__':
     print("Starting CineComic Flask application...")
     print("Open your browser and go to: http://localhost:5000")
+    print("This is a simplified version for testing the UI functionality.")
     app.run(debug=True, host='0.0.0.0', port=5000)
