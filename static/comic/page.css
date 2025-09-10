@@ -47,6 +47,10 @@ body {
     position: relative;
     width: 800px;
     height: 540px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Print styles */
