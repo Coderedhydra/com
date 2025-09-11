@@ -17,18 +17,16 @@ function placeDialogs(page) {
 
         if(dialog_temp != "((action-scene))"){
 
-            // Create advanced bubble with authentic shape
-            const bubble_temp = createBubbleWithShape(
-                page['bubbles'][index]['dialog'],
-                page['bubbles'][index]['emotion'],
-                index,
-                page['bubbles'][index]['bubble_offset_x'],
-                page['bubbles'][index]['bubble_offset_y']
-            );
-
-            // Adjust font size based on content length
-            const fontSize = Math.max(12, Math.min(20, dialog_temp.length * 0.4));
-            bubble_temp.style.fontSize = fontSize + 'px';
+            // Create AI-enhanced bubble with exact format
+            const bubble_temp = createAIBubble(dialog_temp, {
+                left: page['bubbles'][index]['bubble_offset_x'] || 91.7906,
+                top: page['bubbles'][index]['bubble_offset_y'] || 40.3875,
+                maxWidth: 180,
+                minHeight: 50,
+                fontSize: Math.max(10, Math.min(14, 12 - (dialog_temp.length * 0.02))),
+                emotion: page['bubbles'][index]['emotion'],
+                bubbleIndex: index
+            });
 
             // Add bubble directly to gridItem, no wrapper
             gridItem.appendChild(bubble_temp);
