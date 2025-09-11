@@ -17,31 +17,27 @@ function placeDialogs(page) {
 
         if(dialog_temp != "((action-scene))"){
 
-            const wrapper = document.createElement('div');
-            wrapper.style.position = 'relative'; // Wrapper to contain the bubble
-            wrapper.style.width = '100%';
-            wrapper.style.height = '100%';
-
+            // Create bubble directly without wrapper to prevent container dragging
             const bubble_temp = document.createElement('div');
             bubble_temp.classList.add('bubble');
             bubble_temp.innerHTML = page['bubbles'][index]['dialog'];
             bubble_temp.setAttribute('data-editable', 'true');
-            bubble_temp.setAttribute('draggable', 'true');
-
+            bubble_temp.setAttribute('data-bubble-index', index);
+            
             const emotion = page['bubbles'][index]['emotion'];
 
             if (emotion == 'jagged') {
-                bubble_temp.style.backgroundImage = `url("/static/comic/assets/jagged.png")`;
+                bubble_temp.style.backgroundImage = `url("assets/jagged.png")`;
                 bubble_temp.style.backgroundPosition = 'center center';
                 bubble_temp.style.backgroundRepeat = 'no-repeat';
                 bubble_temp.style.backgroundSize = 'cover';
                 bubble_temp.style.backgroundColor = 'transparent';
-                bubble_temp.style.width = '200px';
-                bubble_temp.style.height = '94px';
-                bubble_temp.style.padding = '70px';
+                bubble_temp.style.width = '300px'; /* Updated width for 1:3 ratio */
+                bubble_temp.style.height = '120px'; /* Updated height */
+                bubble_temp.style.padding = '25px 35px';
             }
 
-            bubble_temp.style.fontSize = Math.max(12, Math.min(24, dialog_temp.length * 0.5)) + 'px';
+            bubble_temp.style.fontSize = Math.max(12, Math.min(20, dialog_temp.length * 0.4)) + 'px';
             bubble_temp.style.transform = `translate(${page['bubbles'][index]['bubble_offset_x']}px, ${page['bubbles'][index]['bubble_offset_y']}px)`;
 
             const tail = document.createElement('div');
@@ -53,10 +49,12 @@ function placeDialogs(page) {
             }
 
             bubble_temp.appendChild(tail);
-            wrapper.appendChild(bubble_temp);
-            gridItem.appendChild(wrapper);
+            // Add bubble directly to gridItem, no wrapper
+            gridItem.appendChild(bubble_temp);
 
-            // Add event listeners for editing and dragging
+            // Add dragging functionality - only bubble is draggable
+            makeBubbleDraggable(bubble_temp, index);
+            // Add event listeners for editing
             addBubbleInteractions(bubble_temp);
         }
     });
@@ -69,15 +67,8 @@ function placeDialogs(page) {
 document.addEventListener('DOMContentLoaded', function() {
     placeDialogs(pages[current_page]);
     
-    // Make existing panels draggable
-    setTimeout(() => {
-        const panels = document.querySelectorAll('.grid-item');
-        panels.forEach(panel => {
-            if (panel.style.backgroundImage && panel.style.backgroundImage !== 'none') {
-                makePanelDraggable(panel);
-            }
-        });
-    }, 1000);
+    // Only bubbles should be draggable, not panels
+    // Template should remain fixed at 800x540
 });
 
 function prevPage(){
@@ -421,8 +412,7 @@ function addImageControls(panel, imageUrl) {
     
     panel.appendChild(controls);
     
-    // Make panel draggable
-    makePanelDraggable(panel);
+    // Panels should not be draggable - only bubbles should be draggable
 }
 
 function zoomImage(panel, factor) {
@@ -446,18 +436,18 @@ function resetImage(panel) {
     panel.style.transform = 'translate(0px, 0px)';
 }
 
-function makePanelDraggable(panel) {
+// Function to make bubbles draggable - only bubbles should be draggable
+function makeBubbleDraggable(bubble, bubbleIndex) {
     let isDragging = false;
     let startX, startY, initialX, initialY;
     
-    panel.addEventListener('mousedown', function(e) {
-        if (e.target.tagName === 'BUTTON') return; // Don't drag when clicking buttons
-        
+    bubble.addEventListener('mousedown', function(e) {
         isDragging = true;
         startX = e.clientX;
         startY = e.clientY;
         
-        const transform = panel.style.transform;
+        // Get current position
+        const transform = bubble.style.transform;
         const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
         if (matches) {
             initialX = parseFloat(matches[1]);
@@ -467,8 +457,8 @@ function makePanelDraggable(panel) {
             initialY = 0;
         }
         
-        panel.style.cursor = 'grabbing';
         e.preventDefault();
+        bubble.style.cursor = 'grabbing';
     });
     
     document.addEventListener('mousemove', function(e) {
@@ -477,25 +467,30 @@ function makePanelDraggable(panel) {
         const deltaX = e.clientX - startX;
         const deltaY = e.clientY - startY;
         
-        panel.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
+        bubble.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
+        e.preventDefault();
     });
     
     document.addEventListener('mouseup', function() {
         if (isDragging) {
             isDragging = false;
-            panel.style.cursor = 'grab';
+            bubble.style.cursor = 'move';
+            
+            // Update the bubble position in the pages data
+            if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.clientX - startX);
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.clientY - startY);
+            }
         }
     });
     
-    // Touch events for mobile
-    panel.addEventListener('touchstart', function(e) {
-        if (e.target.tagName === 'BUTTON') return;
-        
+    // Touch support
+    bubble.addEventListener('touchstart', function(e) {
         isDragging = true;
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
         
-        const transform = panel.style.transform;
+        const transform = bubble.style.transform;
         const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
         if (matches) {
             initialX = parseFloat(matches[1]);
@@ -514,12 +509,20 @@ function makePanelDraggable(panel) {
         const deltaX = e.touches[0].clientX - startX;
         const deltaY = e.touches[0].clientY - startY;
         
-        panel.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
+        bubble.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
         e.preventDefault();
     });
     
     document.addEventListener('touchend', function() {
-        isDragging = false;
+        if (isDragging) {
+            isDragging = false;
+            
+            // Update the bubble position in the pages data
+            if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.changedTouches[0].clientX - startX);
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.changedTouches[0].clientY - startY);
+            }
+        }
     });
 }
 
