@@ -52,8 +52,8 @@ function placeDialogs(page) {
             // Add bubble directly to gridItem, no wrapper
             gridItem.appendChild(bubble_temp);
 
-            // Add dragging functionality - only bubble is draggable
-            makeBubbleDraggable(bubble_temp, index);
+            // Add ultra-high performance dragging - only bubble is draggable
+            makeBubbleDraggableUltra(bubble_temp, index);
             // Add event listeners for editing
             addBubbleInteractions(bubble_temp);
         }
@@ -622,6 +622,7 @@ function makeBubbleDraggable(bubble, bubbleIndex) {
     });
     
     document.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
         
         const deltaX = e.touches[0].clientX - startX;
         const deltaY = e.touches[0].clientY - startY;
@@ -639,6 +640,153 @@ function makeBubbleDraggable(bubble, bubbleIndex) {
                 pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.changedTouches[0].clientX - startX);
                 pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.changedTouches[0].clientY - startY);
             }
+        }
+    });
+}
+
+// ULTRA HIGH PERFORMANCE BUBBLE DRAGGING SYSTEM V2
+function makeBubbleDraggableUltra(bubble, bubbleIndex) {
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+    let animationFrame = null;
+    let dragThreshold = 3;
+    let hasMoved = false;
+    
+    function getTransformValues(element) {
+        const transform = element.style.transform || '';
+        const matches = transform.match(/translate(?:3d)?\(([^,]+)(?:px)?(?:,\s*([^,]+)(?:px)?)?(?:,\s*([^)]+)(?:px)?)?\)/);
+        if (matches) {
+            return {
+                x: parseFloat(matches[1]) || 0,
+                y: parseFloat(matches[2]) || 0
+            };
+        }
+        return { x: 0, y: 0 };
+    }
+    
+    function updateTransform(x, y) {
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        animationFrame = requestAnimationFrame(() => {
+            bubble.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        });
+    }
+    
+    bubble.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        isDragging = false;
+        hasMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        const currentPos = getTransformValues(bubble);
+        initialX = currentPos.x;
+        initialY = currentPos.y;
+        
+        bubble.classList.add('dragging');
+        bubble.style.cursor = 'grabbing';
+        bubble.style.zIndex = '2000';
+        document.body.style.userSelect = 'none';
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+        if (!bubble.classList.contains('dragging')) return;
+        
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+        
+        if (!isDragging && (Math.abs(deltaX) > dragThreshold || Math.abs(deltaY) > dragThreshold)) {
+            isDragging = true;
+            hasMoved = true;
+        }
+        
+        if (isDragging) {
+            e.preventDefault();
+            e.stopPropagation();
+            updateTransform(initialX + deltaX, initialY + deltaY);
+        }
+    });
+    
+    document.addEventListener('mouseup', function(e) {
+        if (bubble.classList.contains('dragging')) {
+            bubble.classList.remove('dragging');
+            bubble.style.cursor = 'grab';
+            bubble.style.zIndex = '1000';
+            document.body.style.userSelect = '';
+            
+            if (isDragging && hasMoved) {
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                const finalX = initialX + deltaX;
+                const finalY = initialY + deltaY;
+                
+                if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                    pages[current_page].bubbles[bubbleIndex].bubble_offset_x = finalX;
+                    pages[current_page].bubbles[bubbleIndex].bubble_offset_y = finalY;
+                }
+            }
+            
+            isDragging = false;
+            hasMoved = false;
+        }
+    });
+    
+    // Touch events
+    bubble.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        isDragging = false;
+        hasMoved = false;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        
+        const currentPos = getTransformValues(bubble);
+        initialX = currentPos.x;
+        initialY = currentPos.y;
+        
+        bubble.classList.add('dragging');
+        bubble.style.zIndex = '2000';
+    }, { passive: false });
+    
+    document.addEventListener('touchmove', function(e) {
+        if (!bubble.classList.contains('dragging')) return;
+        e.preventDefault();
+        
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - startX;
+        const deltaY = touch.clientY - startY;
+        
+        if (!isDragging && (Math.abs(deltaX) > dragThreshold || Math.abs(deltaY) > dragThreshold)) {
+            isDragging = true;
+            hasMoved = true;
+        }
+        
+        if (isDragging) {
+            updateTransform(initialX + deltaX, initialY + deltaY);
+        }
+    }, { passive: false });
+    
+    document.addEventListener('touchend', function(e) {
+        if (bubble.classList.contains('dragging')) {
+            bubble.classList.remove('dragging');
+            bubble.style.zIndex = '1000';
+            
+            if (isDragging && hasMoved) {
+                const touch = e.changedTouches[0];
+                const deltaX = touch.clientX - startX;
+                const deltaY = touch.clientY - startY;
+                const finalX = initialX + deltaX;
+                const finalY = initialY + deltaY;
+                
+                if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                    pages[current_page].bubbles[bubbleIndex].bubble_offset_x = finalX;
+                    pages[current_page].bubbles[bubbleIndex].bubble_offset_y = finalY;
+                }
+            }
+            
+            isDragging = false;
+            hasMoved = false;
         }
     });
 }
