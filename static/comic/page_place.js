@@ -17,43 +17,22 @@ function placeDialogs(page) {
 
         if(dialog_temp != "((action-scene))"){
 
-            // Create bubble directly without wrapper to prevent container dragging
-            const bubble_temp = document.createElement('div');
-            bubble_temp.classList.add('bubble');
-            bubble_temp.innerHTML = page['bubbles'][index]['dialog'];
-            bubble_temp.setAttribute('data-editable', 'true');
-            bubble_temp.setAttribute('data-bubble-index', index);
-            
-            const emotion = page['bubbles'][index]['emotion'];
+            // Create advanced bubble with authentic shape
+            const bubble_temp = createBubbleWithShape(
+                page['bubbles'][index]['dialog'],
+                page['bubbles'][index]['emotion'],
+                index,
+                page['bubbles'][index]['bubble_offset_x'],
+                page['bubbles'][index]['bubble_offset_y']
+            );
 
-            if (emotion == 'jagged') {
-                bubble_temp.style.backgroundImage = `url("/static/comic/assets/jagged.png")`;
-                bubble_temp.style.backgroundPosition = 'center center';
-                bubble_temp.style.backgroundRepeat = 'no-repeat';
-                bubble_temp.style.backgroundSize = 'cover';
-                bubble_temp.style.backgroundColor = 'transparent';
-                bubble_temp.style.width = '300px'; /* Updated width for 1:3 ratio */
-                bubble_temp.style.height = '120px'; /* Updated height */
-                bubble_temp.style.padding = '25px 35px';
-            }
+            // Adjust font size based on content length
+            const fontSize = Math.max(12, Math.min(20, dialog_temp.length * 0.4));
+            bubble_temp.style.fontSize = fontSize + 'px';
 
-            bubble_temp.style.fontSize = Math.max(12, Math.min(20, dialog_temp.length * 0.4)) + 'px';
-            bubble_temp.style.transform = `translate(${page['bubbles'][index]['bubble_offset_x']}px, ${page['bubbles'][index]['bubble_offset_y']}px)`;
-
-            const tail = document.createElement('div');
-            tail.classList.add('tail');
-            if (page['bubbles'][index]['tail_offset_x'] == null || emotion == 'jagged') {
-                tail.style.display = 'none';
-            } else {
-                tail.style.transform = `translate(${page['bubbles'][index]['tail_offset_x']}px, ${page['bubbles'][index]['tail_offset_y']}px) rotate(${page['bubbles'][index]['tail_deg']}deg)`;
-            }
-
-            bubble_temp.appendChild(tail);
             // Add bubble directly to gridItem, no wrapper
             gridItem.appendChild(bubble_temp);
 
-            // Add ultra-high performance dragging - only bubble is draggable
-            makeBubbleDraggableUltra(bubble_temp, index);
             // Add event listeners for editing
             addBubbleInteractions(bubble_temp);
         }
