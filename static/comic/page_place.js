@@ -1,10 +1,21 @@
 path = '/static/comic/frames/final/'
 current_page = 0
 
-function placeDialogs(page) {
+async function placeDialogs(page) {
     var gridItems = document.querySelectorAll('.grid-item');
-    page.panels.forEach(function (panel, index) {
-        var gridItem = gridItems[index];
+    
+    // Get story context for this page
+    const storyContext = {
+        pageNumber: current_page + 1,
+        emotion: page.emotion || 'neutral',
+        importance: getPageImportance(current_page + 1),
+        act: getActForPage(current_page + 1)
+    };
+    
+    // Process each panel with AI enhancement
+    for (let index = 0; index < page.panels.length; index++) {
+        const panel = page.panels[index];
+        const gridItem = gridItems[index];
 
         gridItem.style.display = 'flex';
         gridItem.style.gridRow = 'span ' + panel.row_span;
@@ -16,60 +27,112 @@ function placeDialogs(page) {
         const dialog_temp = page['bubbles'][index]['dialog'];
 
         if(dialog_temp != "((action-scene))"){
+            // Create AI-enhanced bubble with LLM optimization
+            const bubble_temp = createAIBubble(dialog_temp, {
+                left: page['bubbles'][index]['bubble_offset_x'] || 91.7906,
+                top: page['bubbles'][index]['bubble_offset_y'] || 40.3875,
+                maxWidth: 180,
+                minHeight: 50,
+                fontSize: calculateOptimalFontSize(dialog_temp, storyContext),
+                emotion: page['bubbles'][index]['emotion'] || storyContext.emotion,
+                bubbleIndex: index
+            });
 
-            const wrapper = document.createElement('div');
-            wrapper.style.position = 'relative'; // Wrapper to contain the bubble
-            wrapper.style.width = '100%';
-            wrapper.style.height = '100%';
+            // Add bubble directly to gridItem, no wrapper
+            gridItem.appendChild(bubble_temp);
 
-            const bubble_temp = document.createElement('div');
-            bubble_temp.classList.add('bubble');
-            bubble_temp.innerHTML = page['bubbles'][index]['dialog'];
-            bubble_temp.setAttribute('data-editable', 'true');
-            bubble_temp.setAttribute('data-bubble-index', index);
-            
-            // Add dragging functionality
-            makeBubbleDraggable(bubble_temp, index);
-
-            const emotion = page['bubbles'][index]['emotion'];
-
-            if (emotion == 'jagged') {
-                bubble_temp.style.backgroundImage = `url("/static/comic/assets/jagged.png")`;
-                bubble_temp.style.backgroundPosition = 'center center';
-                bubble_temp.style.backgroundRepeat = 'no-repeat';
-                bubble_temp.style.backgroundSize = 'cover';
-                bubble_temp.style.backgroundColor = 'transparent';
-                bubble_temp.style.width = '200px';
-                bubble_temp.style.height = '94px';
-                bubble_temp.style.padding = '70px';
-            }
-
-            bubble_temp.style.fontSize = Math.max(12, Math.min(24, dialog_temp.length * 0.5)) + 'px';
-            bubble_temp.style.transform = `translate(${page['bubbles'][index]['bubble_offset_x']}px, ${page['bubbles'][index]['bubble_offset_y']}px)`;
-
-            const tail = document.createElement('div');
-            tail.classList.add('tail');
-            if (page['bubbles'][index]['tail_offset_x'] == null || emotion == 'jagged') {
-                tail.style.display = 'none';
-            } else {
-                tail.style.transform = `translate(${page['bubbles'][index]['tail_offset_x']}px, ${page['bubbles'][index]['tail_offset_y']}px) rotate(${page['bubbles'][index]['tail_deg']}deg)`;
-            }
-
-            bubble_temp.appendChild(tail);
-            wrapper.appendChild(bubble_temp);
-            gridItem.appendChild(wrapper);
-
-            // Add event listeners for editing and dragging
+            // Add event listeners for editing
             addBubbleInteractions(bubble_temp);
         }
-    });
+        
+        // Apply LLM image enhancement to this panel
+        if (window.llmEnhancementSystem && window.llmEnhancementSystem.isInitialized) {
+            await enhanceGridItemImage(gridItem, storyContext);
+        }
+    }
 
+    // Hide unused grid items
     for (var i = page.panels.length; i < gridItems.length; i++) {
         gridItems[i].style.display = 'none';
     }
     
+    // Apply comprehensive page enhancement
+    if (window.llmEnhancementSystem) {
+        const pageElement = document.querySelector('.wrapper');
+        await window.llmEnhancementSystem.enhanceComicPage(pageElement, current_page + 1, storyContext);
+    }
+    
     // Ensure perfect image fitting after placing dialogs
     ensurePerfectImageFit();
+    
+    console.log(`📖 Enhanced page ${current_page + 1} with LLM-powered optimizations`);
+}
+
+// Helper functions for story optimization
+function getPageImportance(pageNumber) {
+    // Critical story beats get higher importance
+    const criticalPages = [1, 5, 11, 15, 20]; // Opening, inciting incident, midpoint, climax, resolution
+    const highPages = [3, 8, 13, 17, 19]; // Character moments, crisis, victory, reflection
+    
+    if (criticalPages.includes(pageNumber)) return 1.0;
+    if (highPages.includes(pageNumber)) return 0.8;
+    return 0.6;
+}
+
+function getActForPage(pageNumber) {
+    if (pageNumber <= 6) return 'act1';
+    if (pageNumber <= 10) return 'act2a';
+    if (pageNumber <= 14) return 'act2b';
+    if (pageNumber <= 17) return 'act3a';
+    return 'act3b';
+}
+
+function calculateOptimalFontSize(text, context) {
+    const baseSize = 12;
+    const lengthFactor = Math.max(0.8, Math.min(1.2, 1 - (text.length * 0.01)));
+    const importanceFactor = context.importance > 0.8 ? 1.1 : 1.0;
+    const emotionFactor = ['action', 'triumph', 'shock'].includes(context.emotion) ? 1.15 : 1.0;
+    
+    return Math.round(baseSize * lengthFactor * importanceFactor * emotionFactor);
+}
+
+async function enhanceGridItemImage(gridItem, context) {
+    try {
+        // Create a temporary image from background
+        const bgImage = gridItem.style.backgroundImage;
+        if (!bgImage || bgImage === 'none') return;
+        
+        const imageUrl = bgImage.slice(4, -1).replace(/"/g, '');
+        const img = new Image();
+        
+        img.onload = async function() {
+            try {
+                // Apply LLM-powered image enhancement
+                const enhanced = await window.llmEnhancementSystem.enhanceImageQuality(img, {
+                    upscaleFactor: context.importance > 0.8 ? 3 : 2,
+                    sharpnessBoost: context.importance > 0.7 ? 1.4 : 1.2,
+                    denoiseStrength: 0.7,
+                    useGPU: true
+                });
+                
+                // Apply emotion-based color enhancement
+                const colorEnhanced = await window.llmEnhancementSystem.upgradeColors(enhanced, context.emotion);
+                
+                // Update the grid item background
+                gridItem.style.backgroundImage = `url(${colorEnhanced.src})`;
+                gridItem.classList.add('llm-enhanced');
+                
+            } catch (error) {
+                console.warn('Failed to enhance grid item image:', error);
+            }
+        };
+        
+        img.crossOrigin = 'anonymous';
+        img.src = imageUrl;
+        
+    } catch (error) {
+        console.warn('Error in grid item enhancement:', error);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -585,6 +648,7 @@ function makeBubbleDraggable(bubble, bubbleIndex) {
     });
     
     document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
         
         const deltaX = e.clientX - startX;
         const deltaY = e.clientY - startY;
@@ -626,6 +690,7 @@ function makeBubbleDraggable(bubble, bubbleIndex) {
     });
     
     document.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
         
         const deltaX = e.touches[0].clientX - startX;
         const deltaY = e.touches[0].clientY - startY;
@@ -643,6 +708,153 @@ function makeBubbleDraggable(bubble, bubbleIndex) {
                 pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.changedTouches[0].clientX - startX);
                 pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.changedTouches[0].clientY - startY);
             }
+        }
+    });
+}
+
+// ULTRA HIGH PERFORMANCE BUBBLE DRAGGING SYSTEM V2
+function makeBubbleDraggableUltra(bubble, bubbleIndex) {
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+    let animationFrame = null;
+    let dragThreshold = 3;
+    let hasMoved = false;
+    
+    function getTransformValues(element) {
+        const transform = element.style.transform || '';
+        const matches = transform.match(/translate(?:3d)?\(([^,]+)(?:px)?(?:,\s*([^,]+)(?:px)?)?(?:,\s*([^)]+)(?:px)?)?\)/);
+        if (matches) {
+            return {
+                x: parseFloat(matches[1]) || 0,
+                y: parseFloat(matches[2]) || 0
+            };
+        }
+        return { x: 0, y: 0 };
+    }
+    
+    function updateTransform(x, y) {
+        if (animationFrame) cancelAnimationFrame(animationFrame);
+        animationFrame = requestAnimationFrame(() => {
+            bubble.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        });
+    }
+    
+    bubble.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        isDragging = false;
+        hasMoved = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        const currentPos = getTransformValues(bubble);
+        initialX = currentPos.x;
+        initialY = currentPos.y;
+        
+        bubble.classList.add('dragging');
+        bubble.style.cursor = 'grabbing';
+        bubble.style.zIndex = '2000';
+        document.body.style.userSelect = 'none';
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+        if (!bubble.classList.contains('dragging')) return;
+        
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+        
+        if (!isDragging && (Math.abs(deltaX) > dragThreshold || Math.abs(deltaY) > dragThreshold)) {
+            isDragging = true;
+            hasMoved = true;
+        }
+        
+        if (isDragging) {
+            e.preventDefault();
+            e.stopPropagation();
+            updateTransform(initialX + deltaX, initialY + deltaY);
+        }
+    });
+    
+    document.addEventListener('mouseup', function(e) {
+        if (bubble.classList.contains('dragging')) {
+            bubble.classList.remove('dragging');
+            bubble.style.cursor = 'grab';
+            bubble.style.zIndex = '1000';
+            document.body.style.userSelect = '';
+            
+            if (isDragging && hasMoved) {
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                const finalX = initialX + deltaX;
+                const finalY = initialY + deltaY;
+                
+                if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                    pages[current_page].bubbles[bubbleIndex].bubble_offset_x = finalX;
+                    pages[current_page].bubbles[bubbleIndex].bubble_offset_y = finalY;
+                }
+            }
+            
+            isDragging = false;
+            hasMoved = false;
+        }
+    });
+    
+    // Touch events
+    bubble.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        isDragging = false;
+        hasMoved = false;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        
+        const currentPos = getTransformValues(bubble);
+        initialX = currentPos.x;
+        initialY = currentPos.y;
+        
+        bubble.classList.add('dragging');
+        bubble.style.zIndex = '2000';
+    }, { passive: false });
+    
+    document.addEventListener('touchmove', function(e) {
+        if (!bubble.classList.contains('dragging')) return;
+        e.preventDefault();
+        
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - startX;
+        const deltaY = touch.clientY - startY;
+        
+        if (!isDragging && (Math.abs(deltaX) > dragThreshold || Math.abs(deltaY) > dragThreshold)) {
+            isDragging = true;
+            hasMoved = true;
+        }
+        
+        if (isDragging) {
+            updateTransform(initialX + deltaX, initialY + deltaY);
+        }
+    }, { passive: false });
+    
+    document.addEventListener('touchend', function(e) {
+        if (bubble.classList.contains('dragging')) {
+            bubble.classList.remove('dragging');
+            bubble.style.zIndex = '1000';
+            
+            if (isDragging && hasMoved) {
+                const touch = e.changedTouches[0];
+                const deltaX = touch.clientX - startX;
+                const deltaY = touch.clientY - startY;
+                const finalX = initialX + deltaX;
+                const finalY = initialY + deltaY;
+                
+                if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                    pages[current_page].bubbles[bubbleIndex].bubble_offset_x = finalX;
+                    pages[current_page].bubbles[bubbleIndex].bubble_offset_y = finalY;
+                }
+            }
+            
+            isDragging = false;
+            hasMoved = false;
         }
     });
 }
@@ -665,118 +877,5 @@ function ensurePerfectImageFit() {
         if (!item.style.backgroundImage || item.style.backgroundImage === 'none') {
             item.style.backgroundColor = '#f0f0f0';
         }
-    });
-}
-// Function to make bubbles draggable
-function makeBubbleDraggable(bubble, bubbleIndex) {
-    let isDragging = false;
-    let startX, startY, initialX, initialY;
-    
-    bubble.addEventListener('mousedown', function(e) {
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        
-        // Get current position
-        const transform = bubble.style.transform;
-        const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
-        if (matches) {
-            initialX = parseFloat(matches[1]);
-            initialY = parseFloat(matches[2]);
-        } else {
-            initialX = 0;
-            initialY = 0;
-        }
-        
-        e.preventDefault();
-        bubble.style.cursor = 'grabbing';
-    });
-    
-    document.addEventListener('mousemove', function(e) {
-        if (!isDragging) return;
-        
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-        
-        bubble.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
-        e.preventDefault();
-    });
-    
-    document.addEventListener('mouseup', function() {
-        if (isDragging) {
-            isDragging = false;
-            bubble.style.cursor = 'move';
-            
-            // Update the bubble position in the pages data
-            if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
-                pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.clientX - startX);
-                pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.clientY - startY);
-            }
-        }
-    });
-    
-    // Touch support
-    bubble.addEventListener('touchstart', function(e) {
-        isDragging = true;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        
-        const transform = bubble.style.transform;
-        const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
-        if (matches) {
-            initialX = parseFloat(matches[1]);
-            initialY = parseFloat(matches[2]);
-        } else {
-            initialX = 0;
-            initialY = 0;
-        }
-        
-        e.preventDefault();
-    });
-    
-    document.addEventListener('touchmove', function(e) {
-        if (!isDragging) return;
-        
-        const deltaX = e.touches[0].clientX - startX;
-        const deltaY = e.touches[0].clientY - startY;
-        
-        bubble.style.transform = `translate(${initialX + deltaX}px, ${initialY + deltaY}px)`;
-        e.preventDefault();
-    });
-    
-    document.addEventListener('touchend', function() {
-        if (isDragging) {
-            isDragging = false;
-            
-            // Update the bubble position in the pages data
-            if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
-                pages[current_page].bubbles[bubbleIndex].bubble_offset_x = initialX + (event.changedTouches[0].clientX - startX);
-                pages[current_page].bubbles[bubbleIndex].bubble_offset_y = initialY + (event.changedTouches[0].clientY - startY);
-            }
-        }
-    });
-}
-
-// Function to ensure perfect image fitting with 0% gap
-function ensurePerfectImageFit() {
-    const gridItems = document.querySelectorAll('.grid-item');
-    gridItems.forEach(function(item) {
-        // Ensure the image fills the entire 800x540 template with 0% gap
-        item.style.backgroundSize = 'cover';
-        item.style.backgroundPosition = 'center center';
-        item.style.backgroundRepeat = 'no-repeat';
-        item.style.objectFit = 'cover';
-        
-        // Add a fallback background color
-        if (!item.style.backgroundImage || item.style.backgroundImage === 'none') {
-            item.style.backgroundColor = '#f0f0f0';
-        }
-        
-        // Ensure the container fills completely
-        item.style.display = 'flex';
-        item.style.alignItems = 'center';
-        item.style.justifyContent = 'center';
-        item.style.width = '800px';
-        item.style.height = '540px';
     });
 }

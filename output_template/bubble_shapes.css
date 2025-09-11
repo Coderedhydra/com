@@ -1,0 +1,331 @@
+/* AUTHENTIC COMIC BOOK SPEECH BUBBLE SHAPES */
+
+/* BASE BUBBLE STYLING */
+.bubble {
+    /* Core dimensions - authentic comic proportions */
+    width: 300px;
+    height: 100px;
+    min-height: 100px;
+    
+    /* Base styling */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+    /* Typography */
+    font-family: 'adam_warren_proregular', 'Arial Black', 'Arial', 'Helvetica', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.1;
+    
+    /* Interaction */
+    cursor: grab;
+    user-select: none;
+    z-index: 1000;
+    
+    /* Performance */
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    
+    /* Ultra high quality rendering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* STANDARD SPEECH BUBBLE - Classic oval with tail */
+.bubble.speech-standard {
+    background: 
+        radial-gradient(ellipse at 25% 25%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 70%, transparent 100%),
+        linear-gradient(135deg, #FFFFFF 0%, #FEFEFE 50%, #FCFCFC 100%);
+    
+    border: 4px solid #000000;
+    border-radius: 50px;
+    padding: 18px 25px;
+    
+    /* Authentic comic shadow */
+    box-shadow: 
+        0 8px 16px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.9),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    
+    /* Comic text shadow */
+    text-shadow: 
+        2px 2px 0px rgba(255, 255, 255, 0.8),
+        1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* SPEECH BUBBLE TAIL */
+.bubble.speech-standard::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 30px;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #FFFFFF;
+    z-index: -1;
+    
+    /* Tail shadow */
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* SPEECH BUBBLE TAIL BORDER */
+.bubble.speech-standard::before {
+    content: '';
+    position: absolute;
+    bottom: -19px;
+    left: 26px;
+    width: 0;
+    height: 0;
+    border-left: 24px solid transparent;
+    border-right: 24px solid transparent;
+    border-top: 24px solid #000000;
+    z-index: -2;
+}
+
+/* THOUGHT BUBBLE - Cloud-like shape */
+.bubble.thought {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.9) 0%, transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.8) 0%, transparent 35%),
+        radial-gradient(circle at 60% 80%, rgba(255,255,255,0.7) 0%, transparent 30%),
+        radial-gradient(circle at 30% 70%, rgba(255,255,255,0.8) 0%, transparent 35%),
+        linear-gradient(135deg, #FFFFFF 0%, #FEFEFE 100%);
+    
+    border: 4px solid #000000;
+    border-radius: 60% 40% 40% 60% / 70% 30% 70% 30%;
+    padding: 20px 25px;
+    
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.25),
+        inset 0 2px 0 rgba(255, 255, 255, 0.9);
+    
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* THOUGHT BUBBLE DOTS */
+.bubble.thought::after {
+    content: '';
+    position: absolute;
+    bottom: -25px;
+    left: 40px;
+    width: 12px;
+    height: 12px;
+    background: #FFFFFF;
+    border: 3px solid #000000;
+    border-radius: 50%;
+    box-shadow: 
+        -15px -10px 0 -2px #FFFFFF,
+        -15px -10px 0 1px #000000,
+        -25px -15px 0 -4px #FFFFFF,
+        -25px -15px 0 -1px #000000;
+}
+
+/* SHOUTING BUBBLE - Jagged spiky edges */
+.bubble.shout {
+    background: 
+        linear-gradient(45deg, #FFFF00 0%, #FFFFFF 100%);
+    
+    border: 5px solid #000000;
+    padding: 15px 20px;
+    
+    /* Create jagged effect with clip-path */
+    clip-path: polygon(
+        0% 20%, 10% 0%, 20% 15%, 35% 5%, 45% 20%, 
+        60% 0%, 75% 15%, 85% 5%, 100% 25%, 95% 45%, 
+        100% 65%, 85% 80%, 95% 95%, 75% 85%, 60% 100%, 
+        45% 80%, 35% 95%, 20% 85%, 10% 100%, 0% 80%
+    );
+    
+    box-shadow: 
+        0 8px 16px rgba(0, 0, 0, 0.4),
+        inset 0 2px 0 rgba(255, 255, 255, 0.8);
+    
+    /* Bold text for shouting */
+    font-weight: 900;
+    text-shadow: 
+        3px 3px 0px rgba(255, 255, 255, 0.8),
+        2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* WHISPER BUBBLE - Dashed outline */
+.bubble.whisper {
+    background: 
+        linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(240,240,240,0.9) 100%);
+    
+    border: 3px dashed #666666;
+    border-radius: 45px;
+    padding: 18px 25px;
+    
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    
+    /* Softer text for whisper */
+    font-weight: 700;
+    color: #444444;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.8);
+    opacity: 0.9;
+}
+
+/* ELECTRIC/SHOCK BUBBLE - Zigzag edges */
+.bubble.electric {
+    background: 
+        radial-gradient(ellipse at center, #FFFF99 0%, #FFFFFF 70%);
+    
+    border: 4px solid #0066FF;
+    padding: 15px 20px;
+    
+    /* Electric zigzag effect */
+    clip-path: polygon(
+        5% 0%, 15% 10%, 25% 0%, 35% 15%, 45% 5%, 
+        55% 15%, 65% 0%, 75% 10%, 85% 0%, 95% 15%, 
+        100% 25%, 90% 35%, 100% 45%, 85% 55%, 95% 65%, 
+        85% 75%, 100% 85%, 90% 95%, 75% 85%, 65% 100%, 
+        55% 85%, 45% 95%, 35% 85%, 25% 100%, 15% 90%, 
+        5% 100%, 0% 85%, 10% 75%, 0% 65%, 15% 55%, 
+        5% 45%, 15% 35%, 0% 25%
+    );
+    
+    box-shadow: 
+        0 0 10px rgba(0, 102, 255, 0.5),
+        0 8px 16px rgba(0, 0, 0, 0.3);
+    
+    color: #0066FF;
+    text-shadow: 
+        2px 2px 0px rgba(255, 255, 255, 0.9),
+        1px 1px 3px rgba(0, 102, 255, 0.5);
+}
+
+/* DREAM BUBBLE - Soft cloud with stars */
+.bubble.dream {
+    background: 
+        radial-gradient(circle at 30% 40%, rgba(255,255,255,0.9) 0%, transparent 50%),
+        radial-gradient(circle at 70% 30%, rgba(240,240,255,0.8) 0%, transparent 45%),
+        radial-gradient(circle at 50% 70%, rgba(255,240,255,0.7) 0%, transparent 40%),
+        linear-gradient(135deg, #F0F0FF 0%, #FFFFFF 100%);
+    
+    border: 3px solid #9966CC;
+    border-radius: 50% 60% 40% 50% / 60% 40% 60% 40%;
+    padding: 20px 25px;
+    
+    box-shadow: 
+        0 6px 12px rgba(153, 102, 204, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.9);
+    
+    color: #663399;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* DREAM BUBBLE STARS */
+.bubble.dream::before {
+    content: '✦ ✧ ✦';
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    color: #9966CC;
+    font-size: 12px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* DRAGGING STATE - Enhanced for all bubble types */
+.bubble.dragging {
+    transition: none !important;
+    will-change: transform;
+    z-index: 2000;
+    
+    /* Enhanced glow during drag */
+    filter: brightness(1.1) contrast(1.1) drop-shadow(0 12px 24px rgba(0,0,0,0.4));
+    
+    /* Prevent selection */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+/* HOVER EFFECTS - Enhanced for all bubble types */
+.bubble:hover {
+    transform: translateY(-2px) scale(1.02) translateZ(0);
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.bubble.speech-standard:hover {
+    box-shadow: 
+        0 12px 20px rgba(0, 0, 0, 0.35),
+        0 6px 10px rgba(0, 0, 0, 0.25),
+        inset 0 2px 0 rgba(255, 255, 255, 0.95);
+}
+
+.bubble.thought:hover {
+    box-shadow: 
+        0 8px 16px rgba(0, 0, 0, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.95);
+}
+
+.bubble.shout:hover {
+    box-shadow: 
+        0 12px 20px rgba(0, 0, 0, 0.45),
+        inset 0 2px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* ACTIVE STATE - All bubble types */
+.bubble:active {
+    transform: translateY(0px) scale(0.98) translateZ(0);
+    transition: all 0.1s ease-out;
+    cursor: grabbing;
+}
+
+/* ULTRA HIGH QUALITY RENDERING FOR ALL ELEMENTS */
+.bubble,
+.bubble::before,
+.bubble::after {
+    /* Force hardware acceleration */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    
+    /* Ultra high-quality rendering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: high-quality;
+    
+    /* Advanced anti-aliasing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    
+    /* Performance optimizations */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    contain: layout style paint;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 768px) {
+    .bubble {
+        width: 250px;
+        height: 80px;
+        font-size: 14px;
+        padding: 15px 20px;
+    }
+}
+
+@media (min-resolution: 192dpi) {
+    .bubble {
+        /* Enhanced rendering for high-DPI displays */
+        border-width: 3px;
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
