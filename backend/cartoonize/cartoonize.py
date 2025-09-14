@@ -145,9 +145,19 @@ def cartoonize(img_path):
         unsharp_mask = cv2.addWeighted(cartoon, 1.5, gaussian_blur, -0.5, 0)
         cartoon = cv2.addWeighted(cartoon, 0.7, unsharp_mask, 0.3, 0)
         
-        # Save with maximum quality
-        cv2.imwrite(img_path, cartoon, [cv2.IMWRITE_PNG_COMPRESSION, 0])  # No compression for quality
-        print(f"✅ Enhanced cartoonization complete for {img_path}")
+        # Save with maximum quality and ensure no data loss
+        # Use PNG format with no compression for highest quality
+        success = cv2.imwrite(img_path, cartoon, [
+            cv2.IMWRITE_PNG_COMPRESSION, 0,  # No compression
+            cv2.IMWRITE_PNG_STRATEGY, cv2.IMWRITE_PNG_STRATEGY_DEFAULT
+        ])
+        
+        if not success:
+            print(f"⚠️ Warning: Failed to save {img_path}, trying alternative method")
+            # Fallback save method
+            cv2.imwrite(img_path, cartoon)
+        
+        print(f"✅ Ultra-high quality cartoonization complete for {img_path}")
         
     except Exception as e:
         print(f"Error processing {img_path}: {str(e)}")
