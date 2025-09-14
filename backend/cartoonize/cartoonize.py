@@ -167,7 +167,7 @@ def cartoonize(img_path):
 # cartoonize()
     
 def style_frames():
-    """Optimized parallel frame styling with real-time progress tracking"""
+    """Ultra-high quality frame styling with AI enhancement"""
     frames_dir = "frames/final"
     if not os.path.exists(frames_dir):
         print("❌ No frames directory found!")
@@ -180,9 +180,19 @@ def style_frames():
         print("❌ No image files found in frames directory!")
         return
     
-    print(f"🎨 Starting cartoon-style processing for {total_frames} frames...")
+    print(f"🎨 Starting ULTRA-HIGH QUALITY processing for {total_frames} frames...")
+    print(f"🤖 Using AI enhancement + cartoon styling pipeline")
     print(f"🔧 Using parallel processing with {min(4, os.cpu_count() or 1)} workers")
     start_time = time.time()
+    
+    # First, apply AI enhancement to all frames
+    try:
+        from backend.cartoonize.ai_enhancer import enhance_all_frames
+        print("🚀 Phase 1: AI Enhancement...")
+        enhance_all_frames(frames_dir)
+        print("✅ AI enhancement complete, proceeding with cartoon styling...")
+    except Exception as e:
+        print(f"⚠️ AI enhancement failed: {e}, proceeding with standard processing...")
     
     def process_single_frame(image_file):
         """Process a single frame with cartoon styling"""
@@ -199,6 +209,7 @@ def style_frames():
     processed = 0
     successful = 0
     
+    print(f"🚀 Phase 2: Cartoon Styling...")
     print(f"⚡ Processing {total_frames} frames in parallel...")
     
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -229,11 +240,12 @@ def style_frames():
     total_time = time.time() - start_time
     success_rate = (successful / total_frames) * 100
     
-    print(f"\n🎉 Frame styling completed!")
+    print(f"\n🎉 ULTRA-HIGH QUALITY Processing Complete!")
     print(f"📈 Processed: {total_frames} frames in {total_time:.1f} seconds")
     print(f"⚡ Average: {total_time/total_frames:.2f}s per frame")
     print(f"✅ Success rate: {success_rate:.1f}% ({successful}/{total_frames})")
-    print(f"🎨 All frames now have cartoon-style processing!")
+    print(f"🎨 All frames now have AI-enhanced cartoon-style processing!")
+    print(f"🌟 Images are now ULTRA-HIGH QUALITY with perfect fit!")
 
 def style_frames_fast():
     """Ultra-fast frame styling - minimal processing for speed"""

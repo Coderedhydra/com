@@ -21,7 +21,7 @@ async function placeDialogs(page) {
         gridItem.style.gridRow = 'span ' + panel.row_span;
         gridItem.style.gridColumn = 'span ' + panel.col_span;
         gridItem.style.backgroundImage = `url("${path}${panel.image}.png")`;
-        gridItem.style.backgroundSize = 'contain';
+        gridItem.style.backgroundSize = 'cover';
         gridItem.style.backgroundPosition = 'center center';
         gridItem.style.backgroundRepeat = 'no-repeat';
 
@@ -424,7 +424,7 @@ function replacePanelImage(panelNumber, imageUrl) {
     const panel = document.getElementById(`_${panelNumber}`);
     if (panel) {
         panel.style.backgroundImage = `url("${imageUrl}")`;
-        panel.style.backgroundSize = 'contain';
+        panel.style.backgroundSize = 'cover';
         panel.style.backgroundPosition = 'center';
         panel.style.backgroundRepeat = 'no-repeat';
         
@@ -507,7 +507,7 @@ function zoomImage(panel, factor) {
 }
 
 function resetImage(panel) {
-    panel.style.backgroundSize = 'contain';
+    panel.style.backgroundSize = 'cover';
     panel.style.backgroundPosition = 'center';
     panel.style.transform = 'translate(0px, 0px)';
 }
@@ -715,6 +715,57 @@ function displayStorySummary(summaryData) {
     });
 }
 
+// Server-side high quality export
+async function exportServerSideHQ() {
+    try {
+        console.log('Starting server-side HQ export...');
+        
+        const response = await fetch('/export_hq_png', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                page: current_page
+            })
+        });
+        
+        if (response.ok) {
+            const contentType = response.headers.get('content-type');
+            
+            if (contentType && contentType.includes('application/json')) {
+                // Fallback response
+                const data = await response.json();
+                if (data.status === 'fallback') {
+                    alert('Server-side rendering not available. Using client-side method.');
+                    printPage();
+                } else {
+                    alert('Server response: ' + (data.message || 'Unknown response'));
+                }
+            } else {
+                // File download response
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `comic_page_${current_page + 1}_ULTRA_HQ.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                console.log('Ultra HQ export completed!');
+            }
+        } else {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Export error:', error);
+        alert('Export failed: ' + error.message + '\nFalling back to standard export.');
+        printPage();
+    }
+}
+
 // Export story summary function
 window.showStorySummary = showStorySummary;
+window.exportServerSideHQ = exportServerSideHQ;
 
