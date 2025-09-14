@@ -30,12 +30,19 @@ def generate_layout():
     
     # Simple panel type assignment (no complex analysis)
     folder_dir = "frames/final"
+    frame_count = 0
     for image in sorted(os.listdir(folder_dir)):
         if image.endswith('.png'):
+            frame_count += 1
             # Simple panel type - just use '1' for all panels
             input_seq += "1"
             # Use full image coordinates
             cam_coords.append((0, width, 0, height))
+    
+    # Ensure we have multiples of 4 frames for 2x2 grid
+    while len(input_seq) % 4 != 0:
+        input_seq += "1"
+        cam_coords.append((0, width, 0, height))
     
     page_templates = get_templates(input_seq)
     print(f"Generated {len(page_templates)} page templates")

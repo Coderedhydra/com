@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
 def cartoonize(img_path):
-    # Balanced cartoon-style processing with good visual quality
+    # Advanced cartoon-style processing with superior visual quality and AI-enhanced colors
     img = cv2.imread(img_path, cv2.IMREAD_COLOR)
     
     if img is None:
@@ -17,72 +17,137 @@ def cartoonize(img_path):
         # Get original dimensions
         original_height, original_width = img.shape[:2]
         
-        # Resize for consistent processing if needed
-        if original_width > 1920 or original_height > 1080:
-            # Downscale large images for speed
+        # Enhanced upscaling for better quality instead of downscaling
+        target_width, target_height = original_width, original_height
+        if original_width < 800 or original_height < 600:
+            # Upscale small images for better quality
+            scale_factor = max(800/original_width, 600/original_height)
+            target_width = int(original_width * scale_factor)
+            target_height = int(original_height * scale_factor)
+            img = cv2.resize(img, (target_width, target_height), interpolation=cv2.INTER_CUBIC)
+            upscaled = True
+        elif original_width > 1920 or original_height > 1080:
+            # Smart downscale for very large images
             scale_factor = min(1920/original_width, 1080/original_height)
-            new_width = int(original_width * scale_factor)
-            new_height = int(original_height * scale_factor)
-            img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_AREA)
-            resized = True
+            target_width = int(original_width * scale_factor)
+            target_height = int(original_height * scale_factor)
+            img = cv2.resize(img, (target_width, target_height), interpolation=cv2.INTER_AREA)
+            upscaled = False
         else:
-            resized = False
+            upscaled = False
         
-        # Step 1: Bilateral filtering for smooth cartoon look (2 passes for quality)
-        smooth = cv2.bilateralFilter(img, 9, 80, 80)
-        smooth = cv2.bilateralFilter(smooth, 9, 80, 80)
+        # Step 1: Advanced bilateral filtering for ultra-smooth cartoon look (3 passes)
+        smooth = cv2.bilateralFilter(img, 15, 120, 120)
+        smooth = cv2.bilateralFilter(smooth, 15, 120, 120)
+        smooth = cv2.bilateralFilter(smooth, 9, 80, 80)  # Final pass with tighter parameters
         
-        # Step 2: Create strong edges for cartoon effect
+        # Step 2: Advanced edge detection with adaptive thresholds
         gray = cv2.cvtColor(smooth, cv2.COLOR_BGR2GRAY)
-        edges = cv2.Canny(gray, 50, 150)
         
-        # Dilate edges to make them more prominent (cartoon style)
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        # Use adaptive thresholds for better edge detection
+        mean_intensity = np.mean(gray)
+        if mean_intensity < 100:
+            # Dark image - use lower thresholds
+            edges = cv2.Canny(gray, 30, 100)
+        elif mean_intensity > 180:
+            # Bright image - use higher thresholds
+            edges = cv2.Canny(gray, 70, 200)
+        else:
+            # Normal image - standard thresholds
+            edges = cv2.Canny(gray, 50, 150)
+        
+        # Enhanced edge processing for comic book style
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+        edges = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel)
         edges = cv2.dilate(edges, kernel, iterations=1)
         edges = cv2.erode(edges, kernel, iterations=1)
         
         # Convert edges to 3-channel
         edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
         
-        # Step 3: Color quantization for cartoon effect
+        # Step 3: Advanced color quantization with intelligent clustering
         data = smooth.reshape((-1, 3))
         data = np.float32(data)
         
-        # Use 12 colors for good cartoon effect
-        K = 12
-        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 15, 1.0)
-        _, labels, centers = cv2.kmeans(data, K, None, criteria, 8, cv2.KMEANS_PP_CENTERS)
+        # Adaptive K-means clustering based on image complexity
+        unique_colors = len(np.unique(data.reshape(-1, data.shape[-1]), axis=0))
+        if unique_colors < 50:
+            K = 8  # Simple images
+        elif unique_colors < 200:
+            K = 12  # Normal complexity
+        else:
+            K = 16  # Complex images
+            
+        # Enhanced K-means with better initialization
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 25, 0.8)
+        _, labels, centers = cv2.kmeans(data, K, None, criteria, 12, cv2.KMEANS_PP_CENTERS)
         
         centers = np.uint8(centers)
         segmented_data = centers[labels.flatten()]
         segmented_image = segmented_data.reshape(smooth.shape)
         
-        # Step 4: Combine for cartoon effect
-        # Blend quantized colors with original for detail retention
-        cartoon = cv2.addWeighted(segmented_image, 0.75, img, 0.25, 0)
+        # Apply smart blending for detail preservation
+        alpha = 0.8 if unique_colors > 100 else 0.75
         
-        # Add strong edges for cartoon look
-        cartoon = cv2.addWeighted(cartoon, 0.85, edges, 0.15, 0)
+        # Step 4: Advanced cartoon composition with smart blending
+        cartoon = cv2.addWeighted(segmented_image, alpha, img, 1-alpha, 0)
         
-        # Step 5: Enhance colors for vibrant comic look
+        # Add strong edges with adaptive intensity
+        edge_intensity = 0.2 if mean_intensity > 150 else 0.15
+        cartoon = cv2.addWeighted(cartoon, 1-edge_intensity, edges, edge_intensity, 0)
+        
+        # Step 5: Advanced color enhancement with AI-inspired techniques
+        # Convert to LAB color space for better color manipulation
+        lab = cv2.cvtColor(cartoon, cv2.COLOR_BGR2LAB)
+        l, a, b = cv2.split(lab)
+        
+        # Enhance L channel (lightness) with CLAHE
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+        l = clahe.apply(l)
+        
+        # Merge back and convert to HSV for saturation enhancement
+        lab = cv2.merge([l, a, b])
+        cartoon = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
+        
         hsv = cv2.cvtColor(cartoon, cv2.COLOR_BGR2HSV)
+        h, s, v = cv2.split(hsv)
         
-        # Boost saturation and slightly increase brightness
-        hsv[:, :, 1] = cv2.multiply(hsv[:, :, 1], 1.3)  # Saturation boost
-        hsv[:, :, 2] = cv2.multiply(hsv[:, :, 2], 1.1)  # Brightness boost
+        # Adaptive saturation and brightness enhancement
+        saturation_boost = 1.4 if mean_intensity > 120 else 1.3
+        brightness_boost = 1.15 if mean_intensity < 100 else 1.1
+        
+        s = cv2.multiply(s, saturation_boost)
+        v = cv2.multiply(v, brightness_boost)
+        
+        # Advanced color temperature adjustment for comic book feel
+        # Slightly warm up the image for more appealing colors
+        h = np.where((h >= 90) & (h <= 150), h - 5, h)  # Cool down greens slightly
+        h = np.where((h >= 0) & (h <= 30), h + 3, h)    # Warm up reds slightly
         
         # Ensure values stay in valid range
-        hsv[:, :, 1] = np.clip(hsv[:, :, 1], 0, 255)
-        hsv[:, :, 2] = np.clip(hsv[:, :, 2], 0, 255)
+        s = np.clip(s, 0, 255)
+        v = np.clip(v, 0, 255)
+        h = np.clip(h, 0, 179)
         
+        hsv = cv2.merge([h, s, v])
         cartoon = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
         
-        # Resize back to original dimensions if we downscaled
-        if resized:
+        # Step 6: Image repair and noise reduction
+        # Apply gentle denoising while preserving edges
+        cartoon = cv2.fastNlMeansDenoisingColored(cartoon, None, 3, 3, 7, 21)
+        
+        # Resize back to original dimensions if we scaled
+        if target_width != original_width or target_height != original_height:
             cartoon = cv2.resize(cartoon, (original_width, original_height), interpolation=cv2.INTER_CUBIC)
         
-        # Save with good quality
+        # Step 7: Final quality enhancement - unsharp masking for crisp details
+        gaussian_blur = cv2.GaussianBlur(cartoon, (0, 0), 2.0)
+        unsharp_mask = cv2.addWeighted(cartoon, 1.5, gaussian_blur, -0.5, 0)
+        cartoon = cv2.addWeighted(cartoon, 0.7, unsharp_mask, 0.3, 0)
+        
+        # Save with maximum quality
         cv2.imwrite(img_path, cartoon, [cv2.IMWRITE_PNG_COMPRESSION, 0])  # No compression for quality
+        print(f"✅ Enhanced cartoonization complete for {img_path}")
         
     except Exception as e:
         print(f"Error processing {img_path}: {str(e)}")

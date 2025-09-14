@@ -104,6 +104,17 @@ def comic():
     else:
         return "Comic not found. Please generate a comic first.", 404
 
+@app.route('/story_summary')
+def story_summary():
+    """Serve the story summary"""
+    summary_path = os.path.join(os.getcwd(), 'output_template', 'story_summary.json')
+    if os.path.exists(summary_path):
+        with open(summary_path, 'r', encoding='utf-8') as f:
+            summary_data = json.load(f)
+        return jsonify(summary_data)
+    else:
+        return jsonify({'error': 'Story summary not available'}), 404
+
 @app.route('/export_hq_png', methods=['POST'])
 def export_hq_png():
     """Export high-quality PNG using server-side rendering"""
@@ -146,6 +157,8 @@ def export_hq_png():
                 <div class="grid-container">
                     <div class="grid-item" id="_1"></div>
                     <div class="grid-item" id="_2"></div>
+                    <div class="grid-item" id="_3"></div>
+                    <div class="grid-item" id="_4"></div>
                 </div>
             </div>
             <script>

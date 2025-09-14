@@ -21,6 +21,9 @@ async function placeDialogs(page) {
         gridItem.style.gridRow = 'span ' + panel.row_span;
         gridItem.style.gridColumn = 'span ' + panel.col_span;
         gridItem.style.backgroundImage = `url("${path}${panel.image}.png")`;
+        gridItem.style.backgroundSize = 'contain';
+        gridItem.style.backgroundPosition = 'center center';
+        gridItem.style.backgroundRepeat = 'no-repeat';
 
         gridItem.innerHTML = "";
 
@@ -45,9 +48,14 @@ async function placeDialogs(page) {
             addBubbleInteractions(bubble_temp);
         }
         
-        // Apply LLM image enhancement to this panel
+        // Apply comprehensive image enhancement to this panel
         if (window.llmEnhancementSystem && window.llmEnhancementSystem.isInitialized) {
             await enhanceGridItemImage(gridItem, storyContext);
+        }
+        
+        // Apply AI quality enhancement
+        if (window.aiQualityEnhancer) {
+            window.aiQualityEnhancer.enhanceBubbleQuality(gridItem);
         }
     }
 
@@ -396,14 +404,14 @@ function handleImageUpload(event) {
         const reader = new FileReader();
         reader.onload = function(e) {
             const imageUrl = e.target.result;
-            // Ask user which panel to replace with better UI
-            const panelChoice = prompt('Which panel to replace?\n\n1 - Top panel\n2 - Bottom panel\n\nEnter 1 or 2:');
-            if (panelChoice === '1' || panelChoice === '2') {
-                replacePanelImage(panelChoice, imageUrl);
-                alert(`Panel ${panelChoice} image updated successfully!`);
-            } else if (panelChoice !== null) {
-                alert('Invalid choice. Please enter 1 or 2.');
-            }
+        // Ask user which panel to replace with better UI
+        const panelChoice = prompt('Which panel to replace?\n\n1 - Top Left\n2 - Top Right\n3 - Bottom Left\n4 - Bottom Right\n\nEnter 1, 2, 3, or 4:');
+        if (['1', '2', '3', '4'].includes(panelChoice)) {
+            replacePanelImage(panelChoice, imageUrl);
+            alert(`Panel ${panelChoice} image updated successfully!`);
+        } else if (panelChoice !== null) {
+            alert('Invalid choice. Please enter 1, 2, 3, or 4.');
+        }
         };
         reader.onerror = function() {
             alert('Error reading file. Please try again.');
@@ -593,4 +601,120 @@ function makeBubbleDraggable(bubble, bubbleIndex) {
         }
     });
 }
+
+// Story Summary functionality
+async function showStorySummary() {
+    try {
+        const response = await fetch('/story_summary');
+        if (response.ok) {
+            const summaryData = await response.json();
+            displayStorySummary(summaryData);
+        } else {
+            alert('Story summary not available. Please generate a comic first.');
+        }
+    } catch (error) {
+        console.error('Error fetching story summary:', error);
+        alert('Error loading story summary.');
+    }
+}
+
+function displayStorySummary(summaryData) {
+    // Create modal dialog for story summary
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border: 2px solid #4a90e2;
+    `;
+    
+    content.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="color: #2c3e50; margin: 0; font-size: 24px;">📚 ${summaryData.title}</h2>
+            <p style="color: #7f8c8d; margin: 5px 0; font-style: italic;">${summaryData.genre} • ${summaryData.total_pages} Pages</p>
+        </div>
+        
+        <div style="margin-bottom: 20px; padding: 15px; background: rgba(74, 144, 226, 0.1); border-radius: 10px;">
+            <h3 style="color: #2c3e50; margin: 0 0 10px 0;">📖 Story Summary</h3>
+            <p style="line-height: 1.6; color: #34495e; margin: 0;">${summaryData.summary.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div style="padding: 15px; background: rgba(46, 204, 113, 0.1); border-radius: 10px;">
+                <h4 style="color: #27ae60; margin: 0 0 10px 0;">📊 Statistics</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; color: #2c3e50;">
+                    <li>• Pages: ${summaryData.statistics.total_pages}</li>
+                    <li>• Dialogue Scenes: ${summaryData.statistics.dialogue_scenes}</li>
+                    <li>• Action Scenes: ${summaryData.statistics.action_scenes}</li>
+                    <li>• Story Intensity: ${summaryData.statistics.story_intensity}</li>
+                </ul>
+            </div>
+            
+            <div style="padding: 15px; background: rgba(155, 89, 182, 0.1); border-radius: 10px;">
+                <h4 style="color: #8e44ad; margin: 0 0 10px 0;">🎭 Themes</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; color: #2c3e50;">
+                    ${summaryData.themes.map(theme => `<li>• ${theme}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <button onclick="this.closest('.modal').remove()" style="
+                background: linear-gradient(145deg, #e74c3c, #c0392b);
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 25px;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: bold;
+                box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                Close
+            </button>
+        </div>
+    `;
+    
+    modal.className = 'modal';
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    });
+}
+
+// Export story summary function
+window.showStorySummary = showStorySummary;
 

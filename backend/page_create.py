@@ -44,3 +44,13 @@ def page_json(pages):
     with open('output_template/page.js', 'w') as f:
         f.write(f'var pages = ')
         json.dump(pages_dict, f , indent=4)
+    
+    # Generate story summary after creating pages
+    try:
+        from backend.story_summary import generate_comic_story_summary
+        print("🔄 Generating story summary...")
+        summary = generate_comic_story_summary()
+        if summary:
+            print("✅ Story summary generated successfully!")
+    except Exception as e:
+        print(f"⚠️ Could not generate story summary: {e}")

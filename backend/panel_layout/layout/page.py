@@ -48,9 +48,9 @@ def get_files_in_folder(folder_path):
             file_dicts.append({"name": file , 'rank' :  rank})
     return file_dicts
 
-templates = ['12', '21', '11', '22']
+templates = ['1111', '1122', '2211', '1212', '2121']
 
-min_length = 2
+min_length = 4
 folder_path = 'frames/final' # Specify the folder path
 
 
@@ -94,19 +94,29 @@ def get_templates(input):
     return page_templates
 
 
-def last_page(panels,count_images, length):
+def last_page(panels, count_images, length):
     count = 1
     
+    # Handle different remaining panel counts for 2x2 grid
     if length == 1:
         new_panel = panel(f'frame{count_images:03d}', 1, 1)
         panels.append(new_panel)
+        # Add empty panels to complete the 2x2 grid
+        for i in range(3):
+            panels.append(panel('test1', 1, 1))
     elif length == 2:
-        new_panel = panel(f'frame{count_images:03d}', 1, 1)
-        panels.append(new_panel)
-        count += 1
-        count_images += 1
-        new_panel = panel(f'frame{count_images:03d}', 1, 1)
-        panels.append(new_panel)
+        for i in range(2):
+            new_panel = panel(f'frame{count_images + i:03d}', 1, 1)
+            panels.append(new_panel)
+        # Add empty panels to complete the 2x2 grid
+        for i in range(2):
+            panels.append(panel('test1', 1, 1))
+    elif length == 3:
+        for i in range(3):
+            new_panel = panel(f'frame{count_images + i:03d}', 1, 1)
+            panels.append(new_panel)
+        # Add one empty panel to complete the 2x2 grid
+        panels.append(panel('test1', 1, 1))
 
     return panels
 
