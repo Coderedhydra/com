@@ -104,6 +104,11 @@ def comic():
     else:
         return "Comic not found. Please generate a comic first.", 404
 
+@app.route('/debug')
+def debug_comic():
+    """Serve debug comic page"""
+    return send_file('debug_comic.html')
+
 @app.route('/story_summary')
 def story_summary():
     """Serve the story summary"""

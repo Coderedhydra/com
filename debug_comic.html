@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amit Comic - Debug Version</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .debug-info {
+            background: #e3f2fd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #2196f3;
+        }
+        
+        .wrapper {
+            width: 800px;
+            height: 1080px;
+            background: #ffffff;
+            margin: 0 auto;
+            border: 2px solid #333;
+        }
+        
+        .grid-container {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 2px;
+            background: #ffffff;
+        }
+        
+        .grid-item {
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .bubble {
+            position: absolute;
+            background: #ffffff;
+            border: 2px solid #2c3e50;
+            border-radius: 18px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-info">
+        <h3>🔍 Debug Information</h3>
+        <p><strong>Template:</strong> 800x1080 with 2px white gaps</p>
+        <p><strong>Panels:</strong> 4 panels in 2x2 grid</p>
+        <p><strong>Images:</strong> Using background-size: contain (no crop)</p>
+        <p><strong>Status:</strong> <span id="status">Loading...</span></p>
+    </div>
+
+    <div class="wrapper">
+        <div class="grid-container">
+            <div class="grid-item" id="_1">Panel 1</div>
+            <div class="grid-item" id="_2">Panel 2</div>
+            <div class="grid-item" id="_3">Panel 3</div>
+            <div class="grid-item" id="_4">Panel 4</div>
+        </div>
+    </div>
+
+    <script>
+        console.log('🔍 Debug Comic - Starting...');
+        
+        // Test data
+        const testPages = [
+            {
+                "panels": [
+                    {"image": "frame001", "row_span": 1, "col_span": 1},
+                    {"image": "frame002", "row_span": 1, "col_span": 1},
+                    {"image": "frame003", "row_span": 1, "col_span": 1},
+                    {"image": "frame004", "row_span": 1, "col_span": 1}
+                ],
+                "bubbles": [
+                    {"dialog": "Test 1", "emotion": "normal", "bubble_offset_x": 50, "bubble_offset_y": 50},
+                    {"dialog": "Test 2", "emotion": "normal", "bubble_offset_x": 100, "bubble_offset_y": 50},
+                    {"dialog": "Test 3", "emotion": "normal", "bubble_offset_x": 50, "bubble_offset_y": 100},
+                    {"dialog": "Test 4", "emotion": "normal", "bubble_offset_x": 100, "bubble_offset_y": 100}
+                ]
+            }
+        ];
+        
+        const basePath = '/static/comic/frames/final/';
+        
+        function loadTestPage() {
+            console.log('📄 Loading test page...');
+            
+            const gridItems = document.querySelectorAll('.grid-item');
+            const page = testPages[0];
+            
+            // Load images
+            for (let i = 0; i < page.panels.length && i < gridItems.length; i++) {
+                const panel = page.panels[i];
+                const gridItem = gridItems[i];
+                const imagePath = basePath + panel.image + '.png';
+                
+                console.log(`📸 Loading panel ${i+1}: ${imagePath}`);
+                
+                // Set background image
+                gridItem.style.backgroundImage = `url("${imagePath}")`;
+                gridItem.textContent = ''; // Remove text
+                
+                // Add bubble
+                const bubble = page.bubbles[i];
+                if (bubble && bubble.dialog) {
+                    const bubbleElement = document.createElement('div');
+                    bubbleElement.className = 'bubble';
+                    bubbleElement.textContent = bubble.dialog;
+                    bubbleElement.style.transform = `translate(${bubble.bubble_offset_x}px, ${bubble.bubble_offset_y}px)`;
+                    gridItem.appendChild(bubbleElement);
+                }
+                
+                // Test image loading
+                const testImg = new Image();
+                testImg.onload = function() {
+                    console.log(`✅ Panel ${i+1} image loaded: ${this.width}x${this.height}`);
+                };
+                testImg.onerror = function() {
+                    console.log(`❌ Panel ${i+1} image failed to load: ${imagePath}`);
+                };
+                testImg.src = imagePath;
+            }
+            
+            document.getElementById('status').textContent = 'Loaded test page with 4 panels';
+            console.log('✅ Test page loaded');
+        }
+        
+        // Load when page is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadTestPage);
+        } else {
+            loadTestPage();
+        }
+    </script>
+</body>
+</html>

@@ -53,14 +53,10 @@ body {
     width: 800px !important;
     height: 1080px !important;
     display: grid;
-    grid-template-columns: 398px 2px 398px;
-    grid-template-rows: 538px 2px 538px;
-    grid-template-areas: 
-        "panel1 vstrip panel2"
-        "hstrip hstrip hstrip"
-        "panel3 vstrip panel4";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
     border: none;
-    gap: 0px;
+    gap: 2px;
     box-sizing: border-box;
     margin: 0 !important;
     padding: 0 !important;
@@ -76,8 +72,8 @@ body {
     border: none !important;
     outline: none !important;
     position: relative;
-    width: 398px !important;
-    height: 538px !important;
+    width: 100% !important;
+    height: 100% !important;
     overflow: hidden;
     border-radius: 0px !important;
     box-shadow: none !important;
@@ -92,29 +88,6 @@ body {
     background-color: #f8f9fa;
     margin: 0 !important;
     padding: 0 !important;
-}
-
-/* Panel positioning using grid areas */
-#_1 { grid-area: panel1; }
-#_2 { grid-area: panel2; }
-#_3 { grid-area: panel3; }
-#_4 { grid-area: panel4; }
-
-/* White strips between panels */
-.grid-container::before {
-    content: '';
-    grid-area: vstrip;
-    background: #ffffff;
-    width: 2px;
-    height: 100%;
-}
-
-.grid-container::after {
-    content: '';
-    grid-area: hstrip;
-    background: #ffffff;
-    width: 100%;
-    height: 2px;
 }
 
 /* Print styles */

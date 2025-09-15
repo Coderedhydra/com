@@ -29,13 +29,9 @@
             width: 800px !important;
             height: 1080px !important;
             display: grid !important;
-            grid-template-columns: 398px 2px 398px !important;
-            grid-template-rows: 538px 2px 538px !important;
-            grid-template-areas: 
-                "panel1 vstrip panel2"
-                "hstrip hstrip hstrip"  
-                "panel3 vstrip panel4" !important;
-            gap: 0px !important;
+            grid-template-columns: 1fr 1fr !important;
+            grid-template-rows: 1fr 1fr !important;
+            gap: 2px !important;
             margin: 0 !important;
             padding: 0 !important;
             border: none !important;
@@ -43,8 +39,8 @@
             background: #ffffff !important;
         }
         .grid-item {
-            width: 398px !important;
-            height: 538px !important;
+            width: 100% !important;
+            height: 100% !important;
             background-size: contain !important;
             background-position: center center !important;
             background-repeat: no-repeat !important;
@@ -56,20 +52,6 @@
             outline: none !important;
             box-sizing: border-box !important;
             background-color: #f8f9fa !important;
-        }
-        #_1 { grid-area: panel1 !important; }
-        #_2 { grid-area: panel2 !important; }
-        #_3 { grid-area: panel3 !important; }
-        #_4 { grid-area: panel4 !important; }
-        .grid-container::before {
-            content: '' !important;
-            grid-area: vstrip !important;
-            background: #ffffff !important;
-        }
-        .grid-container::after {
-            content: '' !important;
-            grid-area: hstrip !important;
-            background: #ffffff !important;
         }
     </style>
 
