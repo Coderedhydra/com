@@ -323,15 +323,9 @@ class SOTAImageEnhancer:
         
         print(f"🚀 Enhancing image: {os.path.basename(image_path)}")
         
-        # Try Real-ESRGAN first (best quality available) - but only once
-        try:
-            from backend.cartoonize.realesrgan_enhancer import RealESRGANEnhancer
-            realesrgan = RealESRGANEnhancer()
-            if realesrgan.realesrgan_available and realesrgan.enhance_image(image_path, output_path):
-                print("✅ Enhanced with Real-ESRGAN (State-of-the-Art)")
-                return True
-        except Exception as e:
-            print(f"⚠️ Real-ESRGAN failed: {e}")
+        # Real-ESRGAN disabled - using reliable fallbacks only
+        # Real-ESRGAN disabled for reliability
+        print("🎨 Using reliable OpenCV enhancement (Real-ESRGAN disabled)")
         
         # Try advanced OpenCV as reliable fallback
         if 'advanced_opencv' in self.available_models:
