@@ -185,16 +185,16 @@ def style_frames():
     print(f"🔧 Using parallel processing with {min(4, os.cpu_count() or 1)} workers")
     start_time = time.time()
     
-    # First, apply RELIABLE QUALITY enhancement (no resizing, no errors, just great quality)
+    # First, apply FAST QUALITY enhancement (speed + quality, no errors)
     try:
-        from backend.cartoonize.reliable_quality_enhancer import enhance_frames_reliable_quality
-        print("🚀 Phase 1: RELIABLE QUALITY Enhancement (No Resize, No Errors)...")
-        print("🔥 Error-free quality enhancement without zooming/cropping")
-        enhance_frames_reliable_quality(frames_dir)
-        print("✅ RELIABLE QUALITY enhancement complete, proceeding with cartoon styling...")
+        from backend.cartoonize.fast_quality_enhancer import enhance_frames_fast_quality
+        print("🚀 Phase 1: FAST QUALITY Enhancement...")
+        print("⚡ GPU/parallel processing for speed + quality (no resize/crop)")
+        enhance_frames_fast_quality(frames_dir)
+        print("✅ FAST QUALITY enhancement complete, proceeding with cartoon styling...")
     except Exception as e:
-        print(f"⚠️ Reliable quality enhancement failed: {e}")
-        print("🔄 Using basic quality enhancement...")
+        print(f"⚠️ Fast enhancement failed: {e}")
+        print("🔄 Proceeding with cartoon styling only...")
     
     def process_single_frame(image_file):
         """Process a single frame with cartoon styling"""
@@ -211,8 +211,21 @@ def style_frames():
     processed = 0
     successful = 0
     
-    print(f"🚀 Phase 2: Cartoon Styling...")
-    print(f"⚡ Processing {total_frames} frames in parallel...")
+    print(f"🚀 Phase 2: GPU-Optimized Cartoon Styling...")
+    print(f"⚡ Processing {total_frames} frames with GPU optimization...")
+    
+    # Check for GPU and use more workers if available
+    try:
+        gpu_count = cv2.cuda.getCudaEnabledDeviceCount()
+        if gpu_count > 0:
+            max_workers = min(8, os.cpu_count() or 1)  # More workers for GPU
+            print(f"🔥 GPU Mode: Using {max_workers} parallel workers")
+        else:
+            max_workers = min(4, os.cpu_count() or 1)  # Standard for CPU
+            print(f"💻 CPU Mode: Using {max_workers} parallel workers")
+    except:
+        max_workers = min(4, os.cpu_count() or 1)  # Standard for CPU
+        print(f"💻 CPU Mode: Using {max_workers} parallel workers")
     
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         # Submit all tasks
