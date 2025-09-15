@@ -185,15 +185,15 @@ def style_frames():
     print(f"🔧 Using parallel processing with {min(4, os.cpu_count() or 1)} workers")
     start_time = time.time()
     
-    # First, apply NO-GAPS QUALITY enhancement (perfect fit + quality)
+    # First, apply ULTRA 4x QUALITY enhancement (maximum quality)
     try:
-        from backend.cartoonize.no_gaps_enhancer import enhance_frames_no_gaps
-        print("🚀 Phase 1: NO-GAPS QUALITY Enhancement...")
-        print("📐 Perfect panel fit + high quality (no gaps, no shrinking)")
-        enhance_frames_no_gaps(frames_dir)
-        print("✅ NO-GAPS QUALITY enhancement complete, proceeding with cartoon styling...")
+        from backend.cartoonize.ultra_4x_enhancer import enhance_frames_ultra_4x
+        print("🚀 Phase 1: ULTRA 4x QUALITY Enhancement...")
+        print("🔥 4x upscaling for maximum image quality")
+        enhance_frames_ultra_4x(frames_dir)
+        print("✅ ULTRA 4x QUALITY enhancement complete, proceeding with cartoon styling...")
     except Exception as e:
-        print(f"⚠️ No-gaps enhancement failed: {e}")
+        print(f"⚠️ Ultra 4x enhancement failed: {e}")
         print("🔄 Proceeding with cartoon styling only...")
     
     def process_single_frame(image_file):
