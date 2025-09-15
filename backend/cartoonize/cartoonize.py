@@ -185,14 +185,23 @@ def style_frames():
     print(f"🔧 Using parallel processing with {min(4, os.cpu_count() or 1)} workers")
     start_time = time.time()
     
-    # First, apply AI enhancement to all frames
+    # First, apply State-of-the-Art AI enhancement to all frames
     try:
-        from backend.cartoonize.ai_enhancer import enhance_all_frames
-        print("🚀 Phase 1: AI Enhancement...")
-        enhance_all_frames(frames_dir)
-        print("✅ AI enhancement complete, proceeding with cartoon styling...")
+        from backend.cartoonize.sota_enhancer import enhance_all_frames_sota
+        print("🚀 Phase 1: State-of-the-Art AI Enhancement...")
+        print("🤖 Using latest models: Real-ESRGAN, GFPGAN, Advanced OpenCV AI")
+        enhance_all_frames_sota(frames_dir)
+        print("✅ SOTA AI enhancement complete, proceeding with cartoon styling...")
     except Exception as e:
-        print(f"⚠️ AI enhancement failed: {e}, proceeding with standard processing...")
+        print(f"⚠️ SOTA AI enhancement failed: {e}")
+        try:
+            # Fallback to previous AI enhancer
+            from backend.cartoonize.ai_enhancer import enhance_all_frames
+            print("🔄 Trying fallback AI enhancement...")
+            enhance_all_frames(frames_dir)
+            print("✅ Fallback AI enhancement complete")
+        except Exception as e2:
+            print(f"⚠️ All AI enhancement failed: {e2}, proceeding with standard processing...")
     
     def process_single_frame(image_file):
         """Process a single frame with cartoon styling"""
