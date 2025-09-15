@@ -48,9 +48,9 @@ def get_files_in_folder(folder_path):
             file_dicts.append({"name": file , 'rank' :  rank})
     return file_dicts
 
-templates = ['12', '21', '11', '22']
+templates = ['1111', '1122', '2211', '1212', '2121']
 
-min_length = 2
+min_length = 4
 folder_path = 'frames/final' # Specify the folder path
 
 
@@ -94,19 +94,29 @@ def get_templates(input):
     return page_templates
 
 
-def last_page(panels,count_images, length):
+def last_page(panels, count_images, length):
     count = 1
     
+    # Handle different remaining panel counts for 2x2 grid
     if length == 1:
         new_panel = panel(f'frame{count_images:03d}', 1, 1)
         panels.append(new_panel)
+        # Add panels with next available frames to complete the 2x2 grid
+        for i in range(3):
+            panels.append(panel(f'frame{count_images + i + 1:03d}', 1, 1))
     elif length == 2:
-        new_panel = panel(f'frame{count_images:03d}', 1, 1)
-        panels.append(new_panel)
-        count += 1
-        count_images += 1
-        new_panel = panel(f'frame{count_images:03d}', 1, 1)
-        panels.append(new_panel)
+        for i in range(2):
+            new_panel = panel(f'frame{count_images + i:03d}', 1, 1)
+            panels.append(new_panel)
+        # Add panels with next available frames to complete the 2x2 grid
+        for i in range(2):
+            panels.append(panel(f'frame{count_images + i + 2:03d}', 1, 1))
+    elif length == 3:
+        for i in range(3):
+            new_panel = panel(f'frame{count_images + i:03d}', 1, 1)
+            panels.append(new_panel)
+        # Add one panel with next available frame to complete the 2x2 grid
+        panels.append(panel(f'frame{count_images + 3:03d}', 1, 1))
 
     return panels
 
@@ -146,9 +156,12 @@ def panel_create(page_templates):
                 panels.append(new)
                 frame_index += 1
             else:
-                # Fallback to test images if we run out of frames
-                new = panel('test1', 1, 1)
+                # Use cycling frame numbers if we run out of actual frames
+                cycle_frame = (frame_index % len(frame_files)) if frame_files else 0
+                frame_name = f'frame{frame_index + 1:03d}'
+                new = panel(frame_name, 1, 1)
                 panels.append(new)
+                frame_index += 1
             count = count+1
 
         

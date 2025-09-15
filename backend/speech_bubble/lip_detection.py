@@ -76,21 +76,33 @@ def get_lips(video, crop_coords, black_x, black_y):
         if len(face_rects) == 1:                # 1 face detected: Extract from keyframe itself
             rect = face_rects[0]
             landmark = landmark_detector(gray, rect)   # Detect face landmarks
-            x,y = convert_to_css_pixel(landmark.part(65).x, landmark.part(65).y, crop_coords[sub.index - 1])
+            
+            # FIX: Check bounds before accessing crop_coords
+            crop_index = min(sub.index - 1, len(crop_coords) - 1)
+            crop_index = max(0, crop_index)  # Ensure non-negative
+            
+            x,y = convert_to_css_pixel(landmark.part(65).x, landmark.part(65).y, crop_coords[crop_index])
             lips[sub.index] = (x,y)
             continue
 
             
         if len(face_rects) > 1:                  # Too many face detected
             print("Too many face: sub_",sub.index,": ", len(face_rects))
-            origin = (crop_coords[sub.index - 1][0] , crop_coords[sub.index - 1][2] ) # (left,top)
+            
+            # FIX: Check bounds before accessing crop_coords
+            crop_index = min(sub.index - 1, len(crop_coords) - 1)
+            crop_index = max(0, crop_index)  # Ensure non-negative
+            
+            print(f"🔧 Using crop_coords[{crop_index}] for sub.index {sub.index}")
+            
+            origin = (crop_coords[crop_index][0] , crop_coords[crop_index][2] ) # (left,top)
             lip_coords = get_multi_speaker_lips(sub,video,face_rects)
             if lip_coords == (-1,-1):
                 lips[sub.index] = (-1,-1)
             else:
                 x = lip_coords[0] - (origin[0] + black_x)
                 y = lip_coords[1] - (origin[1] + black_y)
-                x , y = convert_to_css_pixel(x,y,crop_coords[sub.index - 1])
+                x , y = convert_to_css_pixel(x,y,crop_coords[crop_index])
                 lips[sub.index] = (x,y)
             continue
     print(lips)

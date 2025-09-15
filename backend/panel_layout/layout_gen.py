@@ -8,11 +8,24 @@ from PIL import Image
 
 
 def centroid_crop(index, panel_type, cam_coords, img_w, img_h):
-    # Skip complex cropping - just return the original image coordinates
+    # Enhanced cropping to preserve full image content
     frame_path = os.path.join("frames",'final',f"frame{index+1:03d}.png")
     
-    # Return full image coordinates (no cropping)
+    # Ensure we use the full image dimensions without cropping
+    # This prevents the lower part of images from being cut off
     crop_coords = (0, img_w, 0, img_h)
+    
+    # Verify image exists and get actual dimensions
+    try:
+        from PIL import Image
+        if os.path.exists(frame_path):
+            with Image.open(frame_path) as img:
+                actual_w, actual_h = img.size
+                crop_coords = (0, actual_w, 0, actual_h)
+                print(f"Frame {index+1}: Using full dimensions {actual_w}x{actual_h}")
+    except Exception as e:
+        print(f"Warning: Could not verify dimensions for frame {index+1}: {e}")
+    
     return crop_coords
 
 
@@ -30,12 +43,29 @@ def generate_layout():
     
     # Simple panel type assignment (no complex analysis)
     folder_dir = "frames/final"
+    frame_count = 0
     for image in sorted(os.listdir(folder_dir)):
         if image.endswith('.png'):
+            frame_count += 1
             # Simple panel type - just use '1' for all panels
             input_seq += "1"
             # Use full image coordinates
             cam_coords.append((0, width, 0, height))
+    
+    # FORCE EXACTLY 12 PAGES (48 frames total for 2x2 grid)
+    target_frames = 48  # 12 pages × 4 panels per page
+    
+    if len(input_seq) > target_frames:
+        # Truncate to exactly 48 frames
+        input_seq = input_seq[:target_frames]
+        cam_coords = cam_coords[:target_frames]
+        print(f"🔥 LIMITED TO 12 PAGES: Using first {target_frames} frames")
+    else:
+        # Pad to exactly 48 frames
+        while len(input_seq) < target_frames:
+            input_seq += "1"
+            cam_coords.append((0, width, 0, height))
+        print(f"🔥 PADDED TO 12 PAGES: Extended to {target_frames} frames")
     
     page_templates = get_templates(input_seq)
     print(f"Generated {len(page_templates)} page templates")

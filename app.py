@@ -104,6 +104,35 @@ def comic():
     else:
         return "Comic not found. Please generate a comic first.", 404
 
+@app.route('/debug')
+def debug_comic():
+    """Serve debug comic page"""
+    return send_file('debug_comic.html')
+
+@app.route('/story_summary')
+def story_summary():
+    """Serve the story summary"""
+    summary_path = os.path.join(os.getcwd(), 'output_template', 'story_summary.json')
+    if os.path.exists(summary_path):
+        with open(summary_path, 'r', encoding='utf-8') as f:
+            summary_data = json.load(f)
+        return jsonify(summary_data)
+    else:
+        return jsonify({'error': 'Story summary not available'}), 404
+
+@app.route('/generate_full_comic', methods=['POST'])
+def generate_full_comic():
+    """Generate full 12-page comic after preview approval"""
+    try:
+        print("🚀 Generating full 12-page comic...")
+        success = create_comic_full()
+        if success:
+            return jsonify({'status': 'success', 'message': 'Full comic generated successfully!'})
+        else:
+            return jsonify({'status': 'error', 'message': 'Full comic generation failed'}), 500
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/export_hq_png', methods=['POST'])
 def export_hq_png():
     """Export high-quality PNG using server-side rendering"""
@@ -146,6 +175,8 @@ def export_hq_png():
                 <div class="grid-container">
                     <div class="grid-item" id="_1"></div>
                     <div class="grid-item" id="_2"></div>
+                    <div class="grid-item" id="_3"></div>
+                    <div class="grid-item" id="_4"></div>
                 </div>
             </div>
             <script>
@@ -215,32 +246,68 @@ def export_hq_png():
         return jsonify({'error': str(e)}), 500
 
 
-def create_comic():
+def create_comic_preview():
+    """Create preview with 1 test page first"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    # FULL PROGRAM - All processing steps enabled
-    print("Starting optimized comic generation...")
+    print("🎬 Amit Comic - Preview Generation")
+    print("Starting preview generation (1 test page)...")
+    
+    # Step 1-3: Basic processing
+    get_subtitles(video)
+    time.sleep(1)  # Shorter wait for preview
+    generate_keyframes(video)
+    black_x, black_y, _, _ = black_bar_crop()
+    
+    # Step 4: Show image selection and create preview
+    from backend.preview_system import create_comic_preview
+    preview_success = create_comic_preview()
+    
+    if preview_success:
+        copy_to_static()
+        total_time = time.time() - start_time
+        print(f"\n🎉 Preview generation completed!")
+        print(f"--- Preview time: {total_time:.1f} seconds ---")
+        return True
+    else:
+        print("❌ Preview generation failed")
+        return False
+
+def create_comic_full():
+    """Create full 12-page comic after preview approval"""
+    start_time = time.time()
+    video = 'video/uploaded.mp4'
+    
+    print("\n🎬 Amit Comic - Full Generation (12 Pages)")
+    print("Starting full comic generation...")
+    
+    # Full processing pipeline
     get_subtitles(video)
     time.sleep(3)
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     crop_coords, page_templates, panels = generate_layout()
     bubbles = bubble_create(video, crop_coords, black_x, black_y)
-    pages  = page_create(page_templates,panels,bubbles)
+    pages = page_create(page_templates, panels, bubbles)
     page_json(pages)
     
-    # Use optimized parallel styling for faster processing
-    print("Step 6: Styling frames with optimized parallel processing...")
+    # Ultra 4x quality enhancement
+    print("Step 6: Ultra 4x quality enhancement...")
     style_frames()
     
-    # Copy to static directory for Flask serving
+    # Copy to static directory
     copy_to_static()
     
     total_time = time.time() - start_time
     print(f"Full comic generation completed successfully!")
     print(f"Generated {len(pages) if 'pages' in locals() else 'unknown'} comic pages from video!")
     print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
+    return True
+
+def create_comic():
+    """Main comic creation - starts with preview"""
+    return create_comic_preview()
 
 def create_comic_fast():
     """Ultra-fast comic generation - minimal styling"""
@@ -321,6 +388,6 @@ def handle_link():
     
 
 if __name__ == '__main__':
-    print("Starting CineComic Flask application...")
+    print("Starting Amit Comic Flask application...")
     print("Open your browser and go to: http://localhost:5000")
     app.run(debug=True, host='0.0.0.0', port=5000)
