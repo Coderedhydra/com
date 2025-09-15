@@ -161,17 +161,19 @@ class SOTAImageEnhancer:
             
             h, w = img.shape[:2]
             
-            # Step 1: AI-powered super-resolution using EDSR
-            if w < 1600 or h < 1200:
-                scale_factor = min(1600/w, 1200/h, 3.0)
+            # Step 1: MAXIMUM QUALITY super-resolution - size doesn't matter
+            if w < 2400 or h < 1800:  # Higher threshold for max quality
+                scale_factor = min(2400/w, 1800/h, 4.0)  # Up to 4x scaling for max quality
                 new_w, new_h = int(w * scale_factor), int(h * scale_factor)
                 
-                # Use INTER_CUBIC for best quality upscaling
-                img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
-                print(f"🔍 Super-resolution: {w}x{h} → {new_w}x{new_h}")
+                # Use LANCZOS4 for absolute best quality upscaling
+                img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4)
+                print(f"🔥 MAXIMUM QUALITY Super-resolution: {w}x{h} → {new_w}x{new_h} ({scale_factor:.1f}x)")
+            else:
+                print(f"🔥 MAXIMUM QUALITY: Preserving full {w}x{h} resolution")
             
-            # Step 2: Advanced noise reduction with edge preservation
-            img = cv2.fastNlMeansDenoisingColored(img, None, 3, 3, 7, 21)
+            # Step 2: MAXIMUM QUALITY noise reduction with edge preservation
+            img = cv2.fastNlMeansDenoisingColored(img, None, 5, 5, 9, 25)  # Higher quality settings
             
             # Step 3: Multi-scale detail enhancement
             img = self.multi_scale_detail_enhancement(img)
@@ -321,29 +323,14 @@ class SOTAImageEnhancer:
         if output_path is None:
             output_path = image_path
         
-        print(f"🚀 Enhancing image: {os.path.basename(image_path)}")
+        print(f"🔥 MAXIMUM QUALITY MODE: {os.path.basename(image_path)}")
         
-        # Real-ESRGAN disabled - using reliable fallbacks only
-        # Real-ESRGAN disabled for reliability
-        print("🎨 Using reliable OpenCV enhancement (Real-ESRGAN disabled)")
+        # FORCE Advanced OpenCV ONLY - no fallbacks, maximum quality
+        if self.enhance_with_advanced_opencv(image_path, output_path):
+            print("✅ Enhanced with Advanced OpenCV AI Pipeline (MAXIMUM QUALITY)")
+            return True
         
-        # Try advanced OpenCV as reliable fallback
-        if 'advanced_opencv' in self.available_models:
-            if self.enhance_with_advanced_opencv(image_path, output_path):
-                print("✅ Enhanced with Advanced OpenCV AI Pipeline")
-                return True
-        
-        # Use simple but reliable enhancer as final fallback
-        try:
-            from backend.cartoonize.simple_enhancer import SimpleHighQualityEnhancer
-            simple_enhancer = SimpleHighQualityEnhancer()
-            if simple_enhancer.enhance_image(image_path, output_path):
-                print("✅ Enhanced with Simple High-Quality Enhancer")
-                return True
-        except Exception as e:
-            print(f"⚠️ Simple enhancer failed: {e}")
-        
-        print("❌ All enhancement methods failed")
+        print("❌ Advanced OpenCV enhancement failed")
         return False
     
     def batch_enhance(self, input_dir, output_dir=None):

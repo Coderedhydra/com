@@ -52,10 +52,20 @@ def generate_layout():
             # Use full image coordinates
             cam_coords.append((0, width, 0, height))
     
-    # Ensure we have multiples of 4 frames for 2x2 grid
-    while len(input_seq) % 4 != 0:
-        input_seq += "1"
-        cam_coords.append((0, width, 0, height))
+    # FORCE EXACTLY 12 PAGES (48 frames total for 2x2 grid)
+    target_frames = 48  # 12 pages × 4 panels per page
+    
+    if len(input_seq) > target_frames:
+        # Truncate to exactly 48 frames
+        input_seq = input_seq[:target_frames]
+        cam_coords = cam_coords[:target_frames]
+        print(f"🔥 LIMITED TO 12 PAGES: Using first {target_frames} frames")
+    else:
+        # Pad to exactly 48 frames
+        while len(input_seq) < target_frames:
+            input_seq += "1"
+            cam_coords.append((0, width, 0, height))
+        print(f"🔥 PADDED TO 12 PAGES: Extended to {target_frames} frames")
     
     page_templates = get_templates(input_seq)
     print(f"Generated {len(page_templates)} page templates")

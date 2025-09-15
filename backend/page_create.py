@@ -6,7 +6,15 @@ def page_create(page_templates,panels,bubbles):
     pages = []
     print(f"Creating pages: {len(page_templates)} templates, {len(panels)} panels, {len(bubbles)} bubbles")
     
+    # FORCE EXACTLY 12 PAGES
+    max_pages = 12
+    
     for i, page_template in enumerate(page_templates):
+        # STOP AT 12 PAGES EXACTLY
+        if i >= max_pages:
+            print(f"🔥 STOPPING AT 12 PAGES: Ignoring remaining {len(page_templates) - i} templates")
+            break
+            
         try:
             # Ensure we don't go out of bounds
             end_idx = min(count + len(page_template), len(panels))
