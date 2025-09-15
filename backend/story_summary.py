@@ -58,8 +58,12 @@ class ComicStorySummarizer:
 
     def analyze_comic_pages(self, pages_data: List[Dict]) -> Dict[str, Any]:
         """Analyze comic pages to extract story elements"""
+        # LIMIT TO EXACTLY 12 PAGES (48 PANELS)
+        max_pages = 12
+        limited_pages = pages_data[:max_pages] if len(pages_data) > max_pages else pages_data
+        
         analysis = {
-            'total_pages': len(pages_data),
+            'total_pages': len(limited_pages),
             'dialogue_count': 0,
             'action_scenes': 0,
             'emotions': {},
@@ -68,7 +72,9 @@ class ComicStorySummarizer:
             'story_arc': []
         }
         
-        for i, page in enumerate(pages_data):
+        print(f"📚 Analyzing exactly {len(limited_pages)} pages (max 12 pages, 48 panels)")
+        
+        for i, page in enumerate(limited_pages):
             page_analysis = self.analyze_single_page(page, i + 1)
             
             # Aggregate data

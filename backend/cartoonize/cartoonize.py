@@ -185,15 +185,15 @@ def style_frames():
     print(f"🔧 Using parallel processing with {min(4, os.cpu_count() or 1)} workers")
     start_time = time.time()
     
-    # First, apply ULTRA-HIGH QUALITY enhancement (no resizing, just superior quality)
+    # First, apply RELIABLE QUALITY enhancement (no resizing, no errors, just great quality)
     try:
-        from backend.cartoonize.ultra_quality_no_resize import enhance_frames_ultra_quality_no_resize
-        print("🚀 Phase 1: ULTRA-HIGH QUALITY Enhancement (No Resize)...")
-        print("🔥 Professional-grade quality without zooming/cropping")
-        enhance_frames_ultra_quality_no_resize(frames_dir)
-        print("✅ ULTRA-HIGH QUALITY enhancement complete, proceeding with cartoon styling...")
+        from backend.cartoonize.reliable_quality_enhancer import enhance_frames_reliable_quality
+        print("🚀 Phase 1: RELIABLE QUALITY Enhancement (No Resize, No Errors)...")
+        print("🔥 Error-free quality enhancement without zooming/cropping")
+        enhance_frames_reliable_quality(frames_dir)
+        print("✅ RELIABLE QUALITY enhancement complete, proceeding with cartoon styling...")
     except Exception as e:
-        print(f"⚠️ Ultra-high quality enhancement failed: {e}")
+        print(f"⚠️ Reliable quality enhancement failed: {e}")
         print("🔄 Using basic quality enhancement...")
     
     def process_single_frame(image_file):

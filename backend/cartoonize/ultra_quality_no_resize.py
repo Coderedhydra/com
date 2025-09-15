@@ -131,24 +131,22 @@ class UltraQualityNoResize:
         print("⚡ Professional sharpening...")
         
         # Multiple sharpening techniques
-        # Technique 1: Laplacian sharpening
-        laplacian = cv2.Laplacian(img, cv2.CV_64F)
-        laplacian = np.absolute(laplacian)
-        laplacian = (laplacian / laplacian.max() * 255).astype(np.uint8)
-        laplacian = cv2.cvtColor(laplacian, cv2.COLOR_GRAY2BGR)
-        
-        # Technique 2: Custom sharpening kernel
+        # Technique 1: Custom sharpening kernel (most reliable)
         kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]]) * 0.15
         kernel_sharp = cv2.filter2D(img, -1, kernel)
         
-        # Technique 3: High-pass filter sharpening
+        # Technique 2: High-pass filter sharpening
         gaussian = cv2.GaussianBlur(img, (0, 0), 2.0)
         high_pass = cv2.addWeighted(img, 2.0, gaussian, -1.0, 0)
         
-        # Combine sharpening techniques
+        # Technique 3: Unsharp mask (professional standard)
+        gaussian2 = cv2.GaussianBlur(img, (0, 0), 1.0)
+        unsharp = cv2.addWeighted(img, 1.3, gaussian2, -0.3, 0)
+        
+        # Combine sharpening techniques safely
         result = cv2.addWeighted(img, 0.6, kernel_sharp, 0.25, 0)
         result = cv2.addWeighted(result, 0.85, high_pass, 0.15, 0)
-        result = cv2.addWeighted(result, 0.95, laplacian, 0.05, 0)
+        result = cv2.addWeighted(result, 0.9, unsharp, 0.1, 0)
         
         return result
     
