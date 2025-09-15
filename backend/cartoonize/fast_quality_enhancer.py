@@ -30,7 +30,7 @@ class FastQualityEnhancer:
         return False
     
     def enhance_image(self, image_path, output_path=None):
-        """Fast quality enhancement"""
+        """Fast quality enhancement - PRESERVE EXACT SIZE"""
         if output_path is None:
             output_path = image_path
         
@@ -41,15 +41,26 @@ class FastQualityEnhancer:
                 return False
             
             h, w = img.shape[:2]
+            original_size = (w, h)
+            print(f"📐 Preserving exact size: {w}x{h}")
             
             # Fast quality enhancement pipeline
             if self.gpu_available:
-                img = self.gpu_fast_enhance(img)
+                enhanced = self.gpu_fast_enhance(img)
             else:
-                img = self.cpu_fast_enhance(img)
+                enhanced = self.cpu_fast_enhance(img)
+            
+            # CRITICAL: Ensure exact same dimensions after enhancement
+            final_h, final_w = enhanced.shape[:2]
+            if final_w != w or final_h != h:
+                print(f"🔧 Resizing back to exact original: {final_w}x{final_h} → {w}x{h}")
+                enhanced = cv2.resize(enhanced, original_size, interpolation=cv2.INTER_CUBIC)
             
             # Save with high quality
-            success = cv2.imwrite(output_path, img, [cv2.IMWRITE_PNG_COMPRESSION, 1])
+            success = cv2.imwrite(output_path, enhanced, [
+                cv2.IMWRITE_PNG_COMPRESSION, 0,  # Zero compression for quality
+                cv2.IMWRITE_PNG_STRATEGY, cv2.IMWRITE_PNG_STRATEGY_DEFAULT
+            ])
             
             return success
                 

@@ -68,17 +68,22 @@ body {
 .grid-item {
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: contain !important;
+    background-size: cover !important;
     background-clip: border-box;
     border: none !important;
     outline: none !important;
     position: relative;
     width: 400px !important;
     height: 540px !important;
+    min-width: 400px !important;
+    min-height: 540px !important;
+    max-width: 400px !important;
+    max-height: 540px !important;
     overflow: hidden;
     border-radius: 0px !important;
     box-shadow: none !important;
     flex-shrink: 0;
+    flex-grow: 0;
     box-sizing: border-box;
     image-rendering: high-quality;
     image-rendering: -webkit-optimize-contrast;
@@ -122,7 +127,7 @@ body {
     .grid-item {
         width: 100% !important;
         height: 100% !important;
-        background-size: contain !important;
+        background-size: cover !important;
         background-position: center center !important;
         page-break-inside: avoid;
         border-radius: 0 !important;
