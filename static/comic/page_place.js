@@ -30,22 +30,19 @@ async function placeDialogs(page) {
         const dialog_temp = page['bubbles'][index]['dialog'];
 
         if(dialog_temp != "((action-scene))"){
-            // Create AI-enhanced bubble with LLM optimization
-            const bubble_temp = createAIBubble(dialog_temp, {
-                left: page['bubbles'][index]['bubble_offset_x'] || 91.7906,
-                top: page['bubbles'][index]['bubble_offset_y'] || 40.3875,
-                maxWidth: 180,
-                minHeight: 50,
-                fontSize: calculateOptimalFontSize(dialog_temp, storyContext),
-                emotion: page['bubbles'][index]['emotion'] || storyContext.emotion,
+            // Create modern chat-style bubble
+            const bubble_temp = createChatBubble(dialog_temp, {
+                left: page['bubbles'][index]['bubble_offset_x'] || 50,
+                top: page['bubbles'][index]['bubble_offset_y'] || 50,
+                emotion: page['bubbles'][index]['emotion'] || 'normal',
                 bubbleIndex: index
             });
 
-            // Add bubble directly to gridItem, no wrapper
+            // Add bubble directly to gridItem
             gridItem.appendChild(bubble_temp);
 
-            // Add event listeners for editing
-            addBubbleInteractions(bubble_temp);
+            // Make bubble draggable and editable
+            makeBubbleDraggableAndEditable(bubble_temp, index);
         }
         
         // Apply comprehensive image enhancement to this panel
@@ -779,7 +776,275 @@ async function exportServerSideHQ() {
     }
 }
 
-// Export story summary function
+// Create modern chat-style bubble
+function createChatBubble(text, options = {}) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    
+    // Set position
+    bubble.style.transform = `translate(${options.left || 50}px, ${options.top || 50}px)`;
+    
+    // Set data attributes
+    bubble.setAttribute('data-bubble-index', options.bubbleIndex || 0);
+    bubble.setAttribute('data-editable', 'true');
+    
+    return bubble;
+}
+
+// Make bubble draggable and editable
+function makeBubbleDraggableAndEditable(bubble, bubbleIndex) {
+    let isDragging = false;
+    let isEditing = false;
+    let startX, startY, initialX, initialY;
+    let clickCount = 0;
+    let clickTimer = null;
+
+    // Get current transform values
+    function getCurrentTransform() {
+        const transform = bubble.style.transform;
+        const matches = transform.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+        if (matches) {
+            return {
+                x: parseFloat(matches[1]) || 0,
+                y: parseFloat(matches[2]) || 0
+            };
+        }
+        return { x: 0, y: 0 };
+    }
+
+    // Update transform
+    function updateTransform(x, y) {
+        bubble.style.transform = `translate(${x}px, ${y}px)`;
+        
+        // Update pages data
+        if (typeof pages !== 'undefined' && typeof current_page !== 'undefined') {
+            if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_x = x;
+                pages[current_page].bubbles[bubbleIndex].bubble_offset_y = y;
+            }
+        }
+    }
+
+    // Handle click events (single click to select, double click to edit)
+    bubble.addEventListener('click', function(e) {
+        e.stopPropagation();
+        
+        if (isEditing || isDragging) return;
+        
+        clickCount++;
+        
+        if (clickCount === 1) {
+            clickTimer = setTimeout(() => {
+                // Single click - just select
+                clickCount = 0;
+            }, 300);
+        } else if (clickCount === 2) {
+            // Double click - edit
+            clearTimeout(clickTimer);
+            clickCount = 0;
+            startEditing();
+        }
+    });
+
+    // Start editing function
+    function startEditing() {
+        if (isEditing) return;
+        
+        isEditing = true;
+        bubble.classList.add('editing');
+        
+        const originalText = bubble.textContent;
+        
+        // Create textarea for editing
+        const textarea = document.createElement('textarea');
+        textarea.value = originalText;
+        textarea.style.cssText = `
+            width: 100%;
+            height: 100%;
+            min-height: 40px;
+            border: none;
+            outline: none;
+            background: transparent;
+            resize: none;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        `;
+        
+        // Replace content with textarea
+        bubble.innerHTML = '';
+        bubble.appendChild(textarea);
+        
+        // Focus and select text
+        textarea.focus();
+        textarea.select();
+        
+        // Auto-resize function
+        function autoResize() {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.max(40, textarea.scrollHeight) + 'px';
+            
+            // Adjust bubble size
+            bubble.style.minHeight = textarea.style.height;
+        }
+        
+        textarea.addEventListener('input', autoResize);
+        autoResize();
+        
+        // Save on Enter or blur
+        function saveEdit() {
+            if (!isEditing) return;
+            
+            const newText = textarea.value.trim() || originalText;
+            
+            // Update bubble content
+            bubble.textContent = newText;
+            bubble.classList.remove('editing');
+            
+            // Update pages data
+            if (typeof pages !== 'undefined' && typeof current_page !== 'undefined') {
+                if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
+                    pages[current_page].bubbles[bubbleIndex].dialog = newText;
+                }
+            }
+            
+            isEditing = false;
+            
+            console.log(`Bubble ${bubbleIndex} updated: "${newText}"`);
+        }
+        
+        // Save on Enter key
+        textarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                saveEdit();
+            } else if (e.key === 'Escape') {
+                // Cancel editing
+                bubble.textContent = originalText;
+                bubble.classList.remove('editing');
+                isEditing = false;
+            }
+        });
+        
+        // Save on blur
+        textarea.addEventListener('blur', saveEdit);
+    }
+
+    // Mouse drag events
+    bubble.addEventListener('mousedown', function(e) {
+        if (isEditing) return;
+        
+        isDragging = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        const currentPos = getCurrentTransform();
+        initialX = currentPos.x;
+        initialY = currentPos.y;
+        
+        bubble.style.cursor = 'grabbing';
+        bubble.classList.add('dragging');
+        
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if (!bubble.classList.contains('dragging') || isEditing) return;
+        
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+        
+        // Check if we've moved enough to consider it a drag
+        if (!isDragging && (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3)) {
+            isDragging = true;
+        }
+        
+        if (isDragging) {
+            const newX = initialX + deltaX;
+            const newY = initialY + deltaY;
+            updateTransform(newX, newY);
+        }
+    });
+
+    document.addEventListener('mouseup', function() {
+        if (bubble.classList.contains('dragging')) {
+            bubble.style.cursor = 'grab';
+            bubble.classList.remove('dragging');
+            
+            // Small delay to prevent click event after drag
+            if (isDragging) {
+                setTimeout(() => {
+                    isDragging = false;
+                }, 100);
+            } else {
+                isDragging = false;
+            }
+        }
+    });
+
+    // Touch events for mobile
+    bubble.addEventListener('touchstart', function(e) {
+        if (isEditing) return;
+        
+        const touch = e.touches[0];
+        isDragging = false;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        
+        const currentPos = getCurrentTransform();
+        initialX = currentPos.x;
+        initialY = currentPos.y;
+        
+        bubble.classList.add('dragging');
+        e.preventDefault();
+    });
+
+    document.addEventListener('touchmove', function(e) {
+        if (!bubble.classList.contains('dragging') || isEditing) return;
+        
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - startX;
+        const deltaY = touch.clientY - startY;
+        
+        if (!isDragging && (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3)) {
+            isDragging = true;
+        }
+        
+        if (isDragging) {
+            const newX = initialX + deltaX;
+            const newY = initialY + deltaY;
+            updateTransform(newX, newY);
+        }
+        
+        e.preventDefault();
+    });
+
+    document.addEventListener('touchend', function() {
+        if (bubble.classList.contains('dragging')) {
+            bubble.classList.remove('dragging');
+            
+            if (isDragging) {
+                setTimeout(() => {
+                    isDragging = false;
+                }, 100);
+            } else {
+                isDragging = false;
+            }
+        }
+    });
+
+    // Initial cursor style
+    bubble.style.cursor = 'grab';
+}
+
+// Export functions
+window.createChatBubble = createChatBubble;
+window.makeBubbleDraggableAndEditable = makeBubbleDraggableAndEditable;
 window.showStorySummary = showStorySummary;
 window.exportServerSideHQ = exportServerSideHQ;
 
