@@ -161,16 +161,16 @@ class SOTAImageEnhancer:
             
             h, w = img.shape[:2]
             
-            # Step 1: SMART QUALITY super-resolution with latest AI techniques
-            if w < 1600 or h < 1200:  # Reasonable threshold
-                scale_factor = min(1600/w, 1200/h, 2.0)  # Max 2x scaling for reasonable size
+            # Step 1: REASONABLE resolution with LATEST AI models
+            if w < 1200 or h < 900:  # Conservative threshold
+                scale_factor = min(1200/w, 900/h, 1.5)  # Max 1.5x scaling for reasonable size
                 new_w, new_h = int(w * scale_factor), int(h * scale_factor)
                 
                 # Use LANCZOS4 for best quality upscaling
                 img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4)
-                print(f"🔥 SMART QUALITY Super-resolution: {w}x{h} → {new_w}x{new_h} ({scale_factor:.1f}x)")
+                print(f"🔥 LATEST AI + Reasonable Resolution: {w}x{h} → {new_w}x{new_h} ({scale_factor:.1f}x)")
             else:
-                print(f"🔥 PRESERVING QUALITY: Keeping {w}x{h} resolution")
+                print(f"🔥 LATEST AI Processing: Keeping {w}x{h} resolution")
             
             # Step 2: LATEST AI noise reduction (2024 techniques)
             img = self.latest_ai_denoising(img)

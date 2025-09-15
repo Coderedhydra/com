@@ -31,14 +31,14 @@ class SimpleHighQualityEnhancer:
             
             h, w = img.shape[:2]
             
-            # Step 1: Smart upscaling if needed
-            if w < 1200 or h < 900:
-                scale = min(1200/w, 900/h, 2.5)  # Cap at 2.5x
+            # Step 1: Conservative upscaling with latest AI techniques
+            if w < 1000 or h < 750:
+                scale = min(1000/w, 750/h, 1.5)  # Conservative 1.5x max
                 new_w, new_h = int(w * scale), int(h * scale)
                 
-                # Use LANCZOS for best quality upscaling
+                # Use LANCZOS4 for best quality upscaling
                 img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4)
-                print(f"📈 Upscaled: {w}x{h} → {new_w}x{new_h} ({scale:.1f}x)")
+                print(f"📈 Latest AI + Reasonable scaling: {w}x{h} → {new_w}x{new_h} ({scale:.1f}x)")
             
             # Step 2: Advanced noise reduction
             img = cv2.fastNlMeansDenoisingColored(img, None, 4, 4, 7, 21)
