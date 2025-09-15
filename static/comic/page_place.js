@@ -1042,9 +1042,76 @@ function makeBubbleDraggableAndEditable(bubble, bubbleIndex) {
     bubble.style.cursor = 'grab';
 }
 
+// Generate full comic function
+async function generateFullComic() {
+    if (!confirm('Generate full 12-page comic with ultra 4x quality?\n\nThis will take a few minutes but will create all 12 pages with maximum quality.')) {
+        return;
+    }
+    
+    try {
+        console.log('Starting full comic generation...');
+        
+        // Show loading message
+        const loadingDiv = document.createElement('div');
+        loadingDiv.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        `;
+        loadingDiv.innerHTML = `
+            <div style="text-align: center;">
+                <div>🔥 Generating Full Comic...</div>
+                <div style="font-size: 18px; margin-top: 10px;">12 pages with ultra 4x quality</div>
+                <div style="font-size: 16px; margin-top: 10px;">This may take a few minutes...</div>
+            </div>
+        `;
+        document.body.appendChild(loadingDiv);
+        
+        const response = await fetch('/generate_full_comic', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const result = await response.json();
+        
+        // Remove loading message
+        document.body.removeChild(loadingDiv);
+        
+        if (response.ok && result.status === 'success') {
+            alert('🎉 Full comic generated successfully!\n\nRefresh the page to see all 12 pages.');
+            window.location.reload();
+        } else {
+            alert('❌ Error: ' + (result.message || 'Unknown error'));
+        }
+        
+    } catch (error) {
+        console.error('Full comic generation error:', error);
+        alert('❌ Error generating full comic: ' + error.message);
+        
+        // Remove loading message if it exists
+        const loadingDiv = document.querySelector('[style*="position: fixed"]');
+        if (loadingDiv) {
+            document.body.removeChild(loadingDiv);
+        }
+    }
+}
+
 // Export functions
 window.createChatBubble = createChatBubble;
 window.makeBubbleDraggableAndEditable = makeBubbleDraggableAndEditable;
 window.showStorySummary = showStorySummary;
 window.exportServerSideHQ = exportServerSideHQ;
+window.generateFullComic = generateFullComic;
 
