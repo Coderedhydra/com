@@ -21,10 +21,16 @@ class RealESRGANEnhancer:
         self.models_dir.mkdir(exist_ok=True)
         self.model_path = self.models_dir / "RealESRGAN_x4plus.pth"
         self.realesrgan_available = False
+        self.upsampler = None  # Cache the upsampler
+        self.initialization_attempted = False
         self.initialize()
     
     def initialize(self):
         """Initialize Real-ESRGAN"""
+        if self.initialization_attempted:
+            return
+            
+        self.initialization_attempted = True
         print("🔥 Initializing Real-ESRGAN (State-of-the-Art Super-Resolution)...")
         
         # Try to import Real-ESRGAN
@@ -35,47 +41,70 @@ class RealESRGANEnhancer:
         except Exception as e:
             print(f"⚠️ Real-ESRGAN not available: {e}")
             print("🔄 Will use advanced fallback methods")
+            self.realesrgan_available = False
     
     def setup_realesrgan(self):
         """Setup Real-ESRGAN with proper dependencies"""
         try:
-            # Try importing first
+            # First, install compatible PyTorch versions
+            print("📦 Installing compatible PyTorch versions...")
+            pytorch_packages = [
+                "torch==2.0.1",
+                "torchvision==0.15.2", 
+                "torchaudio==2.0.2"
+            ]
+            
+            for package in pytorch_packages:
+                try:
+                    subprocess.run([
+                        sys.executable, "-m", "pip", "install", 
+                        package, "--break-system-packages", "--force-reinstall"
+                    ], check=True, capture_output=True, timeout=180)
+                    print(f"✅ Installed {package}")
+                except Exception as e:
+                    print(f"⚠️ Failed to install {package}: {e}")
+            
+            # Now try importing
+            import torch
+            import torchvision
+            print(f"✅ PyTorch {torch.__version__}, torchvision {torchvision.__version__}")
+            
+            # Try importing Real-ESRGAN components
             import basicsr
             from realesrgan import RealESRGANer
             from basicsr.archs.rrdbnet_arch import RRDBNet
-            print("✅ Real-ESRGAN libraries already available")
+            print("✅ Real-ESRGAN libraries available")
             return True
-        except ImportError:
-            print("📦 Installing Real-ESRGAN dependencies...")
             
-            # Install dependencies
+        except ImportError as e:
+            print(f"❌ Real-ESRGAN import failed: {e}")
+            print("📦 Installing Real-ESRGAN with compatible versions...")
+            
+            # Install specific compatible versions
             packages = [
-                "basicsr>=1.4.2",
-                "realesrgan>=0.3.0",
-                "facexlib>=0.3.0",
-                "gfpgan>=1.3.8"
+                "basicsr==1.4.2",
+                "realesrgan==0.3.0"
             ]
             
             for package in packages:
                 try:
                     subprocess.run([
                         sys.executable, "-m", "pip", "install", 
-                        package, "--break-system-packages", "--no-deps"
+                        package, "--break-system-packages", "--force-reinstall"
                     ], check=True, capture_output=True, timeout=120)
                     print(f"✅ Installed {package}")
-                except subprocess.TimeoutExpired:
-                    print(f"⏰ Timeout installing {package}, continuing...")
-                except subprocess.CalledProcessError as e:
+                except Exception as e:
                     print(f"⚠️ Failed to install {package}: {e}")
             
-            # Try importing again
+            # Final import test
             try:
                 import basicsr
                 from realesrgan import RealESRGANer
                 print("✅ Real-ESRGAN setup complete")
                 return True
             except ImportError as e:
-                print(f"❌ Real-ESRGAN still not available after installation: {e}")
+                print(f"❌ Real-ESRGAN still not available: {e}")
+                print("🔄 Falling back to advanced OpenCV processing")
                 return False
     
     def download_model(self):
@@ -109,26 +138,31 @@ class RealESRGANEnhancer:
             if not self.download_model():
                 return False
             
-            # Initialize model
-            model = RRDBNet(
-                num_in_ch=3, 
-                num_out_ch=3, 
-                num_feat=64, 
-                num_block=23, 
-                num_grow_ch=32, 
-                scale=4
-            )
-            
-            # Initialize upsampler
-            upsampler = RealESRGANer(
-                scale=4,
-                model_path=str(self.model_path),
-                model=model,
-                tile=400,      # Tile size for memory efficiency
-                tile_pad=10,   # Padding for tiles
-                pre_pad=0,     # Pre-padding
-                half=False     # Use FP32 for best quality
-            )
+            # Use cached upsampler or create new one
+            if self.upsampler is None:
+                print("🔧 Initializing Real-ESRGAN upsampler...")
+                
+                # Initialize model
+                model = RRDBNet(
+                    num_in_ch=3, 
+                    num_out_ch=3, 
+                    num_feat=64, 
+                    num_block=23, 
+                    num_grow_ch=32, 
+                    scale=4
+                )
+                
+                # Initialize upsampler
+                self.upsampler = RealESRGANer(
+                    scale=4,
+                    model_path=str(self.model_path),
+                    model=model,
+                    tile=400,      # Tile size for memory efficiency
+                    tile_pad=10,   # Padding for tiles
+                    pre_pad=0,     # Pre-padding
+                    half=False     # Use FP32 for best quality
+                )
+                print("✅ Real-ESRGAN upsampler ready")
             
             # Load image
             img = cv2.imread(image_path, cv2.IMREAD_COLOR)
@@ -149,8 +183,8 @@ class RealESRGANEnhancer:
             
             print(f"📏 Input: {w}x{h}, Output scale: {outscale}x")
             
-            # Enhance image
-            output, _ = upsampler.enhance(img, outscale=outscale)
+            # Enhance image using cached upsampler
+            output, _ = self.upsampler.enhance(img, outscale=outscale)
             
             # Save with maximum quality
             success = cv2.imwrite(output_path, output, [

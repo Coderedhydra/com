@@ -323,26 +323,31 @@ class SOTAImageEnhancer:
         
         print(f"🚀 Enhancing image: {os.path.basename(image_path)}")
         
-        # Try Real-ESRGAN first (best quality available)
+        # Try Real-ESRGAN first (best quality available) - but only once
         try:
             from backend.cartoonize.realesrgan_enhancer import RealESRGANEnhancer
             realesrgan = RealESRGANEnhancer()
-            if realesrgan.enhance_image(image_path, output_path):
+            if realesrgan.realesrgan_available and realesrgan.enhance_image(image_path, output_path):
                 print("✅ Enhanced with Real-ESRGAN (State-of-the-Art)")
                 return True
         except Exception as e:
             print(f"⚠️ Real-ESRGAN failed: {e}")
         
-        # Try models in order of quality
-        if 'realesrgan' in self.available_models:
-            if self.enhance_with_realesrgan(image_path, output_path):
-                print("✅ Enhanced with Real-ESRGAN (Ultra-HQ)")
-                return True
-        
+        # Try advanced OpenCV as reliable fallback
         if 'advanced_opencv' in self.available_models:
             if self.enhance_with_advanced_opencv(image_path, output_path):
                 print("✅ Enhanced with Advanced OpenCV AI Pipeline")
                 return True
+        
+        # Use simple but reliable enhancer as final fallback
+        try:
+            from backend.cartoonize.simple_enhancer import SimpleHighQualityEnhancer
+            simple_enhancer = SimpleHighQualityEnhancer()
+            if simple_enhancer.enhance_image(image_path, output_path):
+                print("✅ Enhanced with Simple High-Quality Enhancer")
+                return True
+        except Exception as e:
+            print(f"⚠️ Simple enhancer failed: {e}")
         
         print("❌ All enhancement methods failed")
         return False
