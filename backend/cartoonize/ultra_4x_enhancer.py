@@ -32,30 +32,26 @@ class Ultra4xEnhancer:
             h, w = img.shape[:2]
             print(f"📐 Original: {w}x{h}")
             
-            # Step 1: 4x Ultra-High Quality Upscaling
-            target_w = w * 4
-            target_h = h * 4
+            # Step 1: 2x Ultra-High Quality Upscaling (4K instead of 8K)
+            target_w = w * 2  # 2x instead of 4x
+            target_h = h * 2  # 2x instead of 4x
             
-            # Multi-step upscaling for best quality
-            # Step 1: 2x upscaling
-            img_2x = cv2.resize(img, (w*2, h*2), interpolation=cv2.INTER_CUBIC)
+            # High-quality 2x upscaling
+            img_2x = cv2.resize(img, (target_w, target_h), interpolation=cv2.INTER_LANCZOS4)
             
-            # Step 2: Another 2x upscaling (total 4x)
-            img_4x = cv2.resize(img_2x, (target_w, target_h), interpolation=cv2.INTER_LANCZOS4)
+            print(f"🚀 2x Upscaling (4K): {w}x{h} → {target_w}x{target_h}")
             
-            print(f"🚀 4x Upscaling: {w}x{h} → {target_w}x{target_h}")
-            
-            # Step 2: Ultra-high quality enhancement on 4x image
-            img_4x = self.ultra_quality_enhancement(img_4x)
+            # Step 2: Ultra-high quality enhancement on 2x image
+            img_2x = self.ultra_quality_enhancement(img_2x)
             
             # Save with absolute maximum quality
-            success = cv2.imwrite(output_path, img_4x, [
+            success = cv2.imwrite(output_path, img_2x, [
                 cv2.IMWRITE_PNG_COMPRESSION, 0,  # Zero compression
                 cv2.IMWRITE_PNG_STRATEGY, cv2.IMWRITE_PNG_STRATEGY_DEFAULT
             ])
             
             if success:
-                print(f"✅ ULTRA 4x Complete: {target_w}x{target_h} (4x quality)")
+                print(f"✅ ULTRA 2x Complete: {target_w}x{target_h} (4K quality)")
                 return True
             else:
                 return False

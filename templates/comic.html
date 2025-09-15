@@ -29,9 +29,9 @@
             width: 800px !important;
             height: 1080px !important;
             display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            grid-template-rows: 1fr 1fr !important;
-            gap: 2px !important;
+            grid-template-columns: 399px 2px 399px !important;
+            grid-template-rows: 539px 2px 539px !important;
+            gap: 0px !important;
             margin: 0 !important;
             padding: 0 !important;
             border: none !important;
@@ -39,9 +39,9 @@
             background: #ffffff !important;
         }
         .grid-item {
-            width: 100% !important;
-            height: 100% !important;
-            background-size: contain !important;
+            width: 399px !important;
+            height: 539px !important;
+            background-size: cover !important;
             background-position: center center !important;
             background-repeat: no-repeat !important;
             border: none !important;
@@ -53,6 +53,12 @@
             box-sizing: border-box !important;
             background-color: #f8f9fa !important;
         }
+        #_1 { grid-column: 1; grid-row: 1; }
+        #_2 { grid-column: 3; grid-row: 1; }
+        #_3 { grid-column: 1; grid-row: 3; }
+        #_4 { grid-column: 3; grid-row: 3; }
+        .white-strip.vertical { grid-column: 2; grid-row: 1 / 4; background: #ffffff; }
+        .white-strip.horizontal { grid-column: 1 / 4; grid-row: 2; background: #ffffff; }
     </style>
 
     <script src="{{ url_for('static', filename='comic/page.js') }}"></script>
@@ -82,6 +88,8 @@
             <div class="grid-item" id="_2"></div>
             <div class="grid-item" id="_3"></div>
             <div class="grid-item" id="_4"></div>
+            <div class="white-strip vertical"></div>
+            <div class="white-strip horizontal"></div>
         </div>
     </div>
 
