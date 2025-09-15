@@ -29,7 +29,7 @@ def check_dependencies():
             return False
 
 def main():
-    print("🎬 CineComic Application Launcher")
+    print("🎬 Amit Comic Application Launcher")
     print("=" * 50)
     
     # Check dependencies
@@ -40,7 +40,7 @@ def main():
     
     # Check which app version to run
     if os.path.exists("app.py"):
-        print("🚀 Starting full-featured CineComic application...")
+        print("🚀 Starting full-featured Amit Comic application...")
         print("📍 Access at: http://localhost:5000")
         print("🔧 Features: Full video processing + AI enhancement")
         print("\nStarting server...")
@@ -59,7 +59,7 @@ def main():
                 app.run(debug=True, host='0.0.0.0', port=5000)
     
     elif os.path.exists("app_simple.py"):
-        print("🚀 Starting simplified CineComic application...")
+        print("🚀 Starting simplified Amit Comic application...")
         print("📍 Access at: http://localhost:5000")
         print("🔧 Features: Basic functionality for testing")
         print("\nStarting server...")

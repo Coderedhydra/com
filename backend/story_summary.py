@@ -347,7 +347,7 @@ class ComicStorySummarizer:
             print(f"❌ Error saving story summary: {e}")
             return False
 
-def generate_comic_story_summary(pages_file: str = "output_template/page.js", title: str = "Epic Comic Adventure") -> Dict:
+def generate_comic_story_summary(pages_file: str = "output_template/page.js", title: str = "Amit's Epic Comic Adventure") -> Dict:
     """Main function to generate comic story summary from pages data"""
     try:
         # Load pages data
