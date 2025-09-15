@@ -8,21 +8,47 @@
     <link id="pageStyle" rel="stylesheet" href="{{ url_for('static', filename='comic/page.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='comic/bubble.css') }}">
     <style>
-        /* Ensure exact 800x1080 dimensions */
+        /* ZERO GAPS - Perfect 800x1080 fit */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #000000 !important;
+        }
         .wrapper {
             width: 800px !important;
             height: 1080px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0px !important;
+            background: #000000 !important;
             box-sizing: border-box !important;
         }
         .grid-container {
             width: 800px !important;
             height: 1080px !important;
+            display: grid !important;
+            grid-template-columns: 400px 400px !important;
+            grid-template-rows: 540px 540px !important;
+            gap: 0px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
             box-sizing: border-box !important;
         }
         .grid-item {
-            background-size: contain !important;
+            width: 400px !important;
+            height: 540px !important;
+            background-size: cover !important;
             background-position: center center !important;
             background-repeat: no-repeat !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border-radius: 0px !important;
+            box-shadow: none !important;
+            outline: none !important;
             box-sizing: border-box !important;
         }
     </style>

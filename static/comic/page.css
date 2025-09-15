@@ -1,11 +1,12 @@
 body {
     display: flex;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #000000;
     background-attachment: fixed;
     min-height: 100vh;
     margin: 0;
-    padding: 20px 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 .button{
@@ -32,58 +33,61 @@ body {
 }
 
 .wrapper {
-    display: flex;
+    display: block;
     height: 1080px !important;
     width: 800px !important;
     background: #000000;
     border-radius: 0px;
     box-shadow: none;
+    border: none;
+    outline: none;
     overflow: hidden;
     position: relative;
     flex-shrink: 0;
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .grid-container {
     width: 800px !important;
     height: 1080px !important;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: 400px 400px;
+    grid-template-rows: 540px 540px;
     border: none;
+    gap: 0px;
     row-gap: 0px;
     column-gap: 0px;
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    outline: none;
 }
 
 .grid-item {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover !important;
-    background-clip: padding-box;
-    border: none;
+    background-clip: border-box;
+    border: none !important;
+    outline: none !important;
     position: relative;
-    width: 100% !important;
-    height: 100% !important;
+    width: 400px !important;
+    height: 540px !important;
     overflow: hidden;
-    border-radius: 0px;
-    box-shadow: none;
+    border-radius: 0px !important;
+    box-shadow: none !important;
     flex-shrink: 0;
     box-sizing: border-box;
     image-rendering: high-quality;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
     image-rendering: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     background-color: #000000;
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Print styles */
