@@ -21,6 +21,9 @@ async function placeDialogs(page) {
         gridItem.style.gridRow = 'span ' + panel.row_span;
         gridItem.style.gridColumn = 'span ' + panel.col_span;
         gridItem.style.backgroundImage = `url("${path}${panel.image}.png")`;
+        gridItem.style.backgroundSize = 'contain';
+        gridItem.style.backgroundPosition = 'center center';
+        gridItem.style.backgroundRepeat = 'no-repeat';
 
         gridItem.innerHTML = "";
 
@@ -45,9 +48,14 @@ async function placeDialogs(page) {
             addBubbleInteractions(bubble_temp);
         }
         
-        // Apply LLM image enhancement to this panel
+        // Apply comprehensive image enhancement to this panel
         if (window.llmEnhancementSystem && window.llmEnhancementSystem.isInitialized) {
             await enhanceGridItemImage(gridItem, storyContext);
+        }
+        
+        // Apply AI quality enhancement
+        if (window.aiQualityEnhancer) {
+            window.aiQualityEnhancer.enhanceBubbleQuality(gridItem);
         }
     }
 
@@ -61,9 +69,6 @@ async function placeDialogs(page) {
         const pageElement = document.querySelector('.wrapper');
         await window.llmEnhancementSystem.enhanceComicPage(pageElement, current_page + 1, storyContext);
     }
-    
-    // Ensure perfect image fitting after placing dialogs
-    ensurePerfectImageFit();
     
     console.log(`📖 Enhanced page ${current_page + 1} with LLM-powered optimizations`);
 }
@@ -275,14 +280,16 @@ function editBubble(bubble) {
     });
 }
 
-// High-Quality Print/Download functionality
+// Print/Download functionality
 function printPage() {
-    console.log('Starting high-quality print function...');
+    console.log('Starting print function...');
     
     // Check if html2canvas is loaded
     if (typeof html2canvas === 'undefined') {
-        console.log('html2canvas not available, loading dynamically...');
-        loadHtml2Canvas().then(() => printPage());
+        // Fallback to browser print
+        console.log('html2canvas not available, using browser print...');
+        alert('Using browser print function. Make sure to select "Save as PDF" or print to file.');
+        window.print();
         return;
     }
     
@@ -292,165 +299,75 @@ function printPage() {
         return;
     }
     
-    // Create a high-quality temporary container
+    // Create a temporary container with exact 800x1080 dimensions
     const tempContainer = document.createElement('div');
     tempContainer.style.width = '800px';
     tempContainer.style.height = '1080px';
     tempContainer.style.position = 'absolute';
     tempContainer.style.left = '-9999px';
     tempContainer.style.top = '0';
-    tempContainer.style.backgroundColor = '#ffffff';
+    tempContainer.style.backgroundColor = 'white';
     tempContainer.style.overflow = 'hidden';
-    tempContainer.style.transform = 'scale(1)';
-    tempContainer.style.transformOrigin = 'top left';
+    tempContainer.style.boxSizing = 'border-box';
     
-    // Clone the wrapper content with high fidelity
+    // Clone the wrapper content with exact dimensions
     const clonedContent = wrapper.cloneNode(true);
     clonedContent.style.width = '800px';
     clonedContent.style.height = '1080px';
     clonedContent.style.margin = '0';
     clonedContent.style.padding = '0';
+    clonedContent.style.boxSizing = 'border-box';
     clonedContent.style.borderRadius = '0';
     clonedContent.style.boxShadow = 'none';
-    
-    // Ensure all images are loaded and high quality
-    const images = clonedContent.querySelectorAll('*');
-    images.forEach(element => {
-        if (element.style.backgroundImage) {
-            element.style.imageRendering = 'high-quality';
-            element.style.imageRendering = '-webkit-optimize-contrast';
-            element.style.imageRendering = 'crisp-edges';
-        }
-    });
     
     tempContainer.appendChild(clonedContent);
     document.body.appendChild(tempContainer);
     
-    console.log('Capturing page with high-quality settings...');
+    console.log('Capturing page with html2canvas...');
     
-    // Use html2canvas with maximum quality settings
+    // Use html2canvas to capture exactly 800x1080
     html2canvas(tempContainer, {
         width: 800,
         height: 1080,
-        scale: 3, // 3x scaling for ultra-high quality
+        scale: 1,
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
-        imageTimeout: 30000,
-        removeContainer: false,
-        foreignObjectRendering: true,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 800,
-        windowHeight: 1080,
+        foreignObjectRendering: false,
+        imageTimeout: 15000,
+        removeContainer: true,
         onclone: function(clonedDoc) {
-            console.log('High-quality canvas cloned successfully');
-            // Enhance image quality in cloned document
-            const clonedImages = clonedDoc.querySelectorAll('*');
-            clonedImages.forEach(element => {
-                if (element.style && element.style.backgroundImage) {
-                    element.style.imageRendering = 'high-quality';
-                    element.style.imageRendering = '-webkit-optimize-contrast';
-                }
+            console.log('Canvas cloned successfully - 800x1080');
+            // Ensure all grid items are visible in clone
+            const clonedGridItems = clonedDoc.querySelectorAll('.grid-item');
+            clonedGridItems.forEach((item, index) => {
+                item.style.display = 'flex';
+                item.style.backgroundSize = 'contain';
+                console.log(`Grid item ${index + 1} prepared for export`);
             });
         }
     }).then(canvas => {
-        console.log('High-quality canvas created, processing...');
+        console.log('Canvas created, downloading...');
         
-        // Create high-quality PNG with maximum settings
-        const highQualityDataURL = canvas.toDataURL('image/png', 1.0);
-        
-        // Download the high-quality image
+        // Download the canvas as PNG
         const link = document.createElement('a');
-        link.download = `comic_page_${current_page + 1}_HQ_${canvas.width}x${canvas.height}.png`;
-        link.href = highQualityDataURL;
+        link.download = `comic_page_${current_page + 1}_800x1080.png`;
+        link.href = canvas.toDataURL('image/png', 1.0);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
-        console.log(`High-quality download started: ${canvas.width}x${canvas.height}px`);
+        console.log('Download started');
         
         // Clean up
         document.body.removeChild(tempContainer);
     }).catch(error => {
-        console.error('Error generating high-quality image:', error);
-        alert('Error generating high-quality image: ' + error.message + '\nTrying fallback method...');
-        
-        // Fallback to browser print
-        window.print();
-        
+        console.error('Error generating image:', error);
+        alert('Error generating image: ' + error.message);
         if (document.body.contains(tempContainer)) {
             document.body.removeChild(tempContainer);
         }
-    });
-}
-
-// Function to dynamically load html2canvas if not available
-function loadHtml2Canvas() {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-}
-
-// Server-side ultra high-quality export
-function exportServerSideHQ() {
-    console.log('Starting server-side ultra high-quality export...');
-    
-    const exportButton = document.querySelector('button[onclick="exportServerSideHQ()"]');
-    const originalText = exportButton.innerHTML;
-    exportButton.innerHTML = 'Exporting...';
-    exportButton.disabled = true;
-    
-    fetch('/export_hq_png', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            page: current_page
-        })
-    })
-    .then(response => {
-        if (response.ok) {
-            // Server-side export successful - download the file
-            return response.blob();
-        } else {
-            // Fallback to client-side
-            return response.json().then(data => {
-                console.log('Server-side export not available, using enhanced client-side method');
-                printPage(); // Use the enhanced client-side method
-                throw new Error('Fallback to client-side');
-            });
-        }
-    })
-    .then(blob => {
-        if (blob) {
-            // Download the server-generated high-quality PNG
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `comic_page_${current_page + 1}_ULTRA_HQ.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-            
-            console.log('Ultra high-quality server-side export completed');
-        }
-    })
-    .catch(error => {
-        console.log('Using client-side high-quality export as fallback');
-        // The client-side method is already called above
-    })
-    .finally(() => {
-        // Reset button
-        exportButton.innerHTML = originalText;
-        exportButton.disabled = false;
     });
 }
 
@@ -501,14 +418,14 @@ function handleImageUpload(event) {
         const reader = new FileReader();
         reader.onload = function(e) {
             const imageUrl = e.target.result;
-            // Ask user which panel to replace with better UI
-            const panelChoice = prompt('Which panel to replace?\n\n1 - Top panel\n2 - Bottom panel\n\nEnter 1 or 2:');
-            if (panelChoice === '1' || panelChoice === '2') {
-                replacePanelImage(panelChoice, imageUrl);
-                alert(`Panel ${panelChoice} image updated successfully!`);
-            } else if (panelChoice !== null) {
-                alert('Invalid choice. Please enter 1 or 2.');
-            }
+        // Ask user which panel to replace with better UI
+        const panelChoice = prompt('Which panel to replace?\n\n1 - Top Left\n2 - Top Right\n3 - Bottom Left\n4 - Bottom Right\n\nEnter 1, 2, 3, or 4:');
+        if (['1', '2', '3', '4'].includes(panelChoice)) {
+            replacePanelImage(panelChoice, imageUrl);
+            alert(`Panel ${panelChoice} image updated successfully!`);
+        } else if (panelChoice !== null) {
+            alert('Invalid choice. Please enter 1, 2, 3, or 4.');
+        }
         };
         reader.onerror = function() {
             alert('Error reading file. Please try again.');
@@ -521,17 +438,9 @@ function replacePanelImage(panelNumber, imageUrl) {
     const panel = document.getElementById(`_${panelNumber}`);
     if (panel) {
         panel.style.backgroundImage = `url("${imageUrl}")`;
-        panel.style.backgroundSize = 'cover';
-        panel.style.backgroundPosition = 'center center';
+        panel.style.backgroundSize = 'contain';
+        panel.style.backgroundPosition = 'center';
         panel.style.backgroundRepeat = 'no-repeat';
-        panel.style.objectFit = 'cover';
-        
-        // Ensure perfect fitting with 0% gap for any image size
-        panel.style.display = 'flex';
-        panel.style.alignItems = 'center';
-        panel.style.justifyContent = 'center';
-        panel.style.width = '800px';
-        panel.style.height = '540px';
         
         // Add image controls
         addImageControls(panel, imageUrl);
@@ -593,7 +502,7 @@ function addImageControls(panel, imageUrl) {
     
     panel.appendChild(controls);
     
-    // Panel should not be draggable - only bubbles should be draggable
+    // Panels should not be draggable - only bubbles should be draggable
 }
 
 function zoomImage(panel, factor) {
@@ -612,17 +521,12 @@ function zoomImage(panel, factor) {
 }
 
 function resetImage(panel) {
-    panel.style.backgroundSize = 'cover';
-    panel.style.backgroundPosition = 'center center';
+    panel.style.backgroundSize = 'contain';
+    panel.style.backgroundPosition = 'center';
     panel.style.transform = 'translate(0px, 0px)';
 }
 
-// Panel dragging removed - only bubbles should be draggable
-// Template should remain fixed at 800x540 dimensions
-
-
-
-// Function to make bubbles draggable
+// Function to make bubbles draggable - only bubbles should be draggable
 function makeBubbleDraggable(bubble, bubbleIndex) {
     let isDragging = false;
     let startX, startY, initialX, initialY;
@@ -712,170 +616,170 @@ function makeBubbleDraggable(bubble, bubbleIndex) {
     });
 }
 
-// ULTRA HIGH PERFORMANCE BUBBLE DRAGGING SYSTEM V2
-function makeBubbleDraggableUltra(bubble, bubbleIndex) {
-    let isDragging = false;
-    let startX, startY, initialX, initialY;
-    let animationFrame = null;
-    let dragThreshold = 3;
-    let hasMoved = false;
-    
-    function getTransformValues(element) {
-        const transform = element.style.transform || '';
-        const matches = transform.match(/translate(?:3d)?\(([^,]+)(?:px)?(?:,\s*([^,]+)(?:px)?)?(?:,\s*([^)]+)(?:px)?)?\)/);
-        if (matches) {
-            return {
-                x: parseFloat(matches[1]) || 0,
-                y: parseFloat(matches[2]) || 0
-            };
+// Story Summary functionality
+async function showStorySummary() {
+    try {
+        const response = await fetch('/story_summary');
+        if (response.ok) {
+            const summaryData = await response.json();
+            displayStorySummary(summaryData);
+        } else {
+            alert('Story summary not available. Please generate a comic first.');
         }
-        return { x: 0, y: 0 };
+    } catch (error) {
+        console.error('Error fetching story summary:', error);
+        alert('Error loading story summary.');
     }
+}
+
+function displayStorySummary(summaryData) {
+    // Create modal dialog for story summary
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+    `;
     
-    function updateTransform(x, y) {
-        if (animationFrame) cancelAnimationFrame(animationFrame);
-        animationFrame = requestAnimationFrame(() => {
-            bubble.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        });
-    }
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border: 2px solid #4a90e2;
+    `;
     
-    bubble.addEventListener('mousedown', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
+    content.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="color: #2c3e50; margin: 0; font-size: 24px;">📚 ${summaryData.title}</h2>
+            <p style="color: #7f8c8d; margin: 5px 0; font-style: italic;">${summaryData.genre} • ${summaryData.total_pages} Pages</p>
+        </div>
         
-        isDragging = false;
-        hasMoved = false;
-        startX = e.clientX;
-        startY = e.clientY;
+        <div style="margin-bottom: 20px; padding: 15px; background: rgba(74, 144, 226, 0.1); border-radius: 10px;">
+            <h3 style="color: #2c3e50; margin: 0 0 10px 0;">📖 Story Summary</h3>
+            <p style="line-height: 1.6; color: #34495e; margin: 0;">${summaryData.summary.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>
+        </div>
         
-        const currentPos = getTransformValues(bubble);
-        initialX = currentPos.x;
-        initialY = currentPos.y;
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div style="padding: 15px; background: rgba(46, 204, 113, 0.1); border-radius: 10px;">
+                <h4 style="color: #27ae60; margin: 0 0 10px 0;">📊 Statistics</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; color: #2c3e50;">
+                    <li>• Pages: ${summaryData.statistics.total_pages}</li>
+                    <li>• Dialogue Scenes: ${summaryData.statistics.dialogue_scenes}</li>
+                    <li>• Action Scenes: ${summaryData.statistics.action_scenes}</li>
+                    <li>• Story Intensity: ${summaryData.statistics.story_intensity}</li>
+                </ul>
+            </div>
+            
+            <div style="padding: 15px; background: rgba(155, 89, 182, 0.1); border-radius: 10px;">
+                <h4 style="color: #8e44ad; margin: 0 0 10px 0;">🎭 Themes</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; color: #2c3e50;">
+                    ${summaryData.themes.map(theme => `<li>• ${theme}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
         
-        bubble.classList.add('dragging');
-        bubble.style.cursor = 'grabbing';
-        bubble.style.zIndex = '2000';
-        document.body.style.userSelect = 'none';
+        <div style="text-align: center;">
+            <button onclick="this.closest('.modal').remove()" style="
+                background: linear-gradient(145deg, #e74c3c, #c0392b);
+                color: white;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 25px;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: bold;
+                box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                Close
+            </button>
+        </div>
+    `;
+    
+    modal.className = 'modal';
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
     });
     
-    document.addEventListener('mousemove', function(e) {
-        if (!bubble.classList.contains('dragging')) return;
-        
-        const deltaX = e.clientX - startX;
-        const deltaY = e.clientY - startY;
-        
-        if (!isDragging && (Math.abs(deltaX) > dragThreshold || Math.abs(deltaY) > dragThreshold)) {
-            isDragging = true;
-            hasMoved = true;
-        }
-        
-        if (isDragging) {
-            e.preventDefault();
-            e.stopPropagation();
-            updateTransform(initialX + deltaX, initialY + deltaY);
-        }
-    });
-    
-    document.addEventListener('mouseup', function(e) {
-        if (bubble.classList.contains('dragging')) {
-            bubble.classList.remove('dragging');
-            bubble.style.cursor = 'grab';
-            bubble.style.zIndex = '1000';
-            document.body.style.userSelect = '';
-            
-            if (isDragging && hasMoved) {
-                const deltaX = e.clientX - startX;
-                const deltaY = e.clientY - startY;
-                const finalX = initialX + deltaX;
-                const finalY = initialY + deltaY;
-                
-                if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
-                    pages[current_page].bubbles[bubbleIndex].bubble_offset_x = finalX;
-                    pages[current_page].bubbles[bubbleIndex].bubble_offset_y = finalY;
-                }
-            }
-            
-            isDragging = false;
-            hasMoved = false;
-        }
-    });
-    
-    // Touch events
-    bubble.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-        const touch = e.touches[0];
-        isDragging = false;
-        hasMoved = false;
-        startX = touch.clientX;
-        startY = touch.clientY;
-        
-        const currentPos = getTransformValues(bubble);
-        initialX = currentPos.x;
-        initialY = currentPos.y;
-        
-        bubble.classList.add('dragging');
-        bubble.style.zIndex = '2000';
-    }, { passive: false });
-    
-    document.addEventListener('touchmove', function(e) {
-        if (!bubble.classList.contains('dragging')) return;
-        e.preventDefault();
-        
-        const touch = e.touches[0];
-        const deltaX = touch.clientX - startX;
-        const deltaY = touch.clientY - startY;
-        
-        if (!isDragging && (Math.abs(deltaX) > dragThreshold || Math.abs(deltaY) > dragThreshold)) {
-            isDragging = true;
-            hasMoved = true;
-        }
-        
-        if (isDragging) {
-            updateTransform(initialX + deltaX, initialY + deltaY);
-        }
-    }, { passive: false });
-    
-    document.addEventListener('touchend', function(e) {
-        if (bubble.classList.contains('dragging')) {
-            bubble.classList.remove('dragging');
-            bubble.style.zIndex = '1000';
-            
-            if (isDragging && hasMoved) {
-                const touch = e.changedTouches[0];
-                const deltaX = touch.clientX - startX;
-                const deltaY = touch.clientY - startY;
-                const finalX = initialX + deltaX;
-                const finalY = initialY + deltaY;
-                
-                if (pages[current_page] && pages[current_page].bubbles[bubbleIndex]) {
-                    pages[current_page].bubbles[bubbleIndex].bubble_offset_x = finalX;
-                    pages[current_page].bubbles[bubbleIndex].bubble_offset_y = finalY;
-                }
-            }
-            
-            isDragging = false;
-            hasMoved = false;
+    // Close on Escape key
+    document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            document.removeEventListener('keydown', escapeHandler);
         }
     });
 }
 
-// Function to ensure perfect image fitting with 0% gap
-function ensurePerfectImageFit() {
-    const gridItems = document.querySelectorAll('.grid-item');
-    gridItems.forEach(function(item) {
-        // Ensure the image fills the entire 800x540 template with 0% gap
-        item.style.backgroundSize = 'cover';
-        item.style.backgroundPosition = 'center center';
-        item.style.backgroundRepeat = 'no-repeat';
+// Server-side high quality export
+async function exportServerSideHQ() {
+    try {
+        console.log('Starting server-side HQ export...');
         
-        // Ensure the container dimensions are exactly 800x540
-        item.style.width = '800px';
-        item.style.height = '540px';
-        item.style.overflow = 'hidden';
+        const response = await fetch('/export_hq_png', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                page: current_page
+            })
+        });
         
-        // Add a fallback background color
-        if (!item.style.backgroundImage || item.style.backgroundImage === 'none') {
-            item.style.backgroundColor = '#f0f0f0';
+        if (response.ok) {
+            const contentType = response.headers.get('content-type');
+            
+            if (contentType && contentType.includes('application/json')) {
+                // Fallback response
+                const data = await response.json();
+                if (data.status === 'fallback') {
+                    alert('Server-side rendering not available. Using client-side method.');
+                    printPage();
+                } else {
+                    alert('Server response: ' + (data.message || 'Unknown response'));
+                }
+            } else {
+                // File download response
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `comic_page_${current_page + 1}_ULTRA_HQ.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                console.log('Ultra HQ export completed!');
+            }
+        } else {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-    });
+    } catch (error) {
+        console.error('Export error:', error);
+        alert('Export failed: ' + error.message + '\nFalling back to standard export.');
+        printPage();
+    }
 }
+
+// Export story summary function
+window.showStorySummary = showStorySummary;
+window.exportServerSideHQ = exportServerSideHQ;
+

@@ -13,9 +13,10 @@ def page_create(page_templates,panels,bubbles):
             panel_slice = panels[count:end_idx]
             bubble_slice = bubbles[count:end_idx] if count < len(bubbles) else []
             
-            # Pad with empty panels/bubbles if needed
+            # Pad with unique panels/bubbles if needed
             while len(panel_slice) < len(page_template):
-                panel_slice.append(panel("test1", 1, 1))  # Default panel
+                panel_index = len(panel_slice) + count + 1
+                panel_slice.append(panel(f"frame{panel_index:03d}", 1, 1))  # Unique panel
             while len(bubble_slice) < len(page_template):
                 bubble_slice.append(bubble(0, 0, -1, -1, "", "normal"))  # Default bubble
             
@@ -26,8 +27,8 @@ def page_create(page_templates,panels,bubbles):
             
         except Exception as e:
             print(f"Error creating page {i+1}: {e}")
-            # Create a default page
-            default_panels = [panel("test1", 1, 1) for _ in range(len(page_template))]
+            # Create a default page with unique images
+            default_panels = [panel(f"frame{j+1:03d}", 1, 1) for j in range(len(page_template))]
             default_bubbles = [bubble(0, 0, -1, -1, "", "normal") for _ in range(len(page_template))]
             new_page = Page(default_panels, default_bubbles)
             pages.append(new_page)

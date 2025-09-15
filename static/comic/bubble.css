@@ -116,43 +116,21 @@
 }
 
 .bubble:hover {
-    transform: translateY(-3px) scale(1.03) translateZ(0);
-    box-shadow: 
-        0 16px 35px rgba(0, 0, 0, 0.3),
-        0 8px 18px rgba(0, 0, 0, 0.2),
-        0 3px 6px rgba(0, 0, 0, 0.15),
-        inset 0 2px 0 rgba(255, 255, 255, 0.95),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.15);
-    background: 
-        radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 50%, transparent 70%),
-        linear-gradient(135deg, #FFFFFF 0%, #FEFEFE 50%, #FAFAFA 100%);
-    filter: brightness(1.12) contrast(1.15) saturate(1.08);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 0, 0, 0.4);
+    background: #FFFFFF;
+    filter: brightness(1.15) contrast(1.15);
     cursor: grab;
-    
-    /* Enhanced comic effect on hover */
-    text-shadow: 
-        2px 2px 0px rgba(255, 255, 255, 0.9),
-        1px 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .bubble:active {
     cursor: grabbing;
-    transform: translateY(0px) scale(0.97) translateZ(0);
-    box-shadow: 
-        0 6px 18px rgba(0, 0, 0, 0.35),
-        0 3px 9px rgba(0, 0, 0, 0.25),
-        inset 0 2px 0 rgba(255, 255, 255, 0.8),
-        inset 0 -2px 0 rgba(0, 0, 0, 0.2);
-    filter: brightness(1.05) contrast(1.08);
-    transition: all 0.1s ease-out;
-    
-    /* Active state comic effect */
-    text-shadow: 
-        1px 1px 0px rgba(255, 255, 255, 0.7),
-        1px 1px 2px rgba(0, 0, 0, 0.5);
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.5);
+    filter: brightness(1.05) contrast(1.05);
 }
 
-/* Optimized input fields in bubbles */
+/* Ensure input fields in bubbles maintain the same styling */
 .bubble input {
     font-family: 'Arial Black', 'Arial', 'Helvetica', sans-serif;
     font-size: 16px;
@@ -160,23 +138,15 @@
     font-style: normal;
     color: #000000;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     text-align: center;
     background: transparent;
     border: none;
     outline: none;
     width: 100%;
     height: 100%;
-    
-    /* Performance optimizations for input */
-    will-change: contents;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-display: swap;
-    
-    /* Improve text rendering */
-    text-rendering: optimizeLegibility;
-    -webkit-text-stroke: 0.5px transparent; /* Slight text enhancement */
 }
 
 .tail{
@@ -255,7 +225,6 @@ canvas {
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
     image-rendering: high-quality;
-    image-rendering: pixelated; /* For pixel art */
     
     /* Advanced anti-aliasing */
     -webkit-font-smoothing: antialiased;
@@ -267,111 +236,23 @@ canvas {
     -webkit-transform: translateZ(0);
     
     /* High-quality scaling */
-    image-orientation: from-image;
     object-fit: cover;
     object-position: center;
 }
 
 /* DRAGGING STATE ENHANCEMENTS */
 .bubble.dragging {
-    /* Ultra-smooth dragging */
     transition: none !important;
     will-change: transform;
-    
-    /* Enhanced visual feedback during drag */
     filter: brightness(1.1) contrast(1.1) saturate(1.1) drop-shadow(0 8px 16px rgba(0,0,0,0.3));
-    
-    /* Prevent text selection during drag */
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
-    
-    /* Enhanced shadow during drag */
     box-shadow: 
         0 20px 40px rgba(0, 0, 0, 0.4),
         0 10px 20px rgba(0, 0, 0, 0.3),
         0 4px 8px rgba(0, 0, 0, 0.2),
         inset 0 2px 0 rgba(255, 255, 255, 0.95);
-}
-
-/* ULTRA HIGH-RESOLUTION CANVAS SUPPORT */
-canvas {
-    /* Force high-DPI rendering */
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-    
-    /* Prevent canvas blurring */
-    -ms-interpolation-mode: nearest-neighbor;
-    image-rendering: pixelated;
-}
-
-/* HIGH-QUALITY BACKGROUND IMAGES */
-.grid-item {
-    /* Ultra high-quality background rendering */
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: local;
-    
-    /* High-quality image rendering */
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-    
-    /* Performance optimizations */
-    will-change: background-image, transform;
-    contain: layout style paint;
-    
-    /* Hardware acceleration */
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
-
-/* RETINA/HIGH-DPI OPTIMIZATIONS */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .bubble,
-    .grid-item,
-    img {
-        /* Enhanced rendering for high-DPI displays */
-        image-rendering: -webkit-optimize-contrast;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-    
-    .bubble {
-        /* Sharper borders on retina displays */
-        border-width: 3px; /* Slightly thinner on high-DPI */
-        
-        /* Enhanced shadows for retina */
-        box-shadow: 
-            0 6px 14px rgba(0, 0, 0, 0.25),
-            0 3px 7px rgba(0, 0, 0, 0.15),
-            0 1px 2px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    }
-}
-
-/* PRINT QUALITY OPTIMIZATIONS */
-@media print {
-    .bubble,
-    .grid-item,
-    img {
-        /* Ultra high-quality for print */
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-        
-        /* Remove interactive elements for print */
-        cursor: default !important;
-        user-select: text !important;
-    }
-    
-    .bubble {
-        /* Enhanced contrast for print */
-        filter: brightness(1.0) contrast(1.2);
-        box-shadow: none; /* Remove shadows for cleaner print */
-    }
 }
 
 /* Performance optimizations for the entire comic container */

@@ -21,7 +21,7 @@ async function placeDialogs(page) {
         gridItem.style.gridRow = 'span ' + panel.row_span;
         gridItem.style.gridColumn = 'span ' + panel.col_span;
         gridItem.style.backgroundImage = `url("${path}${panel.image}.png")`;
-        gridItem.style.backgroundSize = 'cover';
+        gridItem.style.backgroundSize = 'contain';
         gridItem.style.backgroundPosition = 'center center';
         gridItem.style.backgroundRepeat = 'no-repeat';
 
@@ -299,7 +299,7 @@ function printPage() {
         return;
     }
     
-    // Create a temporary container with the page content
+    // Create a temporary container with exact 800x1080 dimensions
     const tempContainer = document.createElement('div');
     tempContainer.style.width = '800px';
     tempContainer.style.height = '1080px';
@@ -308,20 +308,24 @@ function printPage() {
     tempContainer.style.top = '0';
     tempContainer.style.backgroundColor = 'white';
     tempContainer.style.overflow = 'hidden';
+    tempContainer.style.boxSizing = 'border-box';
     
-    // Clone the wrapper content
+    // Clone the wrapper content with exact dimensions
     const clonedContent = wrapper.cloneNode(true);
     clonedContent.style.width = '800px';
     clonedContent.style.height = '1080px';
     clonedContent.style.margin = '0';
     clonedContent.style.padding = '0';
+    clonedContent.style.boxSizing = 'border-box';
+    clonedContent.style.borderRadius = '0';
+    clonedContent.style.boxShadow = 'none';
     
     tempContainer.appendChild(clonedContent);
     document.body.appendChild(tempContainer);
     
     console.log('Capturing page with html2canvas...');
     
-    // Use html2canvas to capture the page
+    // Use html2canvas to capture exactly 800x1080
     html2canvas(tempContainer, {
         width: 800,
         height: 1080,
@@ -329,9 +333,19 @@ function printPage() {
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        logging: true,
+        logging: false,
+        foreignObjectRendering: false,
+        imageTimeout: 15000,
+        removeContainer: true,
         onclone: function(clonedDoc) {
-            console.log('Canvas cloned successfully');
+            console.log('Canvas cloned successfully - 800x1080');
+            // Ensure all grid items are visible in clone
+            const clonedGridItems = clonedDoc.querySelectorAll('.grid-item');
+            clonedGridItems.forEach((item, index) => {
+                item.style.display = 'flex';
+                item.style.backgroundSize = 'contain';
+                console.log(`Grid item ${index + 1} prepared for export`);
+            });
         }
     }).then(canvas => {
         console.log('Canvas created, downloading...');
@@ -424,7 +438,7 @@ function replacePanelImage(panelNumber, imageUrl) {
     const panel = document.getElementById(`_${panelNumber}`);
     if (panel) {
         panel.style.backgroundImage = `url("${imageUrl}")`;
-        panel.style.backgroundSize = 'cover';
+        panel.style.backgroundSize = 'contain';
         panel.style.backgroundPosition = 'center';
         panel.style.backgroundRepeat = 'no-repeat';
         
@@ -507,7 +521,7 @@ function zoomImage(panel, factor) {
 }
 
 function resetImage(panel) {
-    panel.style.backgroundSize = 'cover';
+    panel.style.backgroundSize = 'contain';
     panel.style.backgroundPosition = 'center';
     panel.style.transform = 'translate(0px, 0px)';
 }

@@ -101,22 +101,22 @@ def last_page(panels, count_images, length):
     if length == 1:
         new_panel = panel(f'frame{count_images:03d}', 1, 1)
         panels.append(new_panel)
-        # Add empty panels to complete the 2x2 grid
+        # Add panels with next available frames to complete the 2x2 grid
         for i in range(3):
-            panels.append(panel('test1', 1, 1))
+            panels.append(panel(f'frame{count_images + i + 1:03d}', 1, 1))
     elif length == 2:
         for i in range(2):
             new_panel = panel(f'frame{count_images + i:03d}', 1, 1)
             panels.append(new_panel)
-        # Add empty panels to complete the 2x2 grid
+        # Add panels with next available frames to complete the 2x2 grid
         for i in range(2):
-            panels.append(panel('test1', 1, 1))
+            panels.append(panel(f'frame{count_images + i + 2:03d}', 1, 1))
     elif length == 3:
         for i in range(3):
             new_panel = panel(f'frame{count_images + i:03d}', 1, 1)
             panels.append(new_panel)
-        # Add one empty panel to complete the 2x2 grid
-        panels.append(panel('test1', 1, 1))
+        # Add one panel with next available frame to complete the 2x2 grid
+        panels.append(panel(f'frame{count_images + 3:03d}', 1, 1))
 
     return panels
 
@@ -156,9 +156,12 @@ def panel_create(page_templates):
                 panels.append(new)
                 frame_index += 1
             else:
-                # Fallback to test images if we run out of frames
-                new = panel('test1', 1, 1)
+                # Use cycling frame numbers if we run out of actual frames
+                cycle_frame = (frame_index % len(frame_files)) if frame_files else 0
+                frame_name = f'frame{frame_index + 1:03d}'
+                new = panel(frame_name, 1, 1)
                 panels.append(new)
+                frame_index += 1
             count = count+1
 
         

@@ -7,6 +7,25 @@
     <title>Comic Viewer</title>
     <link id="pageStyle" rel="stylesheet" href="{{ url_for('static', filename='comic/page.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='comic/bubble.css') }}">
+    <style>
+        /* Ensure exact 800x1080 dimensions */
+        .wrapper {
+            width: 800px !important;
+            height: 1080px !important;
+            box-sizing: border-box !important;
+        }
+        .grid-container {
+            width: 800px !important;
+            height: 1080px !important;
+            box-sizing: border-box !important;
+        }
+        .grid-item {
+            background-size: contain !important;
+            background-position: center center !important;
+            background-repeat: no-repeat !important;
+            box-sizing: border-box !important;
+        }
+    </style>
 
     <script src="{{ url_for('static', filename='comic/page.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
