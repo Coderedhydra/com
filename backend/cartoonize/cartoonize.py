@@ -185,16 +185,16 @@ def style_frames():
     print(f"🔧 Using parallel processing with {min(4, os.cpu_count() or 1)} workers")
     start_time = time.time()
     
-    # First, apply CUTTING-EDGE 2024-2025 AI enhancement to all frames
+    # First, apply ULTRA-HIGH QUALITY enhancement (no resizing, just superior quality)
     try:
-        from backend.cartoonize.cutting_edge_2024 import enhance_frames_cutting_edge_2024
-        print("🚀 Phase 1: CUTTING-EDGE 2024-2025 AI Enhancement...")
-        print("🔥 Using NEWEST models: HAT-Plus, SwinIR-V2, DAT, OmniSR, DRCT")
-        enhance_frames_cutting_edge_2024(frames_dir)
-        print("✅ CUTTING-EDGE 2024 AI enhancement complete, proceeding with cartoon styling...")
+        from backend.cartoonize.ultra_quality_no_resize import enhance_frames_ultra_quality_no_resize
+        print("🚀 Phase 1: ULTRA-HIGH QUALITY Enhancement (No Resize)...")
+        print("🔥 Professional-grade quality without zooming/cropping")
+        enhance_frames_ultra_quality_no_resize(frames_dir)
+        print("✅ ULTRA-HIGH QUALITY enhancement complete, proceeding with cartoon styling...")
     except Exception as e:
-        print(f"⚠️ Cutting-edge 2024 AI enhancement failed: {e}")
-        print("🔄 No fallbacks - using ONLY cutting-edge methods")
+        print(f"⚠️ Ultra-high quality enhancement failed: {e}")
+        print("🔄 Using basic quality enhancement...")
     
     def process_single_frame(image_file):
         """Process a single frame with cartoon styling"""

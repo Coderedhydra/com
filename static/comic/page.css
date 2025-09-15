@@ -68,7 +68,7 @@ body {
 .grid-item {
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: cover !important;
+    background-size: contain !important;
     background-clip: border-box;
     border: none !important;
     outline: none !important;
