@@ -260,9 +260,9 @@ def create_comic_preview():
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     
-    # Step 4: Show image selection and create preview
-    from backend.preview_system import create_comic_preview
-    preview_success = create_comic_preview()
+    # Step 4: Enhanced preview with smart frame selection
+    from backend.enhanced_preview_system import create_enhanced_comic_preview
+    preview_success = create_enhanced_comic_preview()
     
     if preview_success:
         copy_to_static()

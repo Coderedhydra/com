@@ -21,7 +21,7 @@ async function placeDialogs(page) {
         gridItem.style.gridRow = 'span ' + panel.row_span;
         gridItem.style.gridColumn = 'span ' + panel.col_span;
         gridItem.style.backgroundImage = `url("${path}${panel.image}.png")`;
-        gridItem.style.backgroundSize = 'cover';
+        gridItem.style.backgroundSize = 'contain';
         gridItem.style.backgroundPosition = 'center center';
         gridItem.style.backgroundRepeat = 'no-repeat';
 
@@ -435,7 +435,7 @@ function replacePanelImage(panelNumber, imageUrl) {
     const panel = document.getElementById(`_${panelNumber}`);
     if (panel) {
         panel.style.backgroundImage = `url("${imageUrl}")`;
-        panel.style.backgroundSize = 'cover';
+        panel.style.backgroundSize = 'contain';
         panel.style.backgroundPosition = 'center';
         panel.style.backgroundRepeat = 'no-repeat';
         
@@ -518,7 +518,7 @@ function zoomImage(panel, factor) {
 }
 
 function resetImage(panel) {
-    panel.style.backgroundSize = 'cover';
+    panel.style.backgroundSize = 'contain';
     panel.style.backgroundPosition = 'center';
     panel.style.transform = 'translate(0px, 0px)';
 }

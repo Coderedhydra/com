@@ -7,7 +7,8 @@ body {
     background-attachment: fixed;
     min-height: 100vh;
     margin: 0;
-    padding: 20px;
+    padding: 2.5%;
+    box-sizing: border-box;
 }
 
 .button{
@@ -37,8 +38,10 @@ body {
 
 .wrapper {
     display: block;
-    height: 1080px !important;
-    width: 800px !important;
+    height: 95vh !important;
+    width: 95vw !important;
+    max-height: 1080px !important;
+    max-width: 800px !important;
     background: #ffffff;
     border-radius: 5px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -53,11 +56,11 @@ body {
 }
 
 .grid-container {
-    width: 800px !important;
-    height: 1080px !important;
+    width: 100% !important;
+    height: 100% !important;
     display: grid;
-    grid-template-columns: 399px 2px 399px;
-    grid-template-rows: 539px 2px 539px;
+    grid-template-columns: 1fr 2px 1fr;
+    grid-template-rows: 1fr 2px 1fr;
     border: none;
     gap: 0px;
     box-sizing: border-box;
@@ -70,13 +73,13 @@ body {
 .grid-item {
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: cover !important;
+    background-size: contain !important;
     background-clip: border-box;
     border: none !important;
     outline: none !important;
     position: relative;
-    width: 399px !important;
-    height: 539px !important;
+    width: 100% !important;
+    height: 100% !important;
     overflow: hidden;
     border-radius: 0px !important;
     box-shadow: none !important;
@@ -86,7 +89,7 @@ body {
     image-rendering: high-quality;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-    image-rendering: auto;
+    image-rendering: pixelated;
     display: block;
     background-color: #f8f9fa;
     margin: 0 !important;
