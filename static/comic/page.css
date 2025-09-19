@@ -1,9 +1,12 @@
 body {
     margin: 0;
     padding: 0;
-    background: white;
+    background: #f0f0f0;
     font-family: Arial, sans-serif;
-    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
 .button {
@@ -33,10 +36,9 @@ body {
 }
 
 .wrapper {
-    width: 100vw;
-    height: 56.25vw;  /* 16:9 aspect ratio like video */
-    max-height: 100vh;
-    margin: 0;
+    width: 100vmin;   /* Square using smaller dimension */
+    height: 100vmin;  /* Same as width = SQUARE */
+    margin: 0 auto;
     padding: 0;
     background: white;
     box-sizing: border-box;

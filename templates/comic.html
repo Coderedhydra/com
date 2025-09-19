@@ -8,13 +8,16 @@
     <link id="pageStyle" rel="stylesheet" href="{{ url_for('static', filename='comic/page.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='comic/bubble.css') }}">
     <style>
-        /* Perfect fit layout - no overflow */
+        /* Perfect square layout */
         body {
             margin: 0;
             padding: 0;
-            background: white;
+            background: #f0f0f0;
             font-family: Arial, sans-serif;
-            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         
         .button {
@@ -43,12 +46,11 @@
             background: #0056b3;
         }
         
-        /* Match image aspect ratio - not too long */
+        /* Perfect SQUARE - 4 equal parts */
         .wrapper {
-            width: 100vw;
-            height: 56.25vw;  /* 16:9 aspect ratio like video */
-            max-height: 100vh;
-            margin: 0;
+            width: 100vmin;   /* Square using smaller dimension */
+            height: 100vmin;  /* Same as width = SQUARE */
+            margin: 0 auto;
             padding: 0;
             background: white;
             box-sizing: border-box;
