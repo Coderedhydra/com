@@ -59,10 +59,10 @@ def create_comic_ratio_test_page():
     video = 'video/uploaded.mp4'
     
     print("\n" + "="*80)
-    print("📚 COMIC RATIO TEST PAGE - PERFECT COMIC BOOK PROPORTIONS")
+    print("🔲 PERFECT SQUARE TEST PAGE - 400×400 PANELS")
     print("="*80)
-    print("Creating test page with standard comic book ratios!")
-    print("Page: 800×1200 | Panels: 400×600 each | Ratio: 2:3 (comic standard)")
+    print("Creating test page with perfect square panels!")
+    print("Page: 800×800 | Panels: 400×400 each | Perfect squares for optimal display!")
     
     # Step 1-3: Basic processing
     print("\n📹 Step 1: Processing subtitles...")
@@ -78,16 +78,16 @@ def create_comic_ratio_test_page():
     # Use comic ratio enhancer
     from backend.comic_ratio_enhancer import ComicRatioEnhancer
     
-    print("📚 Using Comic Ratio Enhancer (2:3 ratio per panel)...")
+    print("🔲 Using Square Panel Enhancer (400×400 per panel)...")
     enhancer = ComicRatioEnhancer()
     test_success = enhancer.create_comic_ratio_test_page()
     
     if test_success:
         copy_to_static()
         total_time = time.time() - start_time
-        print(f"\n🎉 Comic ratio test page completed!")
-        print(f"✅ Perfect comic book proportions achieved!")
-        print(f"📚 Standard 2:3 ratio for optimal comic reading!")
+        print(f"\n🎉 Perfect square test page completed!")
+        print(f"✅ Perfect 400×400 square panels achieved!")
+        print(f"🔲 Perfect 1:1 ratio for optimal square display!")
         print(f"--- Generation time: {total_time:.1f} seconds ---")
         return True
     else:
@@ -252,9 +252,9 @@ def upload_file():
             return '''
             <html>
             <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #2c3e50; color: white;">
-            <h2 style="color: #ecf0f1;">📚 Perfect Comic Ratio Created!</h2>
-            <p style="font-size: 16px; margin: 20px 0;">Standard comic book proportions: 800×1200 with 400×600 panels!</p>
-            <p style="font-size: 14px; color: #bdc3c7;">Perfect 2:3 ratio for optimal comic reading experience!</p>
+            <h2 style="color: #ecf0f1;">🔲 Perfect Square Panels Created!</h2>
+            <p style="font-size: 16px; margin: 20px 0;">Perfect square layout: 800×800 with 400×400 panels!</p>
+            <p style="font-size: 14px; color: #bdc3c7;">Perfect 1:1 ratio for optimal square display!</p>
             <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #8e44ad; color: white; text-decoration: none; border-radius: 8px; margin: 20px;">View Comic Ratio Page</a>
             <script>
             setTimeout(function() {
@@ -283,9 +283,9 @@ def handle_link():
             return '''
             <html>
             <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #2c3e50; color: white;">
-            <h2 style="color: #ecf0f1;">📚 Perfect Comic Ratio Created!</h2>
-            <p style="font-size: 16px; margin: 20px 0;">Standard comic book proportions: 800×1200 with 400×600 panels!</p>
-            <p style="font-size: 14px; color: #bdc3c7;">Perfect 2:3 ratio for optimal comic reading experience!</p>
+            <h2 style="color: #ecf0f1;">🔲 Perfect Square Panels Created!</h2>
+            <p style="font-size: 16px; margin: 20px 0;">Perfect square layout: 800×800 with 400×400 panels!</p>
+            <p style="font-size: 14px; color: #bdc3c7;">Perfect 1:1 ratio for optimal square display!</p>
             <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #8e44ad; color: white; text-decoration: none; border-radius: 8px; margin: 20px;">View Comic Ratio Page</a>
             <script>
             setTimeout(function() {

@@ -37,21 +37,22 @@ body {
 
 .wrapper {
     width: 800px;
-    height: 1080px;
+    height: 800px;
     margin: 0 auto;
     padding: 0;
     background: white;
     box-sizing: border-box;
-    border: 2px solid #333;
-    border-radius: 5px;
+    border: 3px solid #2c3e50;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .grid-container {
     width: 800px;
-    height: 1080px;
+    height: 800px;
     display: grid;
     grid-template-columns: 400px 400px;
-    grid-template-rows: 540px 540px;
+    grid-template-rows: 400px 400px;
     gap: 0;
     margin: 0;
     padding: 0;
@@ -61,7 +62,7 @@ body {
 
 .grid-item {
     width: 400px;
-    height: 540px;
+    height: 400px;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
