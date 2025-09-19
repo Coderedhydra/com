@@ -2,7 +2,7 @@ path = '/static/comic/frames/final/'
 current_page = 0
 
 async function placeDialogs(page) {
-    var gridItems = document.querySelectorAll('.grid-item');
+    var gridItems = document.querySelectorAll('.grid-item, .image-panel');
     
     // Get story context for this page
     const storyContext = {

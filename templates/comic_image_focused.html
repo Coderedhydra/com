@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image-Focused Comic Viewer</title>
+    <style>
+        /* Image-Focused Template Design */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #2c3e50;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Floating controls - don't interfere with images */
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px 20px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .controls button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .controls button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .controls .generate-btn {
+            background: #e74c3c;
+        }
+        
+        .controls .generate-btn:hover {
+            background: #c0392b;
+        }
+        
+        /* Perfect image container */
+        .image-comic-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #2c3e50;
+        }
+        
+        /* Image-optimized grid */
+        .image-grid {
+            width: min(95vw, 95vh);
+            height: min(95vw, 95vh);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 3px;
+            background: #34495e;
+            border-radius: 10px;
+            padding: 3px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        /* Perfect image panels */
+        .image-panel {
+            background-color: #ecf0f1;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            
+            /* Image optimization */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: high-quality;
+            
+            /* Smooth transitions */
+            transition: transform 0.3s ease;
+        }
+        
+        .image-panel:hover {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+        
+        /* Panel positioning */
+        #_1 { grid-area: 1 / 1; }
+        #_2 { grid-area: 1 / 2; }
+        #_3 { grid-area: 2 / 1; }
+        #_4 { grid-area: 2 / 2; }
+        
+        /* Image-optimized bubbles */
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #2c3e50;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            z-index: 100;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-width: 180px;
+            word-wrap: break-word;
+            backdrop-filter: blur(5px);
+        }
+        
+        .bubble:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        
+        .bubble.dragging {
+            cursor: grabbing;
+            z-index: 200;
+            transform: scale(1.05);
+        }
+        
+        /* Quality indicator */
+        .quality-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 62, 80, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .controls {
+                padding: 8px 15px;
+                gap: 8px;
+            }
+            
+            .controls button {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+            
+            .image-grid {
+                width: 98vw;
+                height: 98vw;
+                gap: 2px;
+                padding: 2px;
+            }
+        }
+        
+        @media (orientation: landscape) and (max-height: 600px) {
+            .image-grid {
+                width: 90vh;
+                height: 90vh;
+            }
+        }
+    </style>
+    
+    <script src="{{ url_for('static', filename='comic/page.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="{{ url_for('static', filename='comic/page_place.js') }}"></script>
+</head>
+
+<body>
+    <!-- Floating Controls -->
+    <div class="controls">
+        <button onclick="prevPage()">◀ Prev</button>
+        <button onclick="printPage()">Print</button>
+        <button onclick="exportServerSideHQ()">Export</button>
+        <button onclick="showStorySummary()">Summary</button>
+        <button onclick="generateFullComic()" class="generate-btn">Generate 12 Pages</button>
+        <button onclick="uploadImage()">Upload</button>
+        <button onclick="nextPage()">Next ▶</button>
+    </div>
+    
+    <!-- Quality Badge -->
+    <div class="quality-badge">
+        High Quality Images
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3>Generating High Quality Comic...</h3>
+            <p>Please wait while we process your images</p>
+        </div>
+    </div>
+    
+    <!-- Hidden file input -->
+    <input type="file" id="imageUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+    
+    <!-- Main Image-Focused Container -->
+    <div class="image-comic-container">
+        <div class="image-grid">
+            <div class="image-panel" id="_1"></div>
+            <div class="image-panel" id="_2"></div>
+            <div class="image-panel" id="_3"></div>
+            <div class="image-panel" id="_4"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Image-focused initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🖼️ Image-focused comic template loaded');
+            
+            // Initialize with first page if available
+            if (typeof pages !== 'undefined' && pages.length > 0) {
+                placeDialogs(pages[current_page || 0]);
+            }
+        });
+        
+        // Enhanced image loading with quality preservation
+        function loadImageWithQuality(element, imageSrc) {
+            const img = new Image();
+            img.onload = function() {
+                element.style.backgroundImage = `url("${imageSrc}")`;
+                element.classList.add('loaded');
+                console.log(`🖼️ High quality image loaded: ${imageSrc}`);
+            };
+            img.onerror = function() {
+                console.error(`❌ Failed to load image: ${imageSrc}`);
+                element.style.backgroundColor = '#e74c3c';
+            };
+            img.src = imageSrc;
+        }
+        
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+        
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+        
+        // Enhanced generate full comic with loading
+        window.generateFullComic = async function() {
+            if (!confirm('Generate full 12-page comic with high quality images?\n\nThis will create 12 pages optimized for image display.')) {
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const response = await fetch('/generate_full_comic', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const result = await response.json();
+                hideLoading();
+                
+                if (response.ok && result.status === 'success') {
+                    alert('🎉 Full comic generated successfully!\n\n✅ 12 pages with high quality images\n✅ Optimized for image display\n\nRefresh to see all pages.');
+                    window.location.reload();
+                } else {
+                    alert('❌ Error: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                hideLoading();
+                alert('❌ Error: ' + error.message);
+            }
+        };
+    </script>
+</body>
+</html>
