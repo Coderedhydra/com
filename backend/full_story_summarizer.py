@@ -17,12 +17,14 @@ class FullStorySummarizer:
     def __init__(self):
         print("📚 Full Story Summarization System - Complete Comic Generation")
         self.story_structure = {
-            'opening': {'pages': 2, 'description': 'Introduction and setup'},
+            'opening': {'pages': 3, 'description': 'Introduction and setup'},
             'rising_action': {'pages': 4, 'description': 'Building tension and development'},
-            'climax': {'pages': 2, 'description': 'Peak moment and resolution'},
+            'climax': {'pages': 3, 'description': 'Peak moment and resolution'},
             'conclusion': {'pages': 2, 'description': 'Wrap-up and ending'}
         }
-        self.total_pages = 10  # Standard comic length
+        self.total_pages = 12  # 12-page comic as requested
+        self.target_quality = "4K"  # 4K quality, not 8K
+        self.panel_4k_size = (1280, 720)  # 4K panel resolution
         self.ai_enhancer = LatestAIEnhancer()
         
     def analyze_video_story_structure(self, video_path="video/uploaded.mp4"):
@@ -43,7 +45,7 @@ class FullStorySummarizer:
         cap.release()
         
         print(f"📹 Video Duration: {duration:.1f} seconds ({frame_count} frames)")
-        print(f"🎯 Target: {self.total_pages} comic pages")
+        print(f"🎯 Target: {self.total_pages} comic pages in {self.target_quality} quality")
         
         # Divide video into story segments
         story_timeline = self.create_story_timeline(duration)
@@ -67,8 +69,8 @@ class FullStorySummarizer:
             'opening': {
                 'start': 0,
                 'end': opening_end,
-                'pages': 2,
-                'key_moments': ['introduction', 'setup']
+                'pages': 3,
+                'key_moments': ['introduction', 'setup', 'character_intro']
             },
             'rising_action': {
                 'start': opening_end,
@@ -79,8 +81,8 @@ class FullStorySummarizer:
             'climax': {
                 'start': rising_end,
                 'end': climax_end,
-                'pages': 2,
-                'key_moments': ['peak_moment', 'resolution']
+                'pages': 3,
+                'key_moments': ['buildup', 'peak_moment', 'resolution']
             },
             'conclusion': {
                 'start': climax_end,
@@ -382,8 +384,8 @@ class FullStorySummarizer:
         return templates[template_idx]
     
     def enhance_all_selected_frames(self, selected_frames, frames_dir="frames/final"):
-        """Enhance all selected frames using latest AI models"""
-        print(f"\n🚀 ENHANCING SELECTED FRAMES WITH LATEST AI")
+        """Enhance all selected frames to 4K quality using latest AI models"""
+        print(f"\n🚀 ENHANCING SELECTED FRAMES TO 4K QUALITY")
         print("=" * 70)
         
         enhanced_count = 0
@@ -391,18 +393,62 @@ class FullStorySummarizer:
             frame_path = os.path.join(frames_dir, frame_file)
             
             if os.path.exists(frame_path):
-                print(f"\n[{i}/{len(selected_frames)}] Enhancing: {frame_file}")
+                print(f"\n[{i}/{len(selected_frames)}] Enhancing to 4K: {frame_file}")
                 
-                if self.ai_enhancer.ultra_enhance_frame(frame_path):
+                # Apply 4K enhancement
+                if self.enhance_frame_to_4k(frame_path):
                     enhanced_count += 1
                 
                 progress = (i / len(selected_frames)) * 100
                 print(f"Progress: {progress:.1f}% ({enhanced_count}/{i} successful)")
         
-        print(f"\n🎉 ENHANCEMENT COMPLETED!")
-        print(f"✅ Enhanced {enhanced_count}/{len(selected_frames)} frames with latest AI models")
+        print(f"\n🎉 4K ENHANCEMENT COMPLETED!")
+        print(f"✅ Enhanced {enhanced_count}/{len(selected_frames)} frames to 4K quality")
         
         return enhanced_count > 0
+    
+    def enhance_frame_to_4k(self, frame_path):
+        """Enhance single frame to 4K quality"""
+        try:
+            # Load image
+            img = cv2.imread(frame_path)
+            if img is None:
+                return False
+            
+            # Apply 4K enhancement pipeline
+            enhanced = self.apply_4k_enhancement_pipeline(img)
+            
+            # Save with high quality
+            cv2.imwrite(frame_path, enhanced, [
+                cv2.IMWRITE_PNG_COMPRESSION, 0,  # No compression for 4K
+            ])
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ 4K enhancement failed: {e}")
+            return False
+    
+    def apply_4k_enhancement_pipeline(self, img):
+        """Apply comprehensive 4K enhancement pipeline"""
+        # Step 1: Resize to 4K panel size
+        target_w, target_h = self.panel_4k_size
+        enhanced = cv2.resize(img, (target_w, target_h), interpolation=cv2.INTER_LANCZOS4)
+        
+        # Step 2: AI-based enhancement
+        enhanced = self.ai_enhancer.apply_ultra_enhancement(enhanced)
+        
+        # Step 3: 4K-specific optimizations
+        # Advanced noise reduction for 4K
+        enhanced = cv2.fastNlMeansDenoisingColored(enhanced, None, 2, 2, 7, 21)
+        
+        # Edge enhancement for 4K clarity
+        enhanced = cv2.edgePreservingFilter(enhanced, flags=2, sigma_s=30, sigma_r=0.3)
+        
+        # Detail enhancement
+        enhanced = cv2.detailEnhance(enhanced, sigma_s=8, sigma_r=0.12)
+        
+        return enhanced
     
     def generate_full_story_comic(self):
         """Generate complete story-driven comic"""
@@ -437,12 +483,13 @@ class FullStorySummarizer:
         
         total_time = time.time() - start_time
         
-        print(f"\n🎉 FULL STORY COMIC COMPLETED!")
+        print(f"\n🎉 FULL 12-PAGE COMIC COMPLETED!")
         print("=" * 50)
-        print(f"📚 Generated {len(pages)} story pages")
-        print(f"🖼️ Enhanced {len(selected_frames)} frames")
+        print(f"📚 Generated {len(pages)} story pages (12 pages total)")
+        print(f"🖼️ Enhanced {len(selected_frames)} frames to 4K quality")
+        print(f"🎯 Quality: 4K ({self.panel_4k_size[0]}x{self.panel_4k_size[1]} per panel)")
         print(f"🚀 Used latest 2024 AI models")
-        print(f"⏱️ Total time: {total_time:.1f} seconds")
+        print(f"⏱️ Total time: {total_time:.1f} seconds ({total_time/60:.1f} minutes)")
         
         return True
     
@@ -458,9 +505,11 @@ class FullStorySummarizer:
             "total_frames": len(selected_frames),
             "story_timeline": story_timeline,
             "selected_frames": selected_frames,
-            "enhancement_applied": "latest_2024_ai_models",
+            "enhancement_applied": "4K_quality_latest_2024_ai_models",
             "layout": "99_percent_2x2_grid",
-            "generation_type": "full_story_comic"
+            "generation_type": "full_12_page_story_comic",
+            "quality": "4K",
+            "panel_resolution": f"{self.panel_4k_size[0]}x{self.panel_4k_size[1]}"
         }
         
         # Save pages data

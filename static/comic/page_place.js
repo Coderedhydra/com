@@ -1044,7 +1044,17 @@ function makeBubbleDraggableAndEditable(bubble, bubbleIndex) {
 
 // Generate full comic function
 async function generateFullComic() {
-    if (!confirm('Generate full 12-page comic with ultra 4x quality?\n\nThis will take a few minutes but will create all 12 pages with maximum quality.')) {
+    // Check if this is a test page
+    const isTestPage = checkIfTestPage();
+    
+    let confirmMessage;
+    if (isTestPage) {
+        confirmMessage = '🎉 Test page looks good!\n\nGenerate full 12-page comic with 4K quality?\n\nThis will create a complete story with 12 pages (48 panels total) and may take several minutes.';
+    } else {
+        confirmMessage = 'Generate full 12-page comic with 4K quality?\n\nThis will create a complete story with 12 pages and may take several minutes.';
+    }
+    
+    if (!confirm(confirmMessage)) {
         return;
     }
     
@@ -1070,9 +1080,10 @@ async function generateFullComic() {
         `;
         loadingDiv.innerHTML = `
             <div style="text-align: center;">
-                <div>🔥 Generating Full Comic...</div>
-                <div style="font-size: 18px; margin-top: 10px;">12 pages with ultra 4x quality</div>
-                <div style="font-size: 16px; margin-top: 10px;">This may take a few minutes...</div>
+                <div>🚀 Generating Full 12-Page Comic...</div>
+                <div style="font-size: 18px; margin-top: 10px;">Complete story with 4K quality</div>
+                <div style="font-size: 16px; margin-top: 10px;">Creating 12 pages (48 panels total)</div>
+                <div style="font-size: 14px; margin-top: 5px;">This may take several minutes...</div>
             </div>
         `;
         document.body.appendChild(loadingDiv);
@@ -1090,10 +1101,10 @@ async function generateFullComic() {
         document.body.removeChild(loadingDiv);
         
         if (response.ok && result.status === 'success') {
-            alert('🎉 Full comic generated successfully!\n\nRefresh the page to see all 12 pages.');
+            alert('🎉 Full 12-page comic generated successfully!\n\n✅ Complete story with 4K quality\n✅ 12 pages with 48 total panels\n✅ Latest AI enhancement applied\n\nRefresh the page to see all pages.');
             window.location.reload();
         } else {
-            alert('❌ Error: ' + (result.message || 'Unknown error'));
+            alert('❌ Error generating full comic: ' + (result.message || 'Unknown error'));
         }
         
     } catch (error) {
@@ -1108,10 +1119,31 @@ async function generateFullComic() {
     }
 }
 
+// Check if current display is a test page
+function checkIfTestPage() {
+    try {
+        // Check if we have test page metadata
+        if (typeof pages !== 'undefined' && pages.length === 1) {
+            const page = pages[0];
+            if (page.metadata && page.metadata.page_type === 'test_page') {
+                return true;
+            }
+            // Also check if page has 4 panels (test page indicator)
+            if (page.panels && page.panels.length === 4) {
+                return true;
+            }
+        }
+        return false;
+    } catch (error) {
+        return false;
+    }
+}
+
 // Export functions
 window.createChatBubble = createChatBubble;
 window.makeBubbleDraggableAndEditable = makeBubbleDraggableAndEditable;
 window.showStorySummary = showStorySummary;
 window.exportServerSideHQ = exportServerSideHQ;
 window.generateFullComic = generateFullComic;
+window.checkIfTestPage = checkIfTestPage;
 

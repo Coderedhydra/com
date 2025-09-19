@@ -247,12 +247,12 @@ def export_hq_png():
 
 
 def create_comic_preview():
-    """Create preview with 1 test page first"""
+    """Create 4K test page first"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("🎬 Amit Comic - Preview Generation")
-    print("Starting preview generation (1 test page)...")
+    print("🎬 Amit Comic - 4K Test Page Generation")
+    print("Starting 4K test page generation (1 page, 4 panels)...")
     
     # Step 1-3: Basic processing
     get_subtitles(video)
@@ -260,25 +260,20 @@ def create_comic_preview():
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     
-    # Step 4: Enhanced preview with latest AI models
-    from backend.enhanced_preview_system import create_enhanced_comic_preview
-    from backend.latest_ai_enhancer import enhance_frames_with_latest_ai
+    # Step 4: Generate 4K test page
+    from backend.test_page_generator import generate_4k_test_page
     
-    # First enhance frames with latest AI
-    print("🚀 Applying latest 2024 AI models...")
-    enhance_frames_with_latest_ai()
+    print("🧪 Generating 4K test page...")
+    test_success = generate_4k_test_page()
     
-    # Then create enhanced preview
-    preview_success = create_enhanced_comic_preview()
-    
-    if preview_success:
+    if test_success:
         copy_to_static()
         total_time = time.time() - start_time
-        print(f"\n🎉 Preview generation completed!")
-        print(f"--- Preview time: {total_time:.1f} seconds ---")
+        print(f"\n🎉 4K Test page generation completed!")
+        print(f"--- Test page time: {total_time:.1f} seconds ---")
         return True
     else:
-        print("❌ Preview generation failed")
+        print("❌ Test page generation failed")
         return False
 
 def create_comic_full():
@@ -357,9 +352,11 @@ def upload_file():
         # Redirect to the comic page instead of opening local file
         return '''
         <html>
-        <body>
-        <h2>Comic created successfully!</h2>
-        <p>Your comic is ready. <a href="/comic" target="_blank">Click here to view your comic</a></p>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0;">
+        <h2 style="color: #2c3e50;">🧪 4K Test Page Created Successfully!</h2>
+        <p style="font-size: 16px; margin: 20px 0;">Your 4K quality test page is ready with 4 panels.</p>
+        <p style="font-size: 14px; color: #7f8c8d;">Review the quality and layout, then generate the full 12-page comic if it looks good!</p>
+        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View 4K Test Page</a>
         <script>
         setTimeout(function() {
             window.open('/comic', '_blank');
@@ -382,9 +379,11 @@ def handle_link():
         # Redirect to the comic page instead of opening local file
         return '''
         <html>
-        <body>
-        <h2>Comic created successfully!</h2>
-        <p>Your comic is ready. <a href="/comic" target="_blank">Click here to view your comic</a></p>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0;">
+        <h2 style="color: #2c3e50;">🧪 4K Test Page Created Successfully!</h2>
+        <p style="font-size: 16px; margin: 20px 0;">Your 4K quality test page is ready with 4 panels.</p>
+        <p style="font-size: 14px; color: #7f8c8d;">Review the quality and layout, then generate the full 12-page comic if it looks good!</p>
+        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View 4K Test Page</a>
         <script>
         setTimeout(function() {
             window.open('/comic', '_blank');
