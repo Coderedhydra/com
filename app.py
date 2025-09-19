@@ -247,12 +247,12 @@ def export_hq_png():
 
 
 def create_comic_preview():
-    """Create 4K test page first"""
+    """Create clean 2K test page first"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("🎬 Amit Comic - 4K Test Page Generation")
-    print("Starting 4K test page generation (1 page, 4 panels)...")
+    print("🎬 Amit Comic - Clean 2K Test Page Generation")
+    print("Starting clean 2K test page generation (1 page, 4 panels)...")
     
     # Step 1-3: Basic processing
     get_subtitles(video)
@@ -260,16 +260,16 @@ def create_comic_preview():
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     
-    # Step 4: Generate 4K test page
-    from backend.test_page_generator import generate_4k_test_page
+    # Step 4: Generate clean 2K test page
+    from backend.simple_2k_enhancer import create_2k_test_page
     
-    print("🧪 Generating 4K test page...")
-    test_success = generate_4k_test_page()
+    print("🎯 Generating clean 2K test page...")
+    test_success = create_2k_test_page()
     
     if test_success:
         copy_to_static()
         total_time = time.time() - start_time
-        print(f"\n🎉 4K Test page generation completed!")
+        print(f"\n🎉 Clean 2K test page generation completed!")
         print(f"--- Test page time: {total_time:.1f} seconds ---")
         return True
     else:
@@ -277,12 +277,12 @@ def create_comic_preview():
         return False
 
 def create_comic_full():
-    """Create full story comic with latest AI enhancement"""
+    """Create full 12-page comic with clean 2K quality"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("\n🎬 Amit Comic - Full Story Generation with Latest AI")
-    print("Starting full story comic generation...")
+    print("\n🎬 Amit Comic - Full 12-Page Generation with Clean 2K")
+    print("Starting full 12-page comic generation...")
     
     # Basic processing
     get_subtitles(video)
@@ -290,22 +290,22 @@ def create_comic_full():
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     
-    # Full story comic generation with latest AI
-    from backend.full_story_summarizer import generate_full_story_comic
-    success = generate_full_story_comic()
+    # Full comic generation with clean 2K quality
+    from backend.simple_2k_enhancer import create_full_2k_comic
+    success = create_full_2k_comic()
     
     if success:
         # Copy to static directory
         copy_to_static()
         
         total_time = time.time() - start_time
-        print(f"\n🎉 Full story comic generation completed successfully!")
-        print(f"🚀 Used latest 2024 AI models for maximum quality!")
-        print(f"📚 Complete story with intelligent frame selection!")
+        print(f"\n🎉 Full 12-page comic generation completed successfully!")
+        print(f"🎯 Clean 2K quality without over-processing!")
+        print(f"📚 Complete 12-page comic with optimal quality!")
         print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
         return True
     else:
-        print("❌ Full story comic generation failed")
+        print("❌ Full comic generation failed")
         return False
 
 def create_comic():
@@ -353,10 +353,10 @@ def upload_file():
         return '''
         <html>
         <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0;">
-        <h2 style="color: #2c3e50;">🧪 4K Test Page Created Successfully!</h2>
-        <p style="font-size: 16px; margin: 20px 0;">Your 4K quality test page is ready with 4 panels.</p>
-        <p style="font-size: 14px; color: #7f8c8d;">Review the quality and layout, then generate the full 12-page comic if it looks good!</p>
-        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View 4K Test Page</a>
+        <h2 style="color: #2c3e50;">🎯 Clean 2K Test Page Created Successfully!</h2>
+        <p style="font-size: 16px; margin: 20px 0;">Your clean 2K quality test page is ready with 4 panels (1280x720 each).</p>
+        <p style="font-size: 14px; color: #7f8c8d;">Optimized for quality without over-processing. Generate the full 12-page comic if it looks good!</p>
+        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View Clean 2K Test Page</a>
         <script>
         setTimeout(function() {
             window.open('/comic', '_blank');
@@ -380,10 +380,10 @@ def handle_link():
         return '''
         <html>
         <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0;">
-        <h2 style="color: #2c3e50;">🧪 4K Test Page Created Successfully!</h2>
-        <p style="font-size: 16px; margin: 20px 0;">Your 4K quality test page is ready with 4 panels.</p>
-        <p style="font-size: 14px; color: #7f8c8d;">Review the quality and layout, then generate the full 12-page comic if it looks good!</p>
-        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View 4K Test Page</a>
+        <h2 style="color: #2c3e50;">🎯 Clean 2K Test Page Created Successfully!</h2>
+        <p style="font-size: 16px; margin: 20px 0;">Your clean 2K quality test page is ready with 4 panels (1280x720 each).</p>
+        <p style="font-size: 14px; color: #7f8c8d;">Optimized for quality without over-processing. Generate the full 12-page comic if it looks good!</p>
+        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View Clean 2K Test Page</a>
         <script>
         setTimeout(function() {
             window.open('/comic', '_blank');

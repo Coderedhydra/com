@@ -73,7 +73,7 @@ body {
 .grid-item {
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: contain !important;
+    background-size: cover !important;
     background-clip: border-box;
     border: 1px solid #ddd !important;
     outline: none !important;
@@ -81,19 +81,21 @@ body {
     width: 100% !important;
     height: 100% !important;
     overflow: hidden;
-    border-radius: 5px !important;
+    border-radius: 4px !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
     flex-shrink: 0;
     flex-grow: 0;
     box-sizing: border-box;
-    image-rendering: high-quality;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-    image-rendering: pixelated;
+    image-rendering: high-quality;
     display: block;
     background-color: #ffffff;
     margin: 0 !important;
     padding: 0 !important;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 /* Position panels in 2x2 grid */
