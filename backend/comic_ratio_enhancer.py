@@ -21,20 +21,20 @@ class ComicRatioEnhancer:
         # Most comics use 2:3 ratio (width:height) for panels
         self.comic_panel_ratio = 2/3  # Classic comic panel ratio
         
-        # Perfect square page dimensions for 2x2 grid
-        self.page_width = 1000
-        self.page_height = 1000   # Perfect square page (1000:1000)
+        # Perfect rectangle page dimensions for 2x2 grid
+        self.page_width = 1200
+        self.page_height = 800   # Rectangle page (1200:800)
         
-        # Each panel dimensions (perfect squares)
-        self.panel_width = 500   # page_width / 2
-        self.panel_height = 500  # page_height / 2 (perfect square panels)
+        # Each panel dimensions (600×400 rectangles)
+        self.panel_width = 600   # page_width / 2
+        self.panel_height = 400  # page_height / 2 (rectangle panels)
         
         print(f"📐 Comic page: {self.page_width}×{self.page_height}")
         print(f"📐 Each panel: {self.panel_width}×{self.panel_height}")
-        print(f"📐 Panel ratio: {self.panel_width/self.panel_height:.3f} (1:1 perfect squares)")
+        print(f"📐 Panel ratio: {self.panel_width/self.panel_height:.3f} (3:2 rectangle ratio)")
         
     def enhance_to_comic_ratio(self, frame_path, output_path=None):
-        """Enhance frame to perfect square ratio (500×500)"""
+        """Enhance frame to perfect rectangle ratio (600×400)"""
         try:
             # Load image
             img = cv2.imread(frame_path)
@@ -44,7 +44,7 @@ class ComicRatioEnhancer:
             original_h, original_w = img.shape[:2]
             print(f"   Original: {original_w}x{original_h}")
             
-            # Resize to perfect square panels (400×400)
+            # Resize to perfect rectangle panels (600×400)
             enhanced = cv2.resize(img, (self.panel_width, self.panel_height), 
                                 interpolation=cv2.INTER_LANCZOS4)
             
@@ -108,7 +108,7 @@ class ComicRatioEnhancer:
     
     def create_comic_ratio_test_page(self):
         """Create test page with perfect comic ratios"""
-        print("\n🔲 CREATING PERFECT SQUARE TEST PAGE (500×500)")
+        print("\n📐 CREATING PERFECT RECTANGLE TEST PAGE (600×400)")
         print("=" * 70)
         
         start_time = time.time()
@@ -131,8 +131,8 @@ class ComicRatioEnhancer:
         selected_frames = self.select_best_comic_frames(frame_files, 4)
         print(f"📋 Selected frames for comic ratio: {selected_frames}")
         
-        # Enhance to perfect squares
-        print(f"\n🔲 ENHANCING TO PERFECT SQUARES (500×500)")
+        # Enhance to perfect rectangles
+        print(f"\n📐 ENHANCING TO PERFECT RECTANGLES (600×400)")
         print("=" * 60)
         
         enhanced_count = 0
