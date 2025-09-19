@@ -260,8 +260,15 @@ def create_comic_preview():
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     
-    # Step 4: Enhanced preview with smart frame selection
+    # Step 4: Enhanced preview with latest AI models
     from backend.enhanced_preview_system import create_enhanced_comic_preview
+    from backend.latest_ai_enhancer import enhance_frames_with_latest_ai
+    
+    # First enhance frames with latest AI
+    print("🚀 Applying latest 2024 AI models...")
+    enhance_frames_with_latest_ai()
+    
+    # Then create enhanced preview
     preview_success = create_enhanced_comic_preview()
     
     if preview_success:
@@ -275,35 +282,36 @@ def create_comic_preview():
         return False
 
 def create_comic_full():
-    """Create full 12-page comic after preview approval"""
+    """Create full story comic with latest AI enhancement"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("\n🎬 Amit Comic - Full Generation (12 Pages)")
-    print("Starting full comic generation...")
+    print("\n🎬 Amit Comic - Full Story Generation with Latest AI")
+    print("Starting full story comic generation...")
     
-    # Full processing pipeline
+    # Basic processing
     get_subtitles(video)
-    time.sleep(3)
+    time.sleep(2)
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
-    crop_coords, page_templates, panels = generate_layout()
-    bubbles = bubble_create(video, crop_coords, black_x, black_y)
-    pages = page_create(page_templates, panels, bubbles)
-    page_json(pages)
     
-    # Ultra 4x quality enhancement
-    print("Step 6: Ultra 4x quality enhancement...")
-    style_frames()
+    # Full story comic generation with latest AI
+    from backend.full_story_summarizer import generate_full_story_comic
+    success = generate_full_story_comic()
     
-    # Copy to static directory
-    copy_to_static()
-    
-    total_time = time.time() - start_time
-    print(f"Full comic generation completed successfully!")
-    print(f"Generated {len(pages) if 'pages' in locals() else 'unknown'} comic pages from video!")
-    print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
-    return True
+    if success:
+        # Copy to static directory
+        copy_to_static()
+        
+        total_time = time.time() - start_time
+        print(f"\n🎉 Full story comic generation completed successfully!")
+        print(f"🚀 Used latest 2024 AI models for maximum quality!")
+        print(f"📚 Complete story with intelligent frame selection!")
+        print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
+        return True
+    else:
+        print("❌ Full story comic generation failed")
+        return False
 
 def create_comic():
     """Main comic creation - starts with preview"""

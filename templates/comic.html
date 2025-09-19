@@ -8,10 +8,10 @@
     <link id="pageStyle" rel="stylesheet" href="{{ url_for('static', filename='comic/page.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='comic/bubble.css') }}">
     <style>
-        /* Centered comic layout with 95% fit and 5% gap */
+        /* 99% 2x2 Grid Comic Layout */
         body {
             margin: 0 !important;
-            padding: 2.5% !important;
+            padding: 0.5% !important;
             background: #f0f0f0 !important;
             display: flex !important;
             flex-direction: column !important;
@@ -20,13 +20,13 @@
             box-sizing: border-box !important;
         }
         .button {
-            margin-bottom: 2.5% !important;
+            margin-bottom: 0.5% !important;
         }
         .wrapper {
-            width: 95vw !important;
-            height: 95vh !important;
-            max-width: 800px !important;
-            max-height: 1080px !important;
+            width: 99vw !important;
+            height: 99vh !important;
+            max-width: 1200px !important;
+            max-height: 900px !important;
             margin: 0 auto !important;
             padding: 0 !important;
             border: 2px solid #333 !important;
@@ -39,11 +39,11 @@
             width: 100% !important;
             height: 100% !important;
             display: grid !important;
-            grid-template-columns: 1fr 2px 1fr !important;
-            grid-template-rows: 1fr 2px 1fr !important;
-            gap: 0px !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            grid-template-rows: repeat(2, 1fr) !important;
+            gap: 1% !important;
             margin: 0 !important;
-            padding: 0 !important;
+            padding: 1% !important;
             border: none !important;
             box-sizing: border-box !important;
             background: #ffffff !important;
@@ -54,24 +54,23 @@
             background-size: contain !important;
             background-position: center center !important;
             background-repeat: no-repeat !important;
-            border: none !important;
+            border: 1px solid #ddd !important;
             margin: 0 !important;
             padding: 0 !important;
-            border-radius: 0px !important;
-            box-shadow: none !important;
+            border-radius: 5px !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
             outline: none !important;
             box-sizing: border-box !important;
-            background-color: #f8f9fa !important;
+            background-color: #ffffff !important;
             image-rendering: -webkit-optimize-contrast !important;
             image-rendering: crisp-edges !important;
             image-rendering: pixelated !important;
+            position: relative !important;
         }
         #_1 { grid-column: 1; grid-row: 1; }
-        #_2 { grid-column: 3; grid-row: 1; }
-        #_3 { grid-column: 1; grid-row: 3; }
-        #_4 { grid-column: 3; grid-row: 3; }
-        .white-strip.vertical { grid-column: 2; grid-row: 1 / 4; background: #ffffff; }
-        .white-strip.horizontal { grid-column: 1 / 4; grid-row: 2; background: #ffffff; }
+        #_2 { grid-column: 2; grid-row: 1; }
+        #_3 { grid-column: 1; grid-row: 2; }
+        #_4 { grid-column: 2; grid-row: 2; }
     </style>
 
     <script src="{{ url_for('static', filename='comic/page.js') }}"></script>
@@ -101,8 +100,6 @@
             <div class="grid-item" id="_2"></div>
             <div class="grid-item" id="_3"></div>
             <div class="grid-item" id="_4"></div>
-            <div class="white-strip vertical"></div>
-            <div class="white-strip horizontal"></div>
         </div>
     </div>
 
