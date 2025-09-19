@@ -14,10 +14,10 @@ class ImageStitcher:
     
     def __init__(self):
         print("🔲 Image Stitcher - Combine 4 Panels + Bubbles")
-        # Square dimensions for 4 equal parts
+        # Square dimensions for 4 equal parts - NO GAPS
         self.output_size = 2048  # Square size (2048x2048)
         self.panel_size = 1024   # Each panel (1024x1024)
-        self.gap_size = 2        # Small gap between panels
+        self.gap_size = 0        # No gaps for perfect fit
         
     def load_panel_images(self, frames_dir="frames/final"):
         """Load the 4 panel images"""
@@ -113,12 +113,12 @@ class ImageStitcher:
             resized_panels.append(resized)
             print(f"   ✅ Resized panel {i+1} to {self.panel_size}x{self.panel_size}")
         
-        # Position panels in 2x2 grid
+        # Position panels in 2x2 grid - NO GAPS
         positions = [
-            (0, 0),                                    # Top-left
-            (self.panel_size + self.gap_size, 0),     # Top-right
-            (0, self.panel_size + self.gap_size),     # Bottom-left
-            (self.panel_size + self.gap_size, self.panel_size + self.gap_size)  # Bottom-right
+            (0, 0),                    # Top-left
+            (self.panel_size, 0),      # Top-right
+            (0, self.panel_size),      # Bottom-left
+            (self.panel_size, self.panel_size)  # Bottom-right
         ]
         
         # Place panels on canvas
@@ -154,12 +154,12 @@ class ImageStitcher:
             except:
                 font = None
         
-        # Panel positions for bubble placement
+        # Panel positions for bubble placement - NO GAPS
         panel_positions = [
-            (0, 0),                                    # Top-left
-            (self.panel_size + self.gap_size, 0),     # Top-right
-            (0, self.panel_size + self.gap_size),     # Bottom-left
-            (self.panel_size + self.gap_size, self.panel_size + self.gap_size)  # Bottom-right
+            (0, 0),                    # Top-left
+            (self.panel_size, 0),      # Top-right
+            (0, self.panel_size),      # Bottom-left
+            (self.panel_size, self.panel_size)  # Bottom-right
         ]
         
         # Add each bubble
