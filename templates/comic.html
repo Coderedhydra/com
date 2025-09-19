@@ -8,64 +8,92 @@
     <link id="pageStyle" rel="stylesheet" href="{{ url_for('static', filename='comic/page.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='comic/bubble.css') }}">
     <style>
-        /* Centered comic layout */
+        /* Perfect square layout */
         body {
-            margin: 0 !important;
-            padding: 20px !important;
-            background: #f0f0f0 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            min-height: 100vh !important;
+            margin: 0;
+            padding: 0;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
+        
         .button {
-            margin-bottom: 20px !important;
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(255,255,255,0.9);
+            padding: 5px;
+            border-radius: 5px;
         }
+        
+        .button button {
+            margin: 0 5px;
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .button button:hover {
+            background: #0056b3;
+        }
+        
+        /* Perfect rectangle template - 1200×800 */
         .wrapper {
-            width: 800px !important;
-            height: 1080px !important;
-            margin: 0 auto !important;
-            padding: 0 !important;
-            border: 2px solid #333 !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
-            border-radius: 5px !important;
-            background: #ffffff !important;
-            box-sizing: border-box !important;
+            width: 1200px;
+            height: 800px;
+            margin: 0 auto;
+            padding: 0;
+            background: white;
+            box-sizing: border-box;
+            border: 3px solid #2c3e50;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
+        
+        /* Perfect rectangle 2x2 grid - 600×400 each panel */
         .grid-container {
-            width: 800px !important;
-            height: 1080px !important;
-            display: grid !important;
-            grid-template-columns: 399px 2px 399px !important;
-            grid-template-rows: 539px 2px 539px !important;
-            gap: 0px !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            border: none !important;
-            box-sizing: border-box !important;
-            background: #ffffff !important;
+            width: 1200px;
+            height: 800px;
+            display: grid;
+            grid-template-columns: 600px 600px;
+            grid-template-rows: 400px 400px;
+            gap: 0;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: white;
         }
+        
+        /* Perfect rectangle panels - 600×400 (3:2 ratio) */
         .grid-item {
-            width: 399px !important;
-            height: 539px !important;
-            background-size: cover !important;
-            background-position: center center !important;
-            background-repeat: no-repeat !important;
-            border: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            border-radius: 0px !important;
-            box-shadow: none !important;
-            outline: none !important;
-            box-sizing: border-box !important;
-            background-color: #f8f9fa !important;
+            width: 600px;
+            height: 400px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: high-quality;
         }
+        
+        /* Simple positioning */
         #_1 { grid-column: 1; grid-row: 1; }
-        #_2 { grid-column: 3; grid-row: 1; }
-        #_3 { grid-column: 1; grid-row: 3; }
-        #_4 { grid-column: 3; grid-row: 3; }
-        .white-strip.vertical { grid-column: 2; grid-row: 1 / 4; background: #ffffff; }
-        .white-strip.horizontal { grid-column: 1 / 4; grid-row: 2; background: #ffffff; }
+        #_2 { grid-column: 2; grid-row: 1; }
+        #_3 { grid-column: 1; grid-row: 2; }
+        #_4 { grid-column: 2; grid-row: 2; }
+        
+        /* No responsive overrides - perfect fit */
     </style>
 
     <script src="{{ url_for('static', filename='comic/page.js') }}"></script>
@@ -81,7 +109,7 @@
         <button onclick="exportServerSideHQ()" style="margin: 0 5px; padding: 6px 12px; background-color: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Export HQ</button>
         <button onclick="printAllPages()" style="margin: 0 5px; padding: 6px 12px; background-color: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Print All</button>
         <button onclick="showStorySummary()" style="margin: 0 5px; padding: 6px 12px; background-color: #6f42c1; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Summary</button>
-        <button onclick="generateFullComic()" style="margin: 0 5px; padding: 6px 12px; background-color: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Full Comic</button>
+        <button onclick="generateFullComic()" style="margin: 0 5px; padding: 6px 12px; background-color: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Generate 12 Pages</button>
         <button onclick="uploadImage()" style="margin: 0 5px; padding: 6px 12px; background-color: #ffc107; color: black; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;">Upload</button>
         <button onclick="nextPage()"><img src="{{ url_for('static', filename='comic/assets/forward.png') }}" alt="Next"></button>
     </div>
@@ -95,8 +123,6 @@
             <div class="grid-item" id="_2"></div>
             <div class="grid-item" id="_3"></div>
             <div class="grid-item" id="_4"></div>
-            <div class="white-strip vertical"></div>
-            <div class="white-strip horizontal"></div>
         </div>
     </div>
 

@@ -1,0 +1,237 @@
+/* True 4K Layout - Optimized for 3840x2160 per panel */
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0;
+    min-height: 100vh;
+    margin: 0;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.button {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.button button {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.button button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+/* Optimized wrapper for TRUE 4K content */
+.wrapper {
+    width: min(98vw, 1600px);
+    height: min(95vh, 900px);
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    border: 2px solid #333;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Perfect 2x2 grid for TRUE 4K images */
+.grid-container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1px;
+    padding: 1px;
+    box-sizing: border-box;
+    background: #333;
+}
+
+/* Optimized grid items for TRUE 4K quality */
+.grid-item {
+    width: 100%;
+    height: 100%;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    border: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    
+    /* Optimized image rendering for TRUE 4K */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: high-quality;
+    image-rendering: pixelated;
+    
+    /* Hardware acceleration for 4K */
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    
+    /* 4K specific optimizations */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
+/* Grid positioning */
+#_1 { grid-column: 1; grid-row: 1; }
+#_2 { grid-column: 2; grid-row: 1; }
+#_3 { grid-column: 1; grid-row: 2; }
+#_4 { grid-column: 2; grid-row: 2; }
+
+/* 4K display optimizations */
+@media (min-width: 1920px) {
+    .wrapper {
+        width: min(95vw, 1800px);
+        height: min(90vh, 1000px);
+    }
+}
+
+@media (min-width: 2560px) {
+    .wrapper {
+        width: min(90vw, 2000px);
+        height: min(85vh, 1200px);
+    }
+}
+
+/* Ultra-wide 4K displays */
+@media (min-width: 3440px) {
+    .wrapper {
+        width: min(85vw, 2400px);
+        height: min(80vh, 1350px);
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .wrapper {
+        width: 99vw;
+        height: 90vh;
+    }
+    
+    .grid-container {
+        gap: 0.5px;
+        padding: 0.5px;
+    }
+}
+
+/* Print optimization for 4K */
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+        background: white;
+    }
+    
+    .button {
+        display: none;
+    }
+    
+    .wrapper {
+        width: 100%;
+        height: 100vh;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        max-width: none;
+        max-height: none;
+    }
+    
+    .grid-item {
+        border-radius: 0;
+        image-rendering: auto;
+    }
+}
+
+/* Bubble styles optimized for 4K */
+.bubble {
+    position: absolute;
+    background: white;
+    border: 2px solid #333;
+    border-radius: 20px;
+    padding: 12px 18px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    z-index: 10;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    max-width: 250px;
+    word-wrap: break-word;
+    
+    /* 4K bubble optimizations */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+.bubble:hover {
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    transform: translateY(-1px);
+}
+
+.bubble.dragging {
+    cursor: grabbing;
+    z-index: 20;
+    transform: scale(1.02);
+}
+
+.bubble.editing {
+    background: #f8f9fa;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* 4K quality indicators */
+.quality-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 5;
+}
+
+.grid-item::after {
+    content: "4K";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 5;
+    opacity: 0.8;
+}

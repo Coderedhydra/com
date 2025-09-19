@@ -21,7 +21,7 @@ async function placeDialogs(page) {
         gridItem.style.gridRow = 'span ' + panel.row_span;
         gridItem.style.gridColumn = 'span ' + panel.col_span;
         gridItem.style.backgroundImage = `url("${path}${panel.image}.png")`;
-        gridItem.style.backgroundSize = 'cover';
+        gridItem.style.backgroundSize = 'contain';
         gridItem.style.backgroundPosition = 'center center';
         gridItem.style.backgroundRepeat = 'no-repeat';
 

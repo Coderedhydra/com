@@ -1,75 +1,223 @@
-# 🎬 CineComic - How to Run
+# How to Run the Comic Generation System
 
-## ✅ Application is Now Running!
+## 🚀 **Quick Start Commands**
 
-The CineComic application is currently running and ready to use!
+### **Method 1: Main Application (Recommended)**
+```bash
+cd /workspace
+python app.py
+```
 
-### 🌐 Access the Application
+### **Method 2: Alternative Runners**
+```bash
+# Simple setup and run
+python start_app.py
 
-**Open your web browser and go to:**
+# Or use the simple runner
+python run_simple.py
+
+# Or basic main
+python main.py
+```
+
+## 🌐 **Access the Application**
+
+After running, open your browser and go to:
 ```
 http://localhost:5000
 ```
 
-### 🚀 What You Can Do Now
+The application will automatically open in your browser.
 
-1. **Upload a Video File**
-   - Click the upload button (📁 icon)
-   - Select an MP4 video file
-   - Click "Submit"
-   - The comic will be generated and opened automatically
+## 📋 **Step-by-Step Usage**
 
-2. **Enter a YouTube Link**
-   - Click the link button (🔗 icon)
-   - Paste a YouTube URL
-   - Click "Submit"
-   - The comic will be generated and opened automatically
+### **1. Start the Application**
+```bash
+cd /workspace
+python app.py
+```
 
-3. **Test the Comic Features**
-   - **Print Functionality**: Click "Print Page" or "Print All" buttons
-   - **Image Upload**: Click "Upload Image" to replace panel images
-   - **Edit Bubbles**: Double-click speech bubbles to edit text
-   - **Drag Elements**: Drag bubbles and panels to reposition them
+You'll see:
+```
+Starting Amit Comic Flask application...
+Open your browser and go to: http://localhost:5000
+* Running on all addresses (0.0.0.0)
+* Running on http://127.0.0.1:5000
+* Running on http://[::1]:5000
+```
 
-### 🛠️ Technical Details
+### **2. Upload Video**
+- Click "Upload Video" button
+- Select your MP4 video file
+- Or paste a video URL using "Enter Link" option
 
-- **Flask App**: Running on port 5000
-- **Simplified Mode**: Heavy processing is disabled for fast testing
-- **Test Data**: Uses pre-generated test images and comic data
-- **All Features Working**: Print, upload, edit, and drag functionality
+### **3. View Clean 2K Test Page**
+- System automatically creates 1 test page with 4 panels
+- Review the 2K quality (1280x720 per panel)
+- Check if the layout and quality look good
 
-### 📁 File Structure
+### **4. Generate Full Comic (Optional)**
+- If test page looks good, click "Generate 12 Pages"
+- Creates complete 12-page comic with 48 panels
+- All in clean 2K quality
+
+## 🔧 **System Requirements**
+
+### **Required Dependencies**
+```bash
+# Install required packages
+pip install -r requirements.txt
+
+# Or minimal requirements
+pip install flask opencv-python pillow numpy srt
+```
+
+### **Optional (for advanced features)**
+```bash
+# For additional AI models (if needed)
+pip install torch torchvision
+```
+
+## 🐛 **Troubleshooting**
+
+### **Common Issues & Solutions:**
+
+#### **1. Port Already in Use**
+```bash
+# If port 5000 is busy, use different port
+python -c "
+import sys
+sys.path.append('/workspace')
+from app import app
+app.run(debug=True, host='0.0.0.0', port=5001)
+"
+```
+
+#### **2. Missing Dependencies**
+```bash
+# Install missing packages
+pip install flask opencv-python pillow numpy srt
+
+# Or try different requirements file
+pip install -r requirements_simple.txt
+```
+
+#### **3. Video Upload Issues**
+- Ensure video is in MP4 format
+- File size should be reasonable (< 500MB recommended)
+- Check that `video/` directory exists
+
+#### **4. Frame Generation Issues**
+```bash
+# Create required directories
+mkdir -p frames/final
+mkdir -p static/comic/frames/final
+mkdir -p output_template
+```
+
+## 📁 **Directory Structure**
 ```
 /workspace/
-├── app_simple.py          # Simplified Flask app (currently running)
-├── output_template/       # Comic template files
-├── output/               # Generated comic output
-├── frames/final/         # Test images
-└── templates/            # Web interface templates
+├── app.py                    # Main application
+├── backend/
+│   ├── simple_2k_enhancer.py   # Clean 2K enhancement
+│   ├── keyframes/              # Frame extraction
+│   └── ...
+├── static/
+│   └── comic/                  # Generated comic files
+├── templates/
+│   ├── index.html              # Upload page
+│   └── comic.html              # Comic viewer
+├── frames/
+│   └── final/                  # Extracted frames
+└── video/
+    └── uploaded.mp4            # Uploaded video
 ```
 
-### 🔧 If You Need to Restart
+## 🎯 **Expected Workflow**
 
-1. **Stop the current app**: Press `Ctrl+C` in the terminal
-2. **Run again**: `python3 app_simple.py`
-3. **Access**: Go to `http://localhost:5000`
+### **1. Start Application**
+```bash
+python app.py
+```
 
-### 🎯 Features Available
+### **2. Upload Video**
+- Browser opens automatically to `http://localhost:5000`
+- Upload MP4 video file
+- System processes video and extracts frames
 
-- ✅ **Print Functionality** - Download comic pages as PNG
-- ✅ **Image Upload** - Replace panel images with your own
-- ✅ **Bubble Editing** - Edit speech bubble text
-- ✅ **Drag & Drop** - Reposition elements
-- ✅ **Square Bubble Styling** - Normal/bold text instead of comic style
-- ✅ **Fast Testing Mode** - No heavy processing delays
+### **3. View Test Page**
+- Automatically redirects to test page
+- Shows 1 page with 4 clean 2K panels
+- Message: "Clean 2K Test Page Created Successfully!"
 
-### 🐛 Troubleshooting
+### **4. Generate Full Comic**
+- Click "Generate 12 Pages" if test looks good
+- Wait 2-3 minutes for full comic generation
+- View complete 12-page comic
 
-If the app doesn't start:
-1. Make sure Flask is installed: `pip3 install Flask --break-system-packages`
-2. Run the test script: `python3 simple_test.py`
-3. Start the app: `python3 app_simple.py`
+## ⚡ **Performance Tips**
 
-### 🎉 Ready to Use!
+### **For Better Performance:**
+```bash
+# Use smaller video files for testing
+# Recommended: 30 seconds - 2 minutes video length
 
-The application is fully functional and ready for testing all the features you requested!
+# Close other applications to free up memory
+# Ensure sufficient disk space (2GB+ recommended)
+```
+
+### **For Faster Testing:**
+```bash
+# Test with short video clips first
+# Use MP4 format for best compatibility
+```
+
+## 🔄 **Alternative Run Methods**
+
+### **Method 1: Direct Python**
+```bash
+python app.py
+```
+
+### **Method 2: Using Start Script**
+```bash
+python start_app.py
+```
+
+### **Method 3: Simple Runner**
+```bash
+python run_simple.py
+```
+
+### **Method 4: Background Mode**
+```bash
+nohup python app.py &
+```
+
+## 📊 **Expected Output**
+
+### **Console Output:**
+```
+🎬 Amit Comic - Clean 2K Test Page Generation
+Starting clean 2K test page generation (1 page, 4 panels)...
+🎯 Simple 2K Quality Enhancer - Clean & Effective
+📸 ANALYZING ORIGINAL FRAMES
+✅ Enhanced 4/4 frames to clean 2K
+🎉 Clean 2K test page generation completed!
+```
+
+### **Browser Output:**
+- Upload page at `http://localhost:5000`
+- Test page at `http://localhost:5000/comic`
+- Clean 2K quality panels in 2x2 grid
+
+## 🎉 **Success Indicators**
+
+✅ **Application Started**: Flask server running on port 5000  
+✅ **Video Processed**: Frames extracted to `frames/final/`  
+✅ **Test Page Created**: 4 panels in 2K quality  
+✅ **Comic Viewable**: Accessible at `/comic` endpoint  
+✅ **Full Comic Option**: "Generate 12 Pages" button available  
+
+That's it! The system is now ready to create clean 2K quality comics from your videos.

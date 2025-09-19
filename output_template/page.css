@@ -7,7 +7,8 @@ body {
     background-attachment: fixed;
     min-height: 100vh;
     margin: 0;
-    padding: 20px;
+    padding: 0.5%;
+    box-sizing: border-box;
 }
 
 .button{
@@ -37,8 +38,10 @@ body {
 
 .wrapper {
     display: block;
-    height: 1080px !important;
-    width: 800px !important;
+    height: 99vh !important;
+    width: 99vw !important;
+    max-height: 900px !important;
+    max-width: 1200px !important;
     background: #ffffff;
     border-radius: 5px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -53,16 +56,16 @@ body {
 }
 
 .grid-container {
-    width: 800px !important;
-    height: 1080px !important;
+    width: 100% !important;
+    height: 100% !important;
     display: grid;
-    grid-template-columns: 399px 2px 399px;
-    grid-template-rows: 539px 2px 539px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     border: none;
-    gap: 0px;
+    gap: 1%;
     box-sizing: border-box;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 1% !important;
     outline: none;
     background: #ffffff;
 }
@@ -70,34 +73,34 @@ body {
 .grid-item {
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: cover !important;
+    background-size: contain !important;
     background-clip: border-box;
-    border: none !important;
+    border: 1px solid #ddd !important;
     outline: none !important;
     position: relative;
-    width: 399px !important;
-    height: 539px !important;
+    width: 100% !important;
+    height: 100% !important;
     overflow: hidden;
-    border-radius: 0px !important;
-    box-shadow: none !important;
+    border-radius: 5px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
     flex-shrink: 0;
     flex-grow: 0;
     box-sizing: border-box;
     image-rendering: high-quality;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-    image-rendering: auto;
+    image-rendering: pixelated;
     display: block;
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     margin: 0 !important;
     padding: 0 !important;
 }
 
-/* Position panels in specific grid positions */
+/* Position panels in 2x2 grid */
 #_1 { grid-column: 1; grid-row: 1; }
-#_2 { grid-column: 3; grid-row: 1; }
-#_3 { grid-column: 1; grid-row: 3; }
-#_4 { grid-column: 3; grid-row: 3; }
+#_2 { grid-column: 2; grid-row: 1; }
+#_3 { grid-column: 1; grid-row: 2; }
+#_4 { grid-column: 2; grid-row: 2; }
 
 /* White strips (grid positions 2 and 2) */
 .grid-container > :nth-child(5) { /* Vertical strip */
@@ -111,6 +114,8 @@ body {
     grid-row: 2;
     background: #ffffff;
 }
+
+/* 2x2 Grid - No white strips needed */
 
 /* Print styles */
 @media print {

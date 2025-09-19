@@ -247,12 +247,12 @@ def export_hq_png():
 
 
 def create_comic_preview():
-    """Create preview with 1 test page first"""
+    """Create clean 2K test page first"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("🎬 Amit Comic - Preview Generation")
-    print("Starting preview generation (1 test page)...")
+    print("🎬 Amit Comic - High Quality Test Page Generation")
+    print("Starting high quality test page generation (1 page, 4 panels)...")
     
     # Step 1-3: Basic processing
     get_subtitles(video)
@@ -260,50 +260,53 @@ def create_comic_preview():
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     
-    # Step 4: Show image selection and create preview
-    from backend.preview_system import create_comic_preview
-    preview_success = create_comic_preview()
+    # Step 4: Generate high quality test page preserving original resolution
+    from backend.simple_2k_enhancer import create_2k_test_page
     
-    if preview_success:
+    print("🔥 Generating high quality test page (preserving original resolution)...")
+    test_success = create_2k_test_page()
+    
+    if test_success:
         copy_to_static()
         total_time = time.time() - start_time
-        print(f"\n🎉 Preview generation completed!")
-        print(f"--- Preview time: {total_time:.1f} seconds ---")
+        print(f"\n🎉 High quality test page generation completed!")
+        print(f"--- Test page time: {total_time:.1f} seconds ---")
         return True
     else:
-        print("❌ Preview generation failed")
+        print("❌ Test page generation failed")
         return False
 
 def create_comic_full():
-    """Create full 12-page comic after preview approval"""
+    """Create full 12-page comic with clean 2K quality"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("\n🎬 Amit Comic - Full Generation (12 Pages)")
-    print("Starting full comic generation...")
+    print("\n🎬 Amit Comic - Full 12-Page Generation with Clean 2K")
+    print("Starting full 12-page comic generation...")
     
-    # Full processing pipeline
+    # Basic processing
     get_subtitles(video)
-    time.sleep(3)
+    time.sleep(2)
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
-    crop_coords, page_templates, panels = generate_layout()
-    bubbles = bubble_create(video, crop_coords, black_x, black_y)
-    pages = page_create(page_templates, panels, bubbles)
-    page_json(pages)
     
-    # Ultra 4x quality enhancement
-    print("Step 6: Ultra 4x quality enhancement...")
-    style_frames()
+    # Full comic generation with clean 2K quality
+    from backend.simple_2k_enhancer import create_full_2k_comic
+    success = create_full_2k_comic()
     
-    # Copy to static directory
-    copy_to_static()
-    
-    total_time = time.time() - start_time
-    print(f"Full comic generation completed successfully!")
-    print(f"Generated {len(pages) if 'pages' in locals() else 'unknown'} comic pages from video!")
-    print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
-    return True
+    if success:
+        # Copy to static directory
+        copy_to_static()
+        
+        total_time = time.time() - start_time
+        print(f"\n🎉 Full 12-page comic generation completed successfully!")
+        print(f"🎯 Clean 2K quality without over-processing!")
+        print(f"📚 Complete 12-page comic with optimal quality!")
+        print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
+        return True
+    else:
+        print("❌ Full comic generation failed")
+        return False
 
 def create_comic():
     """Main comic creation - starts with preview"""
@@ -349,9 +352,11 @@ def upload_file():
         # Redirect to the comic page instead of opening local file
         return '''
         <html>
-        <body>
-        <h2>Comic created successfully!</h2>
-        <p>Your comic is ready. <a href="/comic" target="_blank">Click here to view your comic</a></p>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0;">
+        <h2 style="color: #2c3e50;">🔥 High Quality Test Page Created Successfully!</h2>
+        <p style="font-size: 16px; margin: 20px 0;">Your high quality test page is ready with 4 panels (Full HD 1920x1080+ each).</p>
+        <p style="font-size: 14px; color: #7f8c8d;">Original quality preserved without downscaling. Generate the full 12-page comic if it looks good!</p>
+        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View High Quality Test Page</a>
         <script>
         setTimeout(function() {
             window.open('/comic', '_blank');
@@ -374,9 +379,11 @@ def handle_link():
         # Redirect to the comic page instead of opening local file
         return '''
         <html>
-        <body>
-        <h2>Comic created successfully!</h2>
-        <p>Your comic is ready. <a href="/comic" target="_blank">Click here to view your comic</a></p>
+        <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0;">
+        <h2 style="color: #2c3e50;">🔥 High Quality Test Page Created Successfully!</h2>
+        <p style="font-size: 16px; margin: 20px 0;">Your high quality test page is ready with 4 panels (Full HD 1920x1080+ each).</p>
+        <p style="font-size: 14px; color: #7f8c8d;">Original quality preserved without downscaling. Generate the full 12-page comic if it looks good!</p>
+        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View High Quality Test Page</a>
         <script>
         setTimeout(function() {
             window.open('/comic', '_blank');
