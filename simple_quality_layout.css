@@ -1,3 +1,5 @@
+/* Simple Layout - Show Full Image Size and Quality */
+
 body {
     margin: 0;
     padding: 10px;
@@ -25,6 +27,7 @@ body {
     background: #0056b3;
 }
 
+/* Simple wrapper - let images show their full quality */
 .wrapper {
     max-width: 1400px;
     margin: 0 auto;
@@ -35,6 +38,7 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+/* Simple 2x2 grid - no complex sizing */
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -44,6 +48,7 @@ body {
     background: #333;
 }
 
+/* Let images show their natural quality */
 .grid-item {
     background-position: center;
     background-repeat: no-repeat;
@@ -52,17 +57,29 @@ body {
     position: relative;
     border-radius: 4px;
     overflow: hidden;
+    
+    /* Simple image rendering for clarity */
     image-rendering: auto;
     image-rendering: high-quality;
 }
 
-/* Position panels in 2x2 grid */
+/* Simple grid positions */
 #_1 { grid-column: 1; grid-row: 1; }
 #_2 { grid-column: 2; grid-row: 1; }
 #_3 { grid-column: 1; grid-row: 2; }
 #_4 { grid-column: 2; grid-row: 2; }
 
-/* Responsive sizing to show full image quality */
+/* Responsive - but keep it simple */
+@media (max-width: 768px) {
+    .wrapper {
+        margin: 5px;
+    }
+    
+    .grid-item {
+        min-height: 250px;
+    }
+}
+
 @media (min-width: 1200px) {
     .grid-item {
         min-height: 500px;
@@ -75,59 +92,27 @@ body {
     }
 }
 
-@media (max-width: 768px) {
-    .wrapper {
-        margin: 5px;
-    }
-    
-    .grid-item {
-        min-height: 250px;
-    }
+/* Simple bubble styles */
+.bubble {
+    position: absolute;
+    background: white;
+    border: 2px solid #333;
+    border-radius: 15px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    z-index: 10;
+    cursor: grab;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    max-width: 200px;
 }
 
-/* 2x2 Grid - No white strips needed */
+.bubble:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
 
-/* Print styles */
-@media print {
-    body {
-        margin: 0;
-        padding: 0;
-        background: white !important;
-    }
-    
-    .button {
-        display: none !important;
-    }
-    
-    .wrapper {
-        width: 800px !important;
-        height: 1080px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: white !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        box-sizing: border-box !important;
-    }
-    
-    .grid-container {
-        width: 800px !important;
-        height: 1080px !important;
-        box-sizing: border-box !important;
-    }
-    
-    .grid-item {
-        width: 100% !important;
-        height: 100% !important;
-        background-size: cover !important;
-        background-position: center center !important;
-        page-break-inside: avoid;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        box-sizing: border-box !important;
-    }
-    
-    .image-controls {
-        display: none !important;
-    }
+.bubble.dragging {
+    cursor: grabbing;
+    z-index: 20;
 }
