@@ -15,10 +15,10 @@ class Simple2KEnhancer:
     """Simple, effective 2K quality enhancement"""
     
     def __init__(self):
-        print("🎯 Simple 2K Quality Enhancer - Clean & Effective")
-        # 2K resolution: 2560x1440 total, 1280x720 per panel for 2x2 grid
-        self.target_2k_resolution = (2560, 1440)  # Full 2K
-        self.panel_2k_size = (1280, 720)  # Per panel 2K
+        print("🎯 High Quality Enhancer - Preserve Original Resolution")
+        # Use original resolution or enhance it, don't downscale
+        self.preserve_original = True
+        self.min_panel_size = (1920, 1080)  # Minimum Full HD per panel
         
     def analyze_original_frames(self, frames_dir="frames/final"):
         """Analyze original frame quality without over-processing"""
@@ -74,8 +74,8 @@ class Simple2KEnhancer:
         except:
             return 0
     
-    def enhance_to_clean_2k(self, frame_path, output_path=None):
-        """Clean 2K enhancement without over-processing"""
+    def enhance_to_high_quality(self, frame_path, output_path=None):
+        """High quality enhancement preserving or improving original resolution"""
         try:
             # Load original image
             img = cv2.imread(frame_path)
@@ -85,26 +85,32 @@ class Simple2KEnhancer:
             original_h, original_w = img.shape[:2]
             print(f"   Original: {original_w}x{original_h}")
             
-            # Target 2K panel size
-            target_w, target_h = self.panel_2k_size
+            # Determine target size - preserve or enhance original
+            if original_w >= 1920 and original_h >= 1080:
+                # Original is already good quality, preserve it
+                target_w, target_h = original_w, original_h
+                print(f"   Preserving original high resolution")
+            else:
+                # Upscale to minimum Full HD
+                target_w, target_h = self.min_panel_size
+                print(f"   Upscaling to Full HD: {target_w}x{target_h}")
             
-            # Simple, clean resize to 2K
+            # Enhance resolution if needed
             if original_w != target_w or original_h != target_h:
-                # Use best single-step resize
                 enhanced = cv2.resize(img, (target_w, target_h), interpolation=cv2.INTER_LANCZOS4)
             else:
                 enhanced = img.copy()
             
-            # Minimal enhancement - just what's necessary
+            # Minimal clean enhancement - preserve quality
             enhanced = self.minimal_clean_enhancement(enhanced)
             
-            # Save with optimal quality
+            # Save with maximum quality
             if output_path is None:
                 output_path = frame_path
             
-            # Use optimal PNG settings
+            # Use zero compression for maximum quality
             cv2.imwrite(output_path, enhanced, [
-                cv2.IMWRITE_PNG_COMPRESSION, 1,  # Light compression for balance
+                cv2.IMWRITE_PNG_COMPRESSION, 0,  # Zero compression for max quality
                 cv2.IMWRITE_PNG_STRATEGY, cv2.IMWRITE_PNG_STRATEGY_DEFAULT
             ])
             
@@ -166,9 +172,9 @@ class Simple2KEnhancer:
         
         return selected[:count]
     
-    def create_2k_test_page(self):
-        """Create simple 2K test page"""
-        print("\n🎯 CREATING 2K TEST PAGE")
+    def create_high_quality_test_page(self):
+        """Create high quality test page preserving original resolution"""
+        print("\n🎯 CREATING HIGH QUALITY TEST PAGE")
         print("=" * 50)
         
         start_time = time.time()
@@ -182,9 +188,9 @@ class Simple2KEnhancer:
         selected_frames = self.select_best_frames_for_test(all_frames, 4)
         print(f"📋 Selected frames: {selected_frames}")
         
-        # Step 3: Enhance to clean 2K
-        print(f"\n🔥 ENHANCING TO CLEAN 2K QUALITY")
-        print("=" * 40)
+        # Step 3: Enhance preserving/improving original quality
+        print(f"\n🔥 ENHANCING TO HIGH QUALITY (PRESERVING ORIGINAL)")
+        print("=" * 50)
         
         enhanced_count = 0
         for i, frame_file in enumerate(selected_frames, 1):
@@ -192,7 +198,7 @@ class Simple2KEnhancer:
             print(f"\n[{i}/4] Processing: {frame_file}")
             
             if os.path.exists(frame_path):
-                if self.enhance_to_clean_2k(frame_path):
+                if self.enhance_to_high_quality(frame_path):
                     enhanced_count += 1
         
         if enhanced_count == 0:
@@ -207,10 +213,10 @@ class Simple2KEnhancer:
         
         total_time = time.time() - start_time
         
-        print(f"\n🎉 2K TEST PAGE COMPLETED!")
-        print("=" * 40)
-        print(f"✅ Enhanced {enhanced_count}/4 frames to clean 2K")
-        print(f"🎯 Quality: 2K (1280x720 per panel)")
+        print(f"\n🎉 HIGH QUALITY TEST PAGE COMPLETED!")
+        print("=" * 50)
+        print(f"✅ Enhanced {enhanced_count}/4 frames preserving original quality")
+        print(f"🎯 Quality: Full HD+ (1920x1080 or original resolution)")
         print(f"⏱️ Generation time: {total_time:.1f} seconds")
         print(f"🌐 View at: http://localhost:5000/comic")
         
@@ -222,21 +228,21 @@ class Simple2KEnhancer:
             "panels": [],
             "bubbles": [],
             "metadata": {
-                "page_type": "2k_test_page",
-                "quality": "2K",
+                "page_type": "high_quality_test_page",
+                "quality": "Full HD+",
                 "panel_count": len(selected_frames),
-                "panel_resolution": "1280x720",
+                "panel_resolution": "1920x1080+",
                 "creation_time": time.time(),
-                "enhancement_type": "clean_2k"
+                "enhancement_type": "preserve_original_quality"
             }
         }
         
         # Simple bubble positions for 2x2 grid
         bubble_data = [
-            {"text": "2K Quality Panel 1", "x": 50, "y": 50},
-            {"text": "2K Quality Panel 2", "x": 50, "y": 50},
-            {"text": "2K Quality Panel 3", "x": 50, "y": 50},
-            {"text": "2K Quality Panel 4", "x": 50, "y": 50}
+            {"text": "High Quality Panel 1", "x": 50, "y": 50},
+            {"text": "High Quality Panel 2", "x": 50, "y": 50},
+            {"text": "High Quality Panel 3", "x": 50, "y": 50},
+            {"text": "High Quality Panel 4", "x": 50, "y": 50}
         ]
         
         for i, frame_file in enumerate(selected_frames):
@@ -247,8 +253,8 @@ class Simple2KEnhancer:
                 "image": frame_name,
                 "row_span": 1,
                 "col_span": 1,
-                "quality": "2K",
-                "resolution": "1280x720"
+                "quality": "Full HD+",
+                "resolution": "1920x1080+"
             })
             
             # Bubble
@@ -331,7 +337,7 @@ class Simple2KEnhancer:
                 if i % 10 == 1:  # Show progress every 10 frames
                     print(f"Processing frames {i}-{min(i+9, len(selected_frames))}...")
                 
-                if self.enhance_to_clean_2k(frame_path):
+                if self.enhance_to_high_quality(frame_path):
                     enhanced_count += 1
         
         # Create pages
@@ -430,9 +436,9 @@ class Simple2KEnhancer:
             json.dump(metadata, f, indent=4)
 
 def create_2k_test_page():
-    """Create 2K test page"""
+    """Create high quality test page"""
     enhancer = Simple2KEnhancer()
-    return enhancer.create_2k_test_page()
+    return enhancer.create_high_quality_test_page()
 
 def create_full_2k_comic():
     """Create full 2K comic"""

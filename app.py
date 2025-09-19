@@ -251,8 +251,8 @@ def create_comic_preview():
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("🎬 Amit Comic - Clean 2K Test Page Generation")
-    print("Starting clean 2K test page generation (1 page, 4 panels)...")
+    print("🎬 Amit Comic - High Quality Test Page Generation")
+    print("Starting high quality test page generation (1 page, 4 panels)...")
     
     # Step 1-3: Basic processing
     get_subtitles(video)
@@ -260,16 +260,16 @@ def create_comic_preview():
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     
-    # Step 4: Generate clean 2K test page
+    # Step 4: Generate high quality test page preserving original resolution
     from backend.simple_2k_enhancer import create_2k_test_page
     
-    print("🎯 Generating clean 2K test page...")
+    print("🔥 Generating high quality test page (preserving original resolution)...")
     test_success = create_2k_test_page()
     
     if test_success:
         copy_to_static()
         total_time = time.time() - start_time
-        print(f"\n🎉 Clean 2K test page generation completed!")
+        print(f"\n🎉 High quality test page generation completed!")
         print(f"--- Test page time: {total_time:.1f} seconds ---")
         return True
     else:
@@ -353,10 +353,10 @@ def upload_file():
         return '''
         <html>
         <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0;">
-        <h2 style="color: #2c3e50;">🎯 Clean 2K Test Page Created Successfully!</h2>
-        <p style="font-size: 16px; margin: 20px 0;">Your clean 2K quality test page is ready with 4 panels (1280x720 each).</p>
-        <p style="font-size: 14px; color: #7f8c8d;">Optimized for quality without over-processing. Generate the full 12-page comic if it looks good!</p>
-        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View Clean 2K Test Page</a>
+        <h2 style="color: #2c3e50;">🔥 High Quality Test Page Created Successfully!</h2>
+        <p style="font-size: 16px; margin: 20px 0;">Your high quality test page is ready with 4 panels (Full HD 1920x1080+ each).</p>
+        <p style="font-size: 14px; color: #7f8c8d;">Original quality preserved without downscaling. Generate the full 12-page comic if it looks good!</p>
+        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View High Quality Test Page</a>
         <script>
         setTimeout(function() {
             window.open('/comic', '_blank');
@@ -380,10 +380,10 @@ def handle_link():
         return '''
         <html>
         <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0;">
-        <h2 style="color: #2c3e50;">🎯 Clean 2K Test Page Created Successfully!</h2>
-        <p style="font-size: 16px; margin: 20px 0;">Your clean 2K quality test page is ready with 4 panels (1280x720 each).</p>
-        <p style="font-size: 14px; color: #7f8c8d;">Optimized for quality without over-processing. Generate the full 12-page comic if it looks good!</p>
-        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View Clean 2K Test Page</a>
+        <h2 style="color: #2c3e50;">🔥 High Quality Test Page Created Successfully!</h2>
+        <p style="font-size: 16px; margin: 20px 0;">Your high quality test page is ready with 4 panels (Full HD 1920x1080+ each).</p>
+        <p style="font-size: 14px; color: #7f8c8d;">Original quality preserved without downscaling. Generate the full 12-page comic if it looks good!</p>
+        <a href="/comic" target="_blank" style="display: inline-block; padding: 12px 24px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin: 20px;">View High Quality Test Page</a>
         <script>
         setTimeout(function() {
             window.open('/comic', '_blank');
