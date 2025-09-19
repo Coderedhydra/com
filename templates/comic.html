@@ -46,25 +46,26 @@
             background: #0056b3;
         }
         
-        /* Exact 800×1080 template */
+        /* Perfect comic book template - 800×1200 */
         .wrapper {
             width: 800px;
-            height: 1080px;
+            height: 1200px;
             margin: 0 auto;
             padding: 0;
             background: white;
             box-sizing: border-box;
-            border: 2px solid #333;
-            border-radius: 5px;
+            border: 3px solid #2c3e50;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         
-        /* Perfect 2x2 grid - 400×540 each panel */
+        /* Perfect comic 2x2 grid - 400×600 each panel */
         .grid-container {
             width: 800px;
-            height: 1080px;
+            height: 1200px;
             display: grid;
             grid-template-columns: 400px 400px;
-            grid-template-rows: 540px 540px;
+            grid-template-rows: 600px 600px;
             gap: 0;
             margin: 0;
             padding: 0;
@@ -72,10 +73,10 @@
             background: white;
         }
         
-        /* Exact 400×540 panels */
+        /* Perfect comic panels - 400×600 (2:3 ratio) */
         .grid-item {
             width: 400px;
-            height: 540px;
+            height: 600px;
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
@@ -84,6 +85,7 @@
             padding: 0;
             box-sizing: border-box;
             image-rendering: high-quality;
+            border: 1px solid #34495e;
         }
         
         /* Simple positioning */
