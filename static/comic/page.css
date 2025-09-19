@@ -36,20 +36,22 @@ body {
 }
 
 .wrapper {
-    width: 100vmin;   /* Square using smaller dimension */
-    height: 100vmin;  /* Same as width = SQUARE */
+    width: 800px;
+    height: 1080px;
     margin: 0 auto;
     padding: 0;
     background: white;
     box-sizing: border-box;
+    border: 2px solid #333;
+    border-radius: 5px;
 }
 
 .grid-container {
-    width: 100%;
-    height: 100%;
+    width: 800px;
+    height: 1080px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 400px 400px;
+    grid-template-rows: 540px 540px;
     gap: 0;
     margin: 0;
     padding: 0;
@@ -58,8 +60,8 @@ body {
 }
 
 .grid-item {
-    width: 100%;
-    height: 100%;
+    width: 400px;
+    height: 540px;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
