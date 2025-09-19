@@ -34,7 +34,8 @@ body {
 
 .wrapper {
     width: 100vw;
-    height: 100vh;
+    height: 56.25vw;  /* 16:9 aspect ratio like video */
+    max-height: 100vh;
     margin: 0;
     padding: 0;
     background: white;
@@ -47,10 +48,11 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    gap: 0;
+    gap: 1px;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background: #333;
 }
 
 .grid-item {
@@ -58,7 +60,7 @@ body {
     height: 100%;
     background-position: center;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
     position: relative;
     margin: 0;
     padding: 0;

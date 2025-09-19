@@ -43,36 +43,38 @@
             background: #0056b3;
         }
         
-        /* Perfect fit wrapper - 100% height/width */
+        /* Match image aspect ratio - not too long */
         .wrapper {
             width: 100vw;
-            height: 100vh;
+            height: 56.25vw;  /* 16:9 aspect ratio like video */
+            max-height: 100vh;
             margin: 0;
             padding: 0;
             background: white;
             box-sizing: border-box;
         }
         
-        /* Perfect fit 2x2 grid */
+        /* Perfect 2x2 grid matching image proportions */
         .grid-container {
             width: 100%;
             height: 100%;
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
-            gap: 0;
+            gap: 1px;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            background: #333;
         }
         
-        /* Perfect fit panels - no overflow */
+        /* Panels fit image dimensions properly */
         .grid-item {
             width: 100%;
             height: 100%;
             background-position: center;
             background-repeat: no-repeat;
-            background-size: contain;
+            background-size: cover;
             position: relative;
             margin: 0;
             padding: 0;
