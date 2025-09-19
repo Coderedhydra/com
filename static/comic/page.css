@@ -38,13 +38,11 @@ body {
 
 .wrapper {
     display: block;
-    height: 99vh !important;
-    width: 99vw !important;
-    max-height: 900px !important;
-    max-width: 1200px !important;
+    height: min(95vh, 900px) !important;
+    width: min(98vw, 1600px) !important;
     background: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
     border: 2px solid #333;
     outline: none;
     overflow: hidden;
@@ -62,12 +60,12 @@ body {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
     border: none;
-    gap: 1%;
+    gap: 1px;
     box-sizing: border-box;
     margin: 0 !important;
-    padding: 1% !important;
+    padding: 1px !important;
     outline: none;
-    background: #ffffff;
+    background: #333;
 }
 
 .grid-item {
@@ -96,6 +94,9 @@ body {
     -webkit-backface-visibility: hidden;
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
+    will-change: transform;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
 /* Position panels in 2x2 grid */
