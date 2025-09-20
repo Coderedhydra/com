@@ -1,0 +1,10 @@
+google-generativeai>=0.3.0
+manim>=0.18.0
+python-dotenv>=1.0.0
+argparse
+pathlib
+subprocess
+json
+tempfile
+os
+sys
