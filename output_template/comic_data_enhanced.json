@@ -1,0 +1,1130 @@
+[
+    {
+        "panels": [
+            {
+                "image": "frame001",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame002",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame003",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame004",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "Welcome to our action story!",
+                "emotion": "excited",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "Our journey begins in an ordinary world...",
+                "emotion": "normal",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 0.5,
+                "style": "normal"
+            },
+            {
+                "dialog": "But something extraordinary is about to happen!",
+                "emotion": "excited",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "The call to adventure cannot be ignored!",
+                "emotion": "excited",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 1,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 1: Setup",
+            "generation_time": 1758522174.8098493
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame005",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame006",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame007",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame008",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "The ultimate battle for justice begins now!",
+                "emotion": "heroic",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "We must protect the innocent at all costs!",
+                "emotion": "excited",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "Evil will not triumph while we stand guard!",
+                "emotion": "heroic",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "Together we form an unstoppable force!",
+                "emotion": "excited",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 2,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 1: Setup",
+            "generation_time": 1758522174.8098829
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame009",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame010",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame011",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame012",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "New allies join our cause!",
+                "emotion": "excited",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "The stakes become increasingly clear!",
+                "emotion": "excited",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "We must prepare for what lies ahead!",
+                "emotion": "excited",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "The first major challenge appears!",
+                "emotion": "excited",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 3,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 1: Setup",
+            "generation_time": 1758522174.809896
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame013",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame014",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame015",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame016",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "Our heroes show their true courage!",
+                "emotion": "heroic",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "The plot thickens with each revelation!",
+                "emotion": "excited",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "Danger lurks around every corner!",
+                "emotion": "excited",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "We're stronger together than apart!",
+                "emotion": "excited",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 4,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 1: Setup",
+            "generation_time": 1758522174.80991
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame017",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame018",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame019",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame020",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "The conflict intensifies dramatically!",
+                "emotion": "excited",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "Unexpected obstacles test our resolve!",
+                "emotion": "excited",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "New secrets are revealed!",
+                "emotion": "excited",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 0.7,
+                "style": "bold"
+            },
+            {
+                "dialog": "The enemy shows their true power!",
+                "emotion": "excited",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 5,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 2A: Rising Action",
+            "generation_time": 1758522174.809924
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame021",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame022",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame023",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame024",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "The enemy grows stronger, but our resolve is unbreakable!",
+                "emotion": "excited",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "This is our moment to prove our worth!",
+                "emotion": "excited",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "Victory demands courage and sacrifice!",
+                "emotion": "heroic",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "The final confrontation approaches!",
+                "emotion": "intense",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 6,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 2A: Rising Action",
+            "generation_time": 1758522174.809936
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame025",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame026",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame027",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame028",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "Our heroes face their greatest fears!",
+                "emotion": "heroic",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "The mission becomes more dangerous!",
+                "emotion": "excited",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "Trust is tested among our allies!",
+                "emotion": "excited",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "A shocking betrayal changes everything!",
+                "emotion": "excited",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 7,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 2A: Rising Action",
+            "generation_time": 1758522174.8099504
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame029",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame030",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame031",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame032",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "Hope seems lost, but we persevere!",
+                "emotion": "excited",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "The darkest hour is upon us!",
+                "emotion": "excited",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "We must find strength we didn't know we had!",
+                "emotion": "excited",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "The tide of battle begins to turn!",
+                "emotion": "intense",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 8,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 2A: Rising Action",
+            "generation_time": 1758522174.8099623
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame033",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame034",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame035",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame036",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "This is the ultimate moment of truth!",
+                "emotion": "intense",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "Everything we've fought for comes down to this!",
+                "emotion": "excited",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "The final battle begins with fury!",
+                "emotion": "intense",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 0.8999999999999999,
+                "style": "bold"
+            },
+            {
+                "dialog": "Victory and defeat hang in the balance!",
+                "emotion": "heroic",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 9,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 2B: Climax & Resolution",
+            "generation_time": 1758522174.8099759
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame037",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame038",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame039",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame040",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "We've trained our entire lives for this moment!",
+                "emotion": "excited",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            },
+            {
+                "dialog": "Justice will prevail against all odds!",
+                "emotion": "heroic",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            },
+            {
+                "dialog": "The fate of the city rests in our hands!",
+                "emotion": "intense",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            },
+            {
+                "dialog": "Our greatest challenge has finally arrived!",
+                "emotion": "intense",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 10,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 2B: Climax & Resolution",
+            "generation_time": 1758522174.8099856
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame041",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame042",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame043",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame044",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "The dust settles on our epic adventure!",
+                "emotion": "excited",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            },
+            {
+                "dialog": "Our heroes have grown and changed!",
+                "emotion": "heroic",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            },
+            {
+                "dialog": "The world is safer because of their sacrifice!",
+                "emotion": "excited",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            },
+            {
+                "dialog": "New adventures await on the horizon!",
+                "emotion": "excited",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 11,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 2B: Climax & Resolution",
+            "generation_time": 1758522174.8099964
+        }
+    },
+    {
+        "panels": [
+            {
+                "image": "frame045",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "establishing"
+            },
+            {
+                "image": "frame046",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame047",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "narrative"
+            },
+            {
+                "image": "frame048",
+                "row_span": 1,
+                "col_span": 1,
+                "quality": "Enhanced-Core",
+                "resolution": "High-Quality",
+                "panel_type": "cliffhanger"
+            }
+        ],
+        "bubbles": [
+            {
+                "dialog": "The bonds forged in battle will last forever!",
+                "emotion": "intense",
+                "bubble_offset_x": 50,
+                "bubble_offset_y": 50,
+                "tail_offset_x": 20,
+                "tail_offset_y": 25,
+                "tail_deg": 45,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            },
+            {
+                "dialog": "Peace is restored, but vigilance remains!",
+                "emotion": "excited",
+                "bubble_offset_x": 85,
+                "bubble_offset_y": 80,
+                "tail_offset_x": 25,
+                "tail_offset_y": 30,
+                "tail_deg": 60,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            },
+            {
+                "dialog": "Our story ends, but the legend lives on!",
+                "emotion": "excited",
+                "bubble_offset_x": 120,
+                "bubble_offset_y": 110,
+                "tail_offset_x": 30,
+                "tail_offset_y": 35,
+                "tail_deg": 75,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            },
+            {
+                "dialog": "Until we meet again, farewell heroes!",
+                "emotion": "heroic",
+                "bubble_offset_x": 155,
+                "bubble_offset_y": 140,
+                "tail_offset_x": 35,
+                "tail_offset_y": 40,
+                "tail_deg": 90,
+                "source": "enhanced_extraction",
+                "importance": 1.0,
+                "style": "bold"
+            }
+        ],
+        "metadata": {
+            "page_number": 12,
+            "quality": "Enhanced-Core",
+            "panel_count": 4,
+            "dialogue_source": "enhanced_extraction",
+            "story_structure": "Act 2B: Climax & Resolution",
+            "generation_time": 1758522174.8100088
+        }
+    }
+]

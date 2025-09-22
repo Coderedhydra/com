@@ -1,5 +1,68 @@
 from backend.class_def import Page,panel,bubble
 import json
+import os
+import srt
+
+def extract_real_dialogue():
+    """Extract real dialogue from subtitle files"""
+    subtitle_file = 'test1.srt'
+    dialogue_list = []
+    
+    try:
+        if os.path.exists(subtitle_file):
+            with open(subtitle_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            subtitles = list(srt.parse(content))
+            
+            for sub in subtitles:
+                if sub.content and sub.content != "((action-scene))":
+                    clean_text = sub.content.strip()
+                    if clean_text and len(clean_text) > 3:
+                        dialogue_list.append(clean_text)
+            
+            if dialogue_list:
+                print(f"✅ Extracted {len(dialogue_list)} real dialogue entries from subtitles")
+                return dialogue_list
+                
+    except Exception as e:
+        print(f"⚠️ Could not extract subtitles: {e}")
+    
+    return []
+
+def generate_meaningful_bubble_content(page_num, panel_num):
+    """Generate meaningful bubble content for comics"""
+    # Try to get real dialogue first
+    real_dialogue = extract_real_dialogue()
+    
+    if real_dialogue:
+        # Calculate index based on page and panel
+        dialogue_index = ((page_num - 1) * 4) + (panel_num - 1)
+        if dialogue_index < len(real_dialogue):
+            return real_dialogue[dialogue_index]
+    
+    # Fallback to story-appropriate dialogue
+    story_dialogues = {
+        1: ["Our story begins here!", "Something amazing is happening...", "The adventure starts now!", "What will we discover?"],
+        2: ["The plot thickens...", "New challenges await!", "Our heroes face danger!", "The stakes are rising!"],
+        3: ["The climax approaches!", "Everything comes together!", "The final battle begins!", "Victory or defeat awaits!"]
+    }
+    
+    # Determine act based on page number
+    if page_num <= 4:
+        act = 1
+    elif page_num <= 8:
+        act = 2
+    else:
+        act = 3
+    
+    act_dialogues = story_dialogues.get(act, story_dialogues[2])
+    
+    # Return appropriate dialogue for this panel
+    if panel_num <= len(act_dialogues):
+        return act_dialogues[panel_num - 1]
+    else:
+        return "((action-scene))"
 
 def page_create(page_templates,panels,bubbles):
     count = 0
@@ -21,12 +84,19 @@ def page_create(page_templates,panels,bubbles):
             panel_slice = panels[count:end_idx]
             bubble_slice = bubbles[count:end_idx] if count < len(bubbles) else []
             
+            # Fix existing bubbles that have empty dialogue
+            for j, existing_bubble in enumerate(bubble_slice):
+                if hasattr(existing_bubble, 'dialog') and (not existing_bubble.dialog or existing_bubble.dialog == ""):
+                    existing_bubble.dialog = generate_meaningful_bubble_content(i+1, j+1)
+            
             # Pad with unique panels/bubbles if needed
             while len(panel_slice) < len(page_template):
                 panel_index = len(panel_slice) + count + 1
                 panel_slice.append(panel(f"frame{panel_index:03d}", 1, 1))  # Unique panel
             while len(bubble_slice) < len(page_template):
-                bubble_slice.append(bubble(0, 0, -1, -1, "", "normal"))  # Default bubble
+                # Generate meaningful dialogue instead of empty bubbles
+                meaningful_dialogue = generate_meaningful_bubble_content(i+1, len(bubble_slice)+1)
+                bubble_slice.append(bubble(50 + len(bubble_slice)*25, 50 + len(bubble_slice)*20, -1, -1, meaningful_dialogue, "normal"))
             
             new_page = Page(panel_slice, bubble_slice)
             pages.append(new_page)

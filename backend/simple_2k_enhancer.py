@@ -75,79 +75,178 @@ class Simple2KEnhancer:
             return 0
     
     def enhance_to_high_quality(self, frame_path, output_path=None):
-        """High quality enhancement preserving or improving original resolution"""
+        """Ultra high quality enhancement with anti-blur processing"""
         try:
             # Load original image
-            img = cv2.imread(frame_path)
+            img = cv2.imread(frame_path, cv2.IMREAD_COLOR)
             if img is None:
                 return False
             
             original_h, original_w = img.shape[:2]
             print(f"   Original: {original_w}x{original_h}")
             
-            # Determine target size - preserve or enhance original
-            if original_w >= 1920 and original_h >= 1080:
-                # Original is already good quality, preserve it
+            # Always aim for higher resolution to avoid blur
+            min_width, min_height = 2560, 1440  # 2K minimum
+            if original_w >= min_width and original_h >= min_height:
+                # Original is already high quality, preserve it
                 target_w, target_h = original_w, original_h
-                print(f"   Preserving original high resolution")
+                print(f"   Preserving original ultra-high resolution")
             else:
-                # Upscale to minimum Full HD
-                target_w, target_h = self.min_panel_size
-                print(f"   Upscaling to Full HD: {target_w}x{target_h}")
+                # Smart upscaling to avoid blur
+                scale_factor = max(min_width / original_w, min_height / original_h)
+                target_w = int(original_w * scale_factor)
+                target_h = int(original_h * scale_factor)
+                print(f"   Smart upscaling to: {target_w}x{target_h} (scale: {scale_factor:.2f}x)")
             
-            # Enhance resolution if needed
+            # High-quality upscaling if needed
             if original_w != target_w or original_h != target_h:
-                enhanced = cv2.resize(img, (target_w, target_h), interpolation=cv2.INTER_LANCZOS4)
+                # Use INTER_CUBIC for better quality than LANCZOS for upscaling
+                enhanced = cv2.resize(img, (target_w, target_h), interpolation=cv2.INTER_CUBIC)
+                
+                # Apply additional sharpening after upscaling to reduce blur
+                enhanced = self.post_upscale_sharpening(enhanced)
             else:
                 enhanced = img.copy()
             
-            # Minimal clean enhancement - preserve quality
+            # Advanced enhancement pipeline
             enhanced = self.minimal_clean_enhancement(enhanced)
             
             # Save with maximum quality
             if output_path is None:
                 output_path = frame_path
             
-            # Use zero compression for maximum quality
+            # Use maximum quality settings
             cv2.imwrite(output_path, enhanced, [
-                cv2.IMWRITE_PNG_COMPRESSION, 0,  # Zero compression for max quality
+                cv2.IMWRITE_PNG_COMPRESSION, 0,  # Zero compression
                 cv2.IMWRITE_PNG_STRATEGY, cv2.IMWRITE_PNG_STRATEGY_DEFAULT
             ])
             
             final_h, final_w = enhanced.shape[:2]
             file_size = os.path.getsize(output_path) / (1024*1024)
             
-            print(f"   Enhanced: {final_w}x{final_h} ({file_size:.1f}MB)")
+            print(f"   Enhanced: {final_w}x{final_h} ({file_size:.1f}MB) - Ultra Quality")
             return True
             
         except Exception as e:
             print(f"❌ Enhancement failed: {e}")
             return False
     
-    def minimal_clean_enhancement(self, img):
-        """Minimal, clean enhancement that preserves quality"""
-        # Only essential enhancements
+    def post_upscale_sharpening(self, img):
+        """Apply sharpening after upscaling to reduce blur"""
+        # Create a strong unsharp mask
+        gaussian = cv2.GaussianBlur(img, (0, 0), 2.0)
+        unsharp_mask = cv2.addWeighted(img, 2.0, gaussian, -1.0, 0)
         
-        # 1. Light noise reduction (very gentle)
+        # Blend with original for natural look
+        sharpened = cv2.addWeighted(img, 0.6, unsharp_mask, 0.4, 0)
+        
+        return sharpened
+    
+    def minimal_clean_enhancement(self, img):
+        """Ultra-quality enhancement optimized for sharp, vibrant comics"""
+        # Multi-stage enhancement pipeline for maximum quality
+        
+        # 1. Gentle noise reduction (preserve details)
         enhanced = cv2.fastNlMeansDenoisingColored(img, None, 3, 3, 7, 21)
         
-        # 2. Gentle contrast enhancement
+        # 2. Advanced color enhancement for comics
+        hsv = cv2.cvtColor(enhanced, cv2.COLOR_BGR2HSV)
+        h, s, v = cv2.split(hsv)
+        
+        # Boost saturation and value for vibrant comic colors
+        s = cv2.multiply(s, 1.25)  # 25% saturation boost
+        v = cv2.multiply(v, 1.05)  # 5% brightness boost
+        s = np.clip(s, 0, 255).astype(np.uint8)
+        v = np.clip(v, 0, 255).astype(np.uint8)
+        
+        enhanced = cv2.merge([h, s, v])
+        enhanced = cv2.cvtColor(enhanced, cv2.COLOR_HSV2BGR)
+        
+        # 3. Multi-level contrast enhancement
         lab = cv2.cvtColor(enhanced, cv2.COLOR_BGR2LAB)
         l, a, b = cv2.split(lab)
         
-        # Very light CLAHE
-        clahe = cv2.createCLAHE(clipLimit=1.2, tileGridSize=(8,8))
+        # Advanced CLAHE with optimized parameters
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
         l = clahe.apply(l)
         
         enhanced = cv2.merge([l, a, b])
         enhanced = cv2.cvtColor(enhanced, cv2.COLOR_LAB2BGR)
         
-        # 3. Optional: Very light sharpening if needed
-        kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]) * 0.02
-        sharpened = cv2.filter2D(enhanced, -1, kernel)
-        enhanced = cv2.addWeighted(enhanced, 0.98, sharpened, 0.02, 0)
+        # 4. Multi-pass sharpening for crisp details
+        # First pass: Fine detail enhancement
+        kernel1 = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]]) * 0.1
+        sharpened1 = cv2.filter2D(enhanced, -1, kernel1)
+        enhanced = cv2.addWeighted(enhanced, 0.8, sharpened1, 0.2, 0)
+        
+        # Second pass: Unsharp mask for overall sharpness
+        gaussian = cv2.GaussianBlur(enhanced, (0, 0), 1.2)
+        unsharp_mask = cv2.addWeighted(enhanced, 1.8, gaussian, -0.8, 0)
+        enhanced = cv2.addWeighted(enhanced, 0.6, unsharp_mask, 0.4, 0)
+        
+        # 5. Final gamma and contrast adjustment
+        gamma = 1.15
+        inv_gamma = 1.0 / gamma
+        table = np.array([((i / 255.0) ** inv_gamma) * 255 for i in np.arange(0, 256)]).astype("uint8")
+        enhanced = cv2.LUT(enhanced, table)
+        
+        # 6. Final edge enhancement for comic-book sharpness
+        edges = cv2.Canny(cv2.cvtColor(enhanced, cv2.COLOR_BGR2GRAY), 50, 150)
+        edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+        enhanced = cv2.addWeighted(enhanced, 0.95, edges, 0.05, 0)
         
         return enhanced
+    
+    def generate_meaningful_dialogue(self, frame_count=4):
+        """Generate meaningful dialogue for comic panels"""
+        # Try to get actual subtitles if available
+        subtitle_dialogue = self.extract_subtitle_dialogue()
+        
+        if subtitle_dialogue and len(subtitle_dialogue) >= frame_count:
+            # Use actual dialogue from subtitles
+            return [{"text": dialogue, "x": 50 + (i * 20), "y": 50 + (i * 15)} 
+                   for i, dialogue in enumerate(subtitle_dialogue[:frame_count])]
+        else:
+            # Generate engaging story dialogue if no subtitles
+            story_dialogues = [
+                "This is where our adventure begins!",
+                "Something incredible is about to happen...",
+                "The tension builds as we discover the truth.",
+                "And here's how our story unfolds!"
+            ]
+            
+            return [{"text": story_dialogues[i] if i < len(story_dialogues) else f"Panel {i+1} story continues...", 
+                    "x": 50 + (i * 20), "y": 50 + (i * 15)} 
+                   for i in range(frame_count)]
+    
+    def extract_subtitle_dialogue(self):
+        """Extract actual dialogue from subtitle files"""
+        import srt
+        subtitle_file = 'test1.srt'
+        
+        try:
+            if os.path.exists(subtitle_file):
+                with open(subtitle_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                subtitles = list(srt.parse(content))
+                dialogue_list = []
+                
+                for sub in subtitles:
+                    if sub.content and sub.content != "((action-scene))":
+                        # Clean up the dialogue
+                        clean_text = sub.content.strip()
+                        if clean_text and len(clean_text) > 3:  # Skip very short text
+                            dialogue_list.append(clean_text)
+                
+                if dialogue_list:
+                    print(f"✅ Found {len(dialogue_list)} dialogue entries from subtitles")
+                    return dialogue_list
+                    
+        except Exception as e:
+            print(f"⚠️ Could not extract subtitles: {e}")
+        
+        return []
     
     def select_best_frames_for_test(self, all_frames, count=4):
         """Select best frames for test page"""
@@ -223,7 +322,7 @@ class Simple2KEnhancer:
         return True
     
     def create_test_page_data(self, selected_frames):
-        """Create simple test page data"""
+        """Create simple test page data with meaningful dialogue"""
         test_page = {
             "panels": [],
             "bubbles": [],
@@ -237,13 +336,8 @@ class Simple2KEnhancer:
             }
         }
         
-        # Simple bubble positions for 2x2 grid
-        bubble_data = [
-            {"text": "High Quality Panel 1", "x": 50, "y": 50},
-            {"text": "High Quality Panel 2", "x": 50, "y": 50},
-            {"text": "High Quality Panel 3", "x": 50, "y": 50},
-            {"text": "High Quality Panel 4", "x": 50, "y": 50}
-        ]
+        # Generate meaningful dialogue for test page
+        bubble_data = self.generate_meaningful_dialogue(len(selected_frames))
         
         for i, frame_file in enumerate(selected_frames):
             frame_name = frame_file.replace('.png', '')
@@ -366,7 +460,7 @@ class Simple2KEnhancer:
         return True
     
     def create_comic_page(self, page_frames, page_number):
-        """Create a single comic page"""
+        """Create a single comic page with meaningful dialogue"""
         page = {
             "panels": [],
             "bubbles": [],
@@ -376,6 +470,9 @@ class Simple2KEnhancer:
                 "panel_count": len(page_frames)
             }
         }
+        
+        # Get dialogue for this page
+        page_dialogue = self.get_page_dialogue(page_number, len(page_frames))
         
         for i, frame_file in enumerate(page_frames):
             frame_name = frame_file.replace('.png', '')
@@ -388,18 +485,85 @@ class Simple2KEnhancer:
                 "quality": "2K"
             })
             
-            # Simple bubble
+            # Meaningful bubble with actual dialogue
+            dialogue_text = page_dialogue[i] if i < len(page_dialogue) else "((action-scene))"
+            
             page["bubbles"].append({
-                "dialog": f"Page {page_number} Panel {i+1}",
-                "emotion": "normal",
-                "bubble_offset_x": 50,
-                "bubble_offset_y": 50,
+                "dialog": dialogue_text,
+                "emotion": self.detect_emotion(dialogue_text),
+                "bubble_offset_x": 50 + (i * 25),  # Vary positions
+                "bubble_offset_y": 50 + (i * 20),
                 "tail_offset_x": 20,
                 "tail_offset_y": 25,
                 "tail_deg": 45
             })
         
         return page
+    
+    def get_page_dialogue(self, page_number, panel_count):
+        """Get dialogue for a specific page"""
+        all_dialogue = self.extract_subtitle_dialogue()
+        
+        if all_dialogue:
+            # Calculate which dialogue entries to use for this page
+            start_idx = (page_number - 1) * panel_count
+            end_idx = start_idx + panel_count
+            
+            # Get dialogue for this page, pad if necessary
+            page_dialogue = all_dialogue[start_idx:end_idx]
+            
+            # Fill remaining panels with action scenes if not enough dialogue
+            while len(page_dialogue) < panel_count:
+                page_dialogue.append("((action-scene))")
+                
+            return page_dialogue
+        else:
+            # Generate story-appropriate dialogue
+            return self.generate_story_dialogue(page_number, panel_count)
+    
+    def generate_story_dialogue(self, page_number, panel_count):
+        """Generate story-appropriate dialogue for a page"""
+        story_beats = {
+            1: ["Welcome to our story!", "Something is about to change...", "The adventure begins now!", "What lies ahead?"],
+            2: ["The plot thickens...", "New challenges arise!", "Our hero must decide...", "The stakes get higher!"],
+            3: ["The climax approaches!", "Everything comes together!", "The final confrontation!", "Victory or defeat?"]
+        }
+        
+        # Use story beats based on page position
+        if page_number <= 4:
+            act = 1
+        elif page_number <= 8:
+            act = 2
+        else:
+            act = 3
+        
+        base_dialogue = story_beats.get(act, story_beats[2])
+        
+        # Create dialogue for this page
+        page_dialogue = []
+        for i in range(panel_count):
+            if i < len(base_dialogue):
+                page_dialogue.append(base_dialogue[i])
+            else:
+                page_dialogue.append("((action-scene))")
+        
+        return page_dialogue
+    
+    def detect_emotion(self, text):
+        """Detect emotion from dialogue text"""
+        if text == "((action-scene))":
+            return "action"
+        
+        text_lower = text.lower()
+        
+        if any(word in text_lower for word in ['!', 'amazing', 'great', 'wonderful', 'yes']):
+            return "excited"
+        elif any(word in text_lower for word in ['?', 'what', 'how', 'why']):
+            return "confused"
+        elif any(word in text_lower for word in ['no', 'stop', 'help', 'danger']):
+            return "worried"
+        else:
+            return "normal"
     
     def save_full_comic(self, pages, selected_frames):
         """Save full comic data"""
