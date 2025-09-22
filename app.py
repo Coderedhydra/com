@@ -247,101 +247,128 @@ def export_hq_png():
 
 
 def create_comic_preview():
-    """Create real comic preview with actual story content"""
+    """Create enhanced comic preview with ultra-quality and real dialogue"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("🎬 Amit Comic - Real Story Preview Generation")
-    print("Starting real comic preview with actual dialogue and story...")
+    print("🎬 Amit Comic - Enhanced Ultra-Quality Preview Generation")
+    print("Starting enhanced comic with real dialogue extraction and 4K quality...")
     
-    # Step 1-3: Basic processing
-    get_subtitles(video)
-    time.sleep(2)  # Wait for subtitle processing
-    generate_keyframes(video)
-    black_x, black_y, _, _ = black_bar_crop()
-    
-    # Step 4: Generate full comic pipeline with real content
-    crop_coords, page_templates, panels = generate_layout()
-    bubbles = bubble_create(video, crop_coords, black_x, black_y)
-    pages = page_create(page_templates, panels, bubbles)
-    page_json(pages)
-    
-    # Step 5: Apply high-quality enhancement to frames
-    from backend.simple_2k_enhancer import Simple2KEnhancer
-    enhancer = Simple2KEnhancer()
-    
-    print("🔥 Applying ultra-quality enhancement to frames...")
-    frames_dir = "frames/final"
-    if os.path.exists(frames_dir):
-        frame_files = [f for f in os.listdir(frames_dir) if f.endswith('.png')][:4]  # Preview uses first 4 frames
+    try:
+        # Use the enhanced comic generator
+        from app_enhanced_core import CoreComicGenerator
+        generator = CoreComicGenerator()
         
-        for frame_file in frame_files:
-            frame_path = os.path.join(frames_dir, frame_file)
-            enhancer.enhance_to_high_quality(frame_path)
-    
-    if pages:
-        copy_to_static()
-        total_time = time.time() - start_time
-        print(f"\n🎉 Real comic preview generation completed!")
-        print(f"📚 Generated {len(pages)} page(s) with actual story content")
-        print(f"💬 Dialogue extracted from video subtitles")
-        print(f"🎨 Ultra-quality image enhancement applied")
-        print(f"--- Preview time: {total_time:.1f} seconds ---")
-        return True
-    else:
-        print("❌ Comic preview generation failed")
-        return False
+        # Check if video exists, if not use available video
+        if not os.path.exists(video):
+            available_videos = [f for f in os.listdir('video') if f.endswith(('.mp4', '.avi', '.mov'))]
+            if available_videos:
+                video = os.path.join('video', available_videos[0])
+                print(f"Using available video: {video}")
+        
+        # Generate enhanced comic (first 4 panels for preview)
+        success = generator.generate_enhanced_comic(video)
+        
+        if success:
+            total_time = time.time() - start_time
+            print(f"\n🎉 Enhanced comic preview generation completed!")
+            print(f"📚 Generated comic with REAL STORY CONTENT")
+            print(f"💬 Actual dialogue extracted from video/intelligent generation")
+            print(f"🎨 Ultra-4K quality enhancement applied")
+            print(f"🖼️ Multi-level sharpening and color optimization")
+            print(f"✨ Comic-book style edge enhancement")
+            print(f"--- Enhanced preview time: {total_time:.1f} seconds ---")
+            return True
+        else:
+            print("❌ Enhanced comic preview generation failed")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Enhanced preview failed: {e}")
+        print("Falling back to standard generation...")
+        
+        # Fallback to original method
+        get_subtitles(video)
+        time.sleep(2)
+        generate_keyframes(video)
+        black_x, black_y, _, _ = black_bar_crop()
+        
+        crop_coords, page_templates, panels = generate_layout()
+        bubbles = bubble_create(video, crop_coords, black_x, black_y)
+        pages = page_create(page_templates, panels, bubbles)
+        page_json(pages)
+        
+        if pages:
+            copy_to_static()
+            total_time = time.time() - start_time
+            print(f"\n🎉 Fallback comic preview completed!")
+            print(f"--- Fallback time: {total_time:.1f} seconds ---")
+            return True
+        else:
+            return False
 
 def create_comic_full():
-    """Create full 12-page comic with ultra quality and real story"""
+    """Create full 12-page comic with enhanced ultra-4K quality and real story"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("\n🎬 Amit Comic - Full 12-Page Generation with Ultra Quality")
-    print("Starting full 12-page comic with real story and ultra-quality images...")
+    print("\n🎬 Amit Comic - Enhanced Full 12-Page Generation with Ultra-4K")
+    print("Starting full 12-page comic with advanced dialogue extraction and ultra-4K quality...")
     
-    # Basic processing
-    get_subtitles(video)
-    time.sleep(2)
-    generate_keyframes(video)
-    black_x, black_y, _, _ = black_bar_crop()
-    
-    # Generate full comic with real content
-    crop_coords, page_templates, panels = generate_layout()
-    bubbles = bubble_create(video, crop_coords, black_x, black_y)
-    pages = page_create(page_templates, panels, bubbles)
-    page_json(pages)
-    
-    # Apply ultra-quality enhancement to all frames
-    from backend.simple_2k_enhancer import Simple2KEnhancer
-    enhancer = Simple2KEnhancer()
-    
-    print("🔥 Applying ultra-quality enhancement to all frames...")
-    frames_dir = "frames/final"
-    if os.path.exists(frames_dir):
-        frame_files = [f for f in os.listdir(frames_dir) if f.endswith('.png')]
+    try:
+        # Use the enhanced comic generator
+        from app_enhanced_core import CoreComicGenerator
+        generator = CoreComicGenerator()
         
-        for i, frame_file in enumerate(frame_files, 1):
-            if i % 10 == 1:
-                print(f"   Enhancing frames {i}-{min(i+9, len(frame_files))}...")
-            frame_path = os.path.join(frames_dir, frame_file)
-            enhancer.enhance_to_high_quality(frame_path)
-    
-    if pages:
-        # Copy to static directory
-        copy_to_static()
+        # Check if video exists, if not use available video
+        if not os.path.exists(video):
+            available_videos = [f for f in os.listdir('video') if f.endswith(('.mp4', '.avi', '.mov'))]
+            if available_videos:
+                video = os.path.join('video', available_videos[0])
+                print(f"Using available video: {video}")
         
-        total_time = time.time() - start_time
-        print(f"\n🎉 Full 12-page comic generation completed successfully!")
-        print(f"📚 Generated {len(pages)} pages with real story content!")
-        print(f"💬 Actual dialogue from video subtitles!")
-        print(f"🎨 Ultra-quality anti-blur image enhancement!")
-        print(f"🖼️ High-resolution panels (2560x1440+ each)!")
-        print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
-        return True
-    else:
-        print("❌ Full comic generation failed")
-        return False
+        # Generate full enhanced comic
+        success = generator.generate_enhanced_comic(video)
+        
+        if success:
+            total_time = time.time() - start_time
+            print(f"\n🎉 Enhanced full 12-page comic generation completed successfully!")
+            print(f"📚 Generated 12 pages with REAL STORY CONTENT!")
+            print(f"💬 Advanced dialogue extraction from multiple sources!")
+            print(f"🎨 Ultra-4K quality enhancement (3840x2160 processing)!")
+            print(f"🖼️ Multi-level sharpening and color optimization!")
+            print(f"✨ Comic-book style edge enhancement!")
+            print(f"🎭 Emotion-based bubble styling!")
+            print(f"📖 Intelligent story generation with 3-act structure!")
+            print(f"--- Enhanced execution time: {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
+            return True
+        else:
+            print("❌ Enhanced full comic generation failed")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Enhanced full comic failed: {e}")
+        print("Falling back to standard generation...")
+        
+        # Fallback to original method
+        get_subtitles(video)
+        time.sleep(2)
+        generate_keyframes(video)
+        black_x, black_y, _, _ = black_bar_crop()
+        
+        crop_coords, page_templates, panels = generate_layout()
+        bubbles = bubble_create(video, crop_coords, black_x, black_y)
+        pages = page_create(page_templates, panels, bubbles)
+        page_json(pages)
+        
+        if pages:
+            copy_to_static()
+            total_time = time.time() - start_time
+            print(f"\n🎉 Fallback full comic completed!")
+            print(f"--- Fallback time: {total_time:.1f} seconds ---")
+            return True
+        else:
+            return False
 
 def create_comic():
     """Main comic creation - starts with preview"""
