@@ -75,94 +75,125 @@ class Simple2KEnhancer:
             return 0
     
     def enhance_to_high_quality(self, frame_path, output_path=None):
-        """High quality enhancement preserving or improving original resolution"""
+        """Ultra high quality enhancement with anti-blur processing"""
         try:
             # Load original image
-            img = cv2.imread(frame_path)
+            img = cv2.imread(frame_path, cv2.IMREAD_COLOR)
             if img is None:
                 return False
             
             original_h, original_w = img.shape[:2]
             print(f"   Original: {original_w}x{original_h}")
             
-            # Determine target size - preserve or enhance original
-            if original_w >= 1920 and original_h >= 1080:
-                # Original is already good quality, preserve it
+            # Always aim for higher resolution to avoid blur
+            min_width, min_height = 2560, 1440  # 2K minimum
+            if original_w >= min_width and original_h >= min_height:
+                # Original is already high quality, preserve it
                 target_w, target_h = original_w, original_h
-                print(f"   Preserving original high resolution")
+                print(f"   Preserving original ultra-high resolution")
             else:
-                # Upscale to minimum Full HD
-                target_w, target_h = self.min_panel_size
-                print(f"   Upscaling to Full HD: {target_w}x{target_h}")
+                # Smart upscaling to avoid blur
+                scale_factor = max(min_width / original_w, min_height / original_h)
+                target_w = int(original_w * scale_factor)
+                target_h = int(original_h * scale_factor)
+                print(f"   Smart upscaling to: {target_w}x{target_h} (scale: {scale_factor:.2f}x)")
             
-            # Enhance resolution if needed
+            # High-quality upscaling if needed
             if original_w != target_w or original_h != target_h:
-                enhanced = cv2.resize(img, (target_w, target_h), interpolation=cv2.INTER_LANCZOS4)
+                # Use INTER_CUBIC for better quality than LANCZOS for upscaling
+                enhanced = cv2.resize(img, (target_w, target_h), interpolation=cv2.INTER_CUBIC)
+                
+                # Apply additional sharpening after upscaling to reduce blur
+                enhanced = self.post_upscale_sharpening(enhanced)
             else:
                 enhanced = img.copy()
             
-            # Minimal clean enhancement - preserve quality
+            # Advanced enhancement pipeline
             enhanced = self.minimal_clean_enhancement(enhanced)
             
             # Save with maximum quality
             if output_path is None:
                 output_path = frame_path
             
-            # Use zero compression for maximum quality
+            # Use maximum quality settings
             cv2.imwrite(output_path, enhanced, [
-                cv2.IMWRITE_PNG_COMPRESSION, 0,  # Zero compression for max quality
+                cv2.IMWRITE_PNG_COMPRESSION, 0,  # Zero compression
                 cv2.IMWRITE_PNG_STRATEGY, cv2.IMWRITE_PNG_STRATEGY_DEFAULT
             ])
             
             final_h, final_w = enhanced.shape[:2]
             file_size = os.path.getsize(output_path) / (1024*1024)
             
-            print(f"   Enhanced: {final_w}x{final_h} ({file_size:.1f}MB)")
+            print(f"   Enhanced: {final_w}x{final_h} ({file_size:.1f}MB) - Ultra Quality")
             return True
             
         except Exception as e:
             print(f"❌ Enhancement failed: {e}")
             return False
     
+    def post_upscale_sharpening(self, img):
+        """Apply sharpening after upscaling to reduce blur"""
+        # Create a strong unsharp mask
+        gaussian = cv2.GaussianBlur(img, (0, 0), 2.0)
+        unsharp_mask = cv2.addWeighted(img, 2.0, gaussian, -1.0, 0)
+        
+        # Blend with original for natural look
+        sharpened = cv2.addWeighted(img, 0.6, unsharp_mask, 0.4, 0)
+        
+        return sharpened
+    
     def minimal_clean_enhancement(self, img):
-        """Advanced quality enhancement optimized for comics"""
-        # Enhanced processing pipeline for better comic quality
+        """Ultra-quality enhancement optimized for sharp, vibrant comics"""
+        # Multi-stage enhancement pipeline for maximum quality
         
-        # 1. Advanced noise reduction with color preservation
-        enhanced = cv2.fastNlMeansDenoisingColored(img, None, 4, 4, 7, 21)
+        # 1. Gentle noise reduction (preserve details)
+        enhanced = cv2.fastNlMeansDenoisingColored(img, None, 3, 3, 7, 21)
         
-        # 2. Color enhancement and saturation boost for comics
+        # 2. Advanced color enhancement for comics
         hsv = cv2.cvtColor(enhanced, cv2.COLOR_BGR2HSV)
         h, s, v = cv2.split(hsv)
         
-        # Boost saturation for more vibrant colors (comic style)
-        s = cv2.multiply(s, 1.15)  # 15% saturation boost
+        # Boost saturation and value for vibrant comic colors
+        s = cv2.multiply(s, 1.25)  # 25% saturation boost
+        v = cv2.multiply(v, 1.05)  # 5% brightness boost
         s = np.clip(s, 0, 255).astype(np.uint8)
+        v = np.clip(v, 0, 255).astype(np.uint8)
         
         enhanced = cv2.merge([h, s, v])
         enhanced = cv2.cvtColor(enhanced, cv2.COLOR_HSV2BGR)
         
-        # 3. Advanced contrast enhancement with LAB color space
+        # 3. Multi-level contrast enhancement
         lab = cv2.cvtColor(enhanced, cv2.COLOR_BGR2LAB)
         l, a, b = cv2.split(lab)
         
-        # Enhanced CLAHE for better contrast
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+        # Advanced CLAHE with optimized parameters
+        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
         l = clahe.apply(l)
         
         enhanced = cv2.merge([l, a, b])
         enhanced = cv2.cvtColor(enhanced, cv2.COLOR_LAB2BGR)
         
-        # 4. Smart sharpening with unsharp mask
-        gaussian = cv2.GaussianBlur(enhanced, (0, 0), 1.0)
-        unsharp_mask = cv2.addWeighted(enhanced, 1.5, gaussian, -0.5, 0)
-        enhanced = cv2.addWeighted(enhanced, 0.7, unsharp_mask, 0.3, 0)
+        # 4. Multi-pass sharpening for crisp details
+        # First pass: Fine detail enhancement
+        kernel1 = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]]) * 0.1
+        sharpened1 = cv2.filter2D(enhanced, -1, kernel1)
+        enhanced = cv2.addWeighted(enhanced, 0.8, sharpened1, 0.2, 0)
         
-        # 5. Final gamma correction for better brightness
-        gamma = 1.1
+        # Second pass: Unsharp mask for overall sharpness
+        gaussian = cv2.GaussianBlur(enhanced, (0, 0), 1.2)
+        unsharp_mask = cv2.addWeighted(enhanced, 1.8, gaussian, -0.8, 0)
+        enhanced = cv2.addWeighted(enhanced, 0.6, unsharp_mask, 0.4, 0)
+        
+        # 5. Final gamma and contrast adjustment
+        gamma = 1.15
         inv_gamma = 1.0 / gamma
         table = np.array([((i / 255.0) ** inv_gamma) * 255 for i in np.arange(0, 256)]).astype("uint8")
         enhanced = cv2.LUT(enhanced, table)
+        
+        # 6. Final edge enhancement for comic-book sharpness
+        edges = cv2.Canny(cv2.cvtColor(enhanced, cv2.COLOR_BGR2GRAY), 50, 150)
+        edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
+        enhanced = cv2.addWeighted(enhanced, 0.95, edges, 0.05, 0)
         
         return enhanced
     

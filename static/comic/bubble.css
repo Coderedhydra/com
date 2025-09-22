@@ -182,16 +182,17 @@ img {
     transition: background-image 0.3s ease;
 }
 
-/* ULTRA HIGH QUALITY IMAGE OPTIMIZATIONS */
+/* ULTRA HIGH QUALITY IMAGE OPTIMIZATIONS - ANTI-BLUR */
 .grid-item,
 .bubble,
 img,
 canvas {
-    /* Ultra high-quality rendering */
+    /* Ultra high-quality rendering - prevent blur */
     image-rendering: -webkit-optimize-contrast;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
     image-rendering: high-quality;
+    image-rendering: pixelated; /* Fallback for sharpness */
     
     /* Advanced anti-aliasing */
     -webkit-font-smoothing: antialiased;
@@ -202,9 +203,20 @@ canvas {
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     
-    /* High-quality scaling */
+    /* High-quality scaling - prevent blur */
     object-fit: cover;
     object-position: center;
+    
+    /* Additional sharpness optimizations */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    
+    /* Prevent image interpolation blur */
+    -ms-interpolation-mode: nearest-neighbor;
+    image-rendering: -webkit-crisp-edges;
+    
+    /* Force pixel-perfect rendering */
+    image-rendering: optimizeQuality;
 }
 
 /* DRAGGING STATE - Clean and modern */

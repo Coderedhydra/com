@@ -247,42 +247,58 @@ def export_hq_png():
 
 
 def create_comic_preview():
-    """Create clean 2K test page first"""
+    """Create real comic preview with actual story content"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("🎬 Amit Comic - High Quality Test Page Generation")
-    print("Starting high quality test page generation (1 page, 4 panels)...")
+    print("🎬 Amit Comic - Real Story Preview Generation")
+    print("Starting real comic preview with actual dialogue and story...")
     
     # Step 1-3: Basic processing
     get_subtitles(video)
-    time.sleep(1)  # Shorter wait for preview
+    time.sleep(2)  # Wait for subtitle processing
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     
-    # Step 4: Generate high quality test page preserving original resolution
-    from backend.simple_2k_enhancer import create_2k_test_page
+    # Step 4: Generate full comic pipeline with real content
+    crop_coords, page_templates, panels = generate_layout()
+    bubbles = bubble_create(video, crop_coords, black_x, black_y)
+    pages = page_create(page_templates, panels, bubbles)
+    page_json(pages)
     
-    print("🔥 Generating high quality test page (preserving original resolution)...")
-    test_success = create_2k_test_page()
+    # Step 5: Apply high-quality enhancement to frames
+    from backend.simple_2k_enhancer import Simple2KEnhancer
+    enhancer = Simple2KEnhancer()
     
-    if test_success:
+    print("🔥 Applying ultra-quality enhancement to frames...")
+    frames_dir = "frames/final"
+    if os.path.exists(frames_dir):
+        frame_files = [f for f in os.listdir(frames_dir) if f.endswith('.png')][:4]  # Preview uses first 4 frames
+        
+        for frame_file in frame_files:
+            frame_path = os.path.join(frames_dir, frame_file)
+            enhancer.enhance_to_high_quality(frame_path)
+    
+    if pages:
         copy_to_static()
         total_time = time.time() - start_time
-        print(f"\n🎉 High quality test page generation completed!")
-        print(f"--- Test page time: {total_time:.1f} seconds ---")
+        print(f"\n🎉 Real comic preview generation completed!")
+        print(f"📚 Generated {len(pages)} page(s) with actual story content")
+        print(f"💬 Dialogue extracted from video subtitles")
+        print(f"🎨 Ultra-quality image enhancement applied")
+        print(f"--- Preview time: {total_time:.1f} seconds ---")
         return True
     else:
-        print("❌ Test page generation failed")
+        print("❌ Comic preview generation failed")
         return False
 
 def create_comic_full():
-    """Create full 12-page comic with clean 2K quality"""
+    """Create full 12-page comic with ultra quality and real story"""
     start_time = time.time()
     video = 'video/uploaded.mp4'
     
-    print("\n🎬 Amit Comic - Full 12-Page Generation with Clean 2K")
-    print("Starting full 12-page comic generation...")
+    print("\n🎬 Amit Comic - Full 12-Page Generation with Ultra Quality")
+    print("Starting full 12-page comic with real story and ultra-quality images...")
     
     # Basic processing
     get_subtitles(video)
@@ -290,18 +306,37 @@ def create_comic_full():
     generate_keyframes(video)
     black_x, black_y, _, _ = black_bar_crop()
     
-    # Full comic generation with clean 2K quality
-    from backend.simple_2k_enhancer import create_full_2k_comic
-    success = create_full_2k_comic()
+    # Generate full comic with real content
+    crop_coords, page_templates, panels = generate_layout()
+    bubbles = bubble_create(video, crop_coords, black_x, black_y)
+    pages = page_create(page_templates, panels, bubbles)
+    page_json(pages)
     
-    if success:
+    # Apply ultra-quality enhancement to all frames
+    from backend.simple_2k_enhancer import Simple2KEnhancer
+    enhancer = Simple2KEnhancer()
+    
+    print("🔥 Applying ultra-quality enhancement to all frames...")
+    frames_dir = "frames/final"
+    if os.path.exists(frames_dir):
+        frame_files = [f for f in os.listdir(frames_dir) if f.endswith('.png')]
+        
+        for i, frame_file in enumerate(frame_files, 1):
+            if i % 10 == 1:
+                print(f"   Enhancing frames {i}-{min(i+9, len(frame_files))}...")
+            frame_path = os.path.join(frames_dir, frame_file)
+            enhancer.enhance_to_high_quality(frame_path)
+    
+    if pages:
         # Copy to static directory
         copy_to_static()
         
         total_time = time.time() - start_time
         print(f"\n🎉 Full 12-page comic generation completed successfully!")
-        print(f"🎯 Clean 2K quality without over-processing!")
-        print(f"📚 Complete 12-page comic with optimal quality!")
+        print(f"📚 Generated {len(pages)} pages with real story content!")
+        print(f"💬 Actual dialogue from video subtitles!")
+        print(f"🎨 Ultra-quality anti-blur image enhancement!")
+        print(f"🖼️ High-resolution panels (2560x1440+ each)!")
         print(f"--- Execution time : {total_time:.1f} seconds ({total_time/60:.2f} minutes) ---")
         return True
     else:
