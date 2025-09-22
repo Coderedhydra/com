@@ -248,5 +248,25 @@ canvas {
     /* High-quality rendering */
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
+    
+    /* Eliminate spacing inconsistencies */
+    font-size: 0;
+    line-height: 0;
+}
+
+/* Fix for any spacing issues in grid items */
+.grid-container,
+.grid-item {
+    /* Remove any potential whitespace */
+    font-size: 0;
+    line-height: 0;
+    
+    /* Ensure pixel-perfect alignment */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    /* Prevent any sub-pixel rendering issues */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
